@@ -90,13 +90,36 @@ const appStyles = StyleSheet.create ({
     radiobutton: { // Raul 
 
     },
-    popup: {  // Abdelwahed
+    
+    popupContent :{
+        textAlign: "center",
+        height: "350px",
+        marginTop: "30px"
+      },
+  
+  /* The text popup */
+  popupHead :{
+    fontWeight: "bold",
+    fontSize: "22px"
+  },
+  
+ 
+   popupText :{
+    fontSize: "15px",
+    marginBottom: "20px"
+  },
+  
+   okText : {
+    fontSize: "15px"
+  },
+  
 
-    },
-    label: {  // Abdelwahed
-
-    }
-
+  label :{
+    color: white,
+    padding: "8px",
+    display: "inline-block",
+    width: "150px",
+  }
 
 
 
