@@ -2,7 +2,7 @@
   "expo": {
     "name": "Shared Expenses",
     "description": "Now you can share expenses with your friends and forget about who owes whom because Shared Expenses helps you with it",
-    "slug": "Shared Expenses",
+    "slug": "Shared_Expenses",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
