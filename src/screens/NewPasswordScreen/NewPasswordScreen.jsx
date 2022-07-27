@@ -1,7 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import CustomInput from "../../components/CustomInput/CustomInput";
-import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 
@@ -87,17 +88,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: Size.xl,
     fontWeight: "bold",
-    color: "#051C60",
+    color: ColorPalette.primaryBlue,
     margin: 10,
   },
   text: {
-    color: "gray",
+    color: ColorPalette.primaryGray,
     marginVertical: 10,
-  },
-  link: {
-    color: "#FDB075",
   },
 });
 

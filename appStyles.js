@@ -1,28 +1,37 @@
-//import { StyleSheet } from "react-native";
-
 const ColorPalette = {
-  primaryYellow: "#F9ed69",
+  background: "#F9FBFC",
+  primaryBlue: "#2083E8",
+  primaryGray: "#808080",
   primaryOrange: "#F08A5D",
+  primaryWhite: "#FFFFFF",
+  primaryRed: "#FF0000",
+  veryLightGrey: "#CCCCCC",
+  primaryBlack: "#000000",
+
+  primaryYellow: "#F9ed69",
   primaryRouge: "#B83B5E",
   primarySeance: "#6A2C70",
   primaryPurple: "#3B71F3",
-  primaryWhite: "#FFFFFF",
-  primaryGray: "#808080",
   governorBay: "#514FA0",
   navyBlue: "#0071C5",
   pacificBlue: "#0091D8",
   irisBlue: "#00AED5",
   eggBlue: "#00C8C0",
-  background: "#c8beab61",
-  veryLightGrey: "#CCCCCC",
 };
 
 const Size = {
   xs: 12,
-  sm: 14,
-  md: 16,
-  lg: 18
+  ms: 14,
+  ls: 16,
+  xm: 18,
+  mm: 20,
+  lm: 22,
+  xl: 24,
+  ml: 26,
+  ll: 28,
+  xxl: 30,
 };
+
 /*
 const appStyles = StyleSheet.create({
   // canvas de la app

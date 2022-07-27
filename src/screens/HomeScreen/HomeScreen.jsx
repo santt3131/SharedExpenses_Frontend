@@ -1,10 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { ColorPalette, Size } from "../../../appStyles";
 
 const HomeScreen = () => {
   return (
     <View>
-      <Text style={{ fontSize: 24, alignSelf: "center", marginTop: 20 }}>
+      <Text
+        style={{
+          fontSize: Size.xl,
+          alignSelf: "center",
+          marginTop: 20,
+          color: ColorPalette.primaryBlue,
+          fontWeight: "bold",
+        }}
+      >
         Home, sweet home
       </Text>
     </View>

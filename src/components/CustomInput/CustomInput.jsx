@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { Controller } from "react-hook-form";
+import { ColorPalette, Size } from "../../../appStyles";
 
 const CustomInput = ({
   control,
@@ -26,7 +27,11 @@ const CustomInput = ({
           <View
             style={[
               styles.container,
-              { borderColor: error ? "red" : "#e8e8e8" },
+              {
+                borderColor: error
+                  ? ColorPalette.primaryRed
+                  : ColorPalette.veryLightGrey,
+              },
             ]}
           >
             <TextInput
@@ -35,14 +40,16 @@ const CustomInput = ({
               onBlur={onBlur}
               autoCapitalize={autoCapitalize ? autoCapitalize : "none"}
               placeholder={placeholder}
-              placeholderTextColor={"grey"}
+              placeholderTextColor={ColorPalette.primaryGray}
               style={styles.input}
               secureTextEntry={secureTextEntry}
               keyboardType={keyboardType}
             />
           </View>
           {error && (
-            <Text style={{ color: "red", alignSelf: "stretch" }}>
+            <Text
+              style={{ color: ColorPalette.primaryRed, alignSelf: "stretch" }}
+            >
               {error.message || "Error"}
             </Text>
           )}
@@ -54,10 +61,10 @@ const CustomInput = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: ColorPalette.primaryWhite,
     width: "100%",
 
-    borderColor: "#e8e8e8",
+    borderColor: ColorPalette.veryLightGrey,
     borderWidth: 1,
     borderRadius: 5,
 
@@ -66,8 +73,8 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 48,
-    color: "black",
-    fontSize: 18,
+    color: ColorPalette.primaryBlack,
+    fontSize: Size.xm,
   },
 });
 

@@ -8,8 +8,9 @@ import {
   Text,
 } from "react-native";
 import Logo from "../../../assets/images/SharedExpenses.png";
-import CustomInput from "../../components/CustomInput/CustomInput";
-import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 
@@ -120,17 +121,17 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   text: {
-    color: "gray",
+    color: ColorPalette.primaryGray,
     marginVertical: 10,
   },
   link: {
-    color: "gray",
+    color: ColorPalette.primaryGray,
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: Size.xm,
   },
   apptitle: {
-    color: "#3B71F3",
-    fontSize: 30,
+    color: ColorPalette.primaryBlue,
+    fontSize: Size.xxl,
     fontWeight: "bold",
     marginBottom: 15,
   },
