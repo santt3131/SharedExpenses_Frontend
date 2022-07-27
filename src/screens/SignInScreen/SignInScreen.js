@@ -8,8 +8,8 @@ import {
   Text,
 } from "react-native";
 import Logo from "../../../assets/images/SharedExpenses.png";
-import CustomInput from "../../components/CustomInput/CustomInput";
-import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 
