@@ -1,10 +1,13 @@
-import { StyleSheet } from "react-native";
+//import { StyleSheet } from "react-native";
 
-const Colors = {
+const ColorPalette = {
   primaryYellow: "#F9ed69",
   primaryOrange: "#F08A5D",
   primaryRouge: "#B83B5E",
   primarySeance: "#6A2C70",
+  primaryPurple: "#3B71F3",
+  primaryWhite: "#FFFFFF",
+  primaryGray: "#808080",
   governorBay: "#514FA0",
   navyBlue: "#0071C5",
   pacificBlue: "#0091D8",
@@ -14,6 +17,13 @@ const Colors = {
   veryLightGrey: "#CCCCCC",
 };
 
+const Size = {
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 18
+};
+/*
 const appStyles = StyleSheet.create({
   // canvas de la app
   container: {
@@ -94,6 +104,6 @@ const appStyles = StyleSheet.create({
   label: {
     // Abdelwahed
   },
-});
+});*/
 
-export { appStyles };
+export { ColorPalette, Size };
