@@ -20,6 +20,7 @@ const ColorPalette = {
 };
 
 const Size = {
+  xss: 10,
   xs: 12,
   ms: 14,
   ls: 16,
