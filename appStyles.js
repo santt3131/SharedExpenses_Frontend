@@ -7,6 +7,7 @@ const ColorPalette = {
   primaryRed: "#FF0000",
   veryLightGrey: "#CCCCCC",
   primaryBlack: "#000000",
+  primaryGreen: "#00C8C0",
 
   primaryYellow: "#F9ed69",
   primaryRouge: "#B83B5E",
@@ -16,7 +17,6 @@ const ColorPalette = {
   navyBlue: "#0071C5",
   pacificBlue: "#0091D8",
   irisBlue: "#00AED5",
-  eggBlue: "#00C8C0",
 };
 
 const Size = {

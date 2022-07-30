@@ -9,7 +9,8 @@ import ConfirmEmailScreen from "../screens/ConfirmEmailScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import NewPasswordScreen from "../screens/NewPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
-import FriendsScreen from "../screens/FriendsScreen";
+import FriendsListScreen from "../screens/FriendsListScreen";
+import FriendsAddScreen from "../screens/FriendsAddScreen";
 import GroupsScreen from "../screens/GroupsScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
 import DebtsScreen from "../screens/DebtsScreen";
@@ -99,8 +100,8 @@ const Navigation = () => {
           }}
         />
         <Tab.Screen
-          name="Friends"
-          component={FriendsScreen}
+          name="FriendsList"
+          component={FriendsListScreen}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
@@ -116,6 +117,13 @@ const Navigation = () => {
                 }}
               />
             ),
+          }}
+        />
+        <Tab.Screen
+          name="FriendsAdd"
+          component={FriendsAddScreen}
+          options={{
+            tabBarButton: () => null,
           }}
         />
         <Tab.Screen
