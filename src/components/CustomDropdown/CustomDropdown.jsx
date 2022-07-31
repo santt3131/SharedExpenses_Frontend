@@ -3,14 +3,17 @@ import { View, Text, StyleSheet } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import { Picker } from "@react-native-picker/picker";
 
-const CustomDropdown = ({ title, listdrop }) => {
+const CustomDropdown = ({ title, listdrop, selected }) => {
   const [optionSelect, setoptionSelect] = useState("Unknown");
 
   return (
     <View style={styles.screen}>
       <Picker
         selectedValue={optionSelect}
-        onValueChange={(value, index) => setoptionSelect(value)}
+        onValueChange={(value, index) => {
+          selected(value);
+          setoptionSelect(value);
+        }}
         mode="dropdown" // Android only
         style={styles.picker}
       >
@@ -19,7 +22,6 @@ const CustomDropdown = ({ title, listdrop }) => {
           <Picker.Item key={index} label={objList} value={objList} />
         ))}
       </Picker>
-      <Text style={styles.text}>Your options selected is : {optionSelect}</Text>
     </View>
   );
 };
