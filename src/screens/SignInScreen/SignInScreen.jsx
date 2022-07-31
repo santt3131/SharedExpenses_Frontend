@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import * as api from "../../api/api";
+
 import {
   View,
   Image,
@@ -29,6 +31,23 @@ const SignInScreen = () => {
   const email = watch("email");
 
   const onSignInPressed = async (data) => {
+      const { success, result, error } = await api.login(data);
+      if (success) {
+        console.log(result.accessToken);
+        //onLogin(token);
+        navigation.navigate("Home");
+
+      } else {
+        setMessage(error);
+        console.log("Failed to connect")
+
+      }
+    };
+/*
+    alert(JSON.stringify(data));
+    api.login(data);
+
+    
     if (loading) {
       return;
     }
@@ -44,13 +63,16 @@ const SignInScreen = () => {
     setLoading(false);
 
     navigation.navigate("Home");
-  };
+    
+  };*/
+
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });
   };
 
   const onSignUpPressed = () => {
+
     navigation.navigate("SignUp");
   };
 
