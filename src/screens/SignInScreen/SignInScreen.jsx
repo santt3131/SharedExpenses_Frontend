@@ -70,10 +70,10 @@ const SignInScreen = () => {
           placeholder="Email"
           keyboardType="email-address"
           control={control}
-          rules={{
-            required: "Email is required",
-            pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
-          }}
+          //rules={{
+          //  required: "Email is required",
+          //  pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
+          //}}
         />
 
         <CustomInput
@@ -81,13 +81,13 @@ const SignInScreen = () => {
           placeholder="Password"
           control={control}
           secureTextEntry={true}
-          rules={{
-            required: "Password is required",
-            minLength: {
-              value: 3,
-              message: "Password should be at least 3 characters long",
-            },
-          }}
+          //rules={{
+          //  required: "Password is required",
+          //  minLength: {
+          //    value: 3,
+          //    message: "Password should be at least 3 characters long",
+          //  },
+          //}}
         />
 
         <CustomButton
@@ -112,7 +112,7 @@ const SignInScreen = () => {
 const styles = StyleSheet.create({
   root: {
     alignItems: "center",
-    padding: 20,
+    padding: 30,
   },
   logo: {
     width: "70%",
