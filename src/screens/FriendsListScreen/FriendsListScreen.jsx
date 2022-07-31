@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
-import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
+import CustomTopbar from "../../components/CustomTopbar";
 import { useNavigation } from "@react-navigation/native";
 
 const FriendsListScreen = () => {

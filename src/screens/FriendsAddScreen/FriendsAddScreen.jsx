@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
-import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
+import CustomTopbar from "../../components/CustomTopbar";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import { useForm } from "react-hook-form";
