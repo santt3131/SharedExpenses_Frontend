@@ -120,10 +120,10 @@ const SignUpScreen = () => {
 const styles = StyleSheet.create({
   root: {
     alignItems: "center",
-    padding: 20,
+    padding: 30,
   },
   title: {
-    fontSize: 24,
+    fontSize: Size.xl,
     fontWeight: "bold",
     color: ColorPalette.primaryBlue,
     margin: 10,

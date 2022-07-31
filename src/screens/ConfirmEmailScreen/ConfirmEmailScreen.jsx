@@ -67,7 +67,7 @@ const ConfirmEmailScreen = () => {
 const styles = StyleSheet.create({
   root: {
     alignItems: "center",
-    padding: 20,
+    padding: 30,
   },
   title: {
     fontSize: Size.xl,
