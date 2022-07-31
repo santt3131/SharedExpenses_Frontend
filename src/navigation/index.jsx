@@ -25,10 +25,7 @@ const Exit = () => {
 const Navigation = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{ headerShown: false }}
-        tabBarOptions={{ showLabel: false }}
-      >
+      <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen
           name="SignIn"
           component={SignInScreen}
@@ -97,10 +94,11 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
-          name="FriendsList"
+          name="Friends"
           component={FriendsListScreen}
           options={{
             tabBarIcon: ({ focused }) => (
@@ -117,6 +115,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -124,6 +123,7 @@ const Navigation = () => {
           component={FriendsAddScreen}
           options={{
             tabBarButton: () => null,
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -144,6 +144,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -164,6 +165,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -184,6 +186,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -204,6 +207,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -224,6 +228,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
       </Tab.Navigator>

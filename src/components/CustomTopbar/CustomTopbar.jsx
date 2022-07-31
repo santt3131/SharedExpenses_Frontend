@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 30,
     marginHorizontal: 10,
     flexDirection: "row",
   },
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: ColorPalette.primaryWhite,
     fontSize: Size.lm,
+    fontWeight: "bold",
     backgroundColor: ColorPalette.primaryBlue,
     textTransform: "uppercase",
     paddingLeft: 10,
@@ -51,8 +52,8 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 100,
   },
   topButtonAdd: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100,
@@ -60,8 +61,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   topButtonList: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100,

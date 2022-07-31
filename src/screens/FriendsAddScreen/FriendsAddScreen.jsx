@@ -20,7 +20,7 @@ const FriendsAddScreen = () => {
   };
 
   const onPressList = () => {
-    navigation.navigate("FriendsList");
+    navigation.navigate("Friends");
   };
 
   const onSendPressed = () => {
@@ -30,7 +30,7 @@ const FriendsAddScreen = () => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <CustomTopbar
-        screenTitle="My Friends"
+        screenTitle="Friends"
         onPressAdd={onPressAdd}
         onPressList={onPressList}
         addDisabled={true}
@@ -81,7 +81,10 @@ const FriendsAddScreen = () => {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    padding: 20,
+    paddingTop: 10,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingBottom: 20,
   },
   text: {
     color: ColorPalette.primaryBlue,
