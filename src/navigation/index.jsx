@@ -9,7 +9,8 @@ import ConfirmEmailScreen from "../screens/ConfirmEmailScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import NewPasswordScreen from "../screens/NewPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
-import FriendsScreen from "../screens/FriendsScreen";
+import FriendsListScreen from "../screens/FriendsListScreen";
+import FriendsAddScreen from "../screens/FriendsAddScreen";
 import GroupsScreen from "../screens/GroupsScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
 import DebtsScreen from "../screens/DebtsScreen";
@@ -24,10 +25,7 @@ const Exit = () => {
 const Navigation = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{ headerShown: false }}
-        tabBarOptions={{ showLabel: false }}
-      >
+      <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen
           name="SignIn"
           component={SignInScreen}
@@ -96,11 +94,12 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
           name="Friends"
-          component={FriendsScreen}
+          component={FriendsListScreen}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
@@ -116,6 +115,15 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
+          name="FriendsAdd"
+          component={FriendsAddScreen}
+          options={{
+            tabBarButton: () => null,
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -136,6 +144,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -156,6 +165,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -176,6 +186,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -196,6 +207,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
         <Tab.Screen
@@ -216,6 +228,7 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
           }}
         />
       </Tab.Navigator>
