@@ -1,4 +1,4 @@
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const BASE_URL = "http://localhost:8080";
 
 const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201
@@ -31,7 +31,7 @@ export const register = (userData) => apiPost("/register", userData);
 
 
 const authApiCall = (method, path, body) => {
-  const { accessToken } = JSON.parse(localStorage.getItem("token"));
+  const { accessToken } = JSON.parse(AsyncStorage.getItem("token"));
   return apiCall(method, path, body, { "Authorization": `Bearer ${accessToken}` });
 }
 
