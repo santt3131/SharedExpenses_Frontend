@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import * as api from "../../api/api";
+
 import {
   View,
   Image,
@@ -17,7 +19,14 @@ import { useForm } from "react-hook-form";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const SignInScreen = () => {
+ /* const LoginOrRegister = ({ onLogin }) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [mode, setMode] = useState("login");
+    const [message, setMessage] = useState(null);*/
+
+  const SignInScreen = () => {
+
   const { height } = useWindowDimensions();
 
   const navigation = useNavigation();
@@ -29,6 +38,22 @@ const SignInScreen = () => {
   const email = watch("email");
 
   const onSignInPressed = async (data) => {
+      const { success, result, error } = await api.login(data);
+      if (success) {
+        console.log(result.accessToken);
+        //onLogin(token);
+        navigation.navigate("Home");
+
+      } else {
+        setMessage(error);
+
+      }
+    };
+/*
+    alert(JSON.stringify(data));
+    api.login(data);
+
+    
     if (loading) {
       return;
     }
@@ -44,13 +69,16 @@ const SignInScreen = () => {
     setLoading(false);
 
     navigation.navigate("Home");
-  };
+    
+  };*/
+
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });
   };
 
   const onSignUpPressed = () => {
+
     navigation.navigate("SignUp");
   };
 
