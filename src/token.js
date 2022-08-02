@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export const readToken = () => {
   const tokenStr = AsyncStorage.getItem("token");
   return tokenStr !== null ? JSON.parse(tokenStr) : null;

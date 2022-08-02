@@ -7,7 +7,8 @@ import * as tk from "./src/token";
 import SignInScreen from "./src/screens/SignInScreen";
 
 const App = () => {
-  const [token, setToken] = useState(tk.readToken);
+  //eliminate tk.readtoken
+  const [token, setToken] = useState(null);
 
   const login = (token) => {
     setToken(token);
