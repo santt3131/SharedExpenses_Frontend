@@ -1,14 +1,11 @@
 
-
-import AsyncStorage`` from "@react-native-async-storage/async-storage";
 export const readToken = () => {
-  const tokenStr = AsyncStorage.getItem("token");
+  const tokenStr = localStorage.getItem("token");
   return tokenStr !== null ? JSON.parse(tokenStr) : null;
 }
 export const saveToken = (token) => {
-  AsyncStorage.setItem("token", JSON.stringify(token));
+  localStorage.setItem("token", JSON.stringify(token));
 }
 export const deleteToken = () => {
-  AsyncStorage.removeItem("token");
+  localStorage.removeItem("token");
 }
-
