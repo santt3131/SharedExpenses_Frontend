@@ -26,13 +26,14 @@ const GroupsScreen = () => {
     try { 
       const response = await axiosInstance({
         method: 'get',
+        url: '/groups'
         /*params: {
-          url: '/groups',
           id: ######
         }*/
       });
     
       const json = await response.data;
+      
       setRetrievedItems(json.movies);
       setLoading(false);
     } catch (error) {
