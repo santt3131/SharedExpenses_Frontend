@@ -20,12 +20,6 @@ import { useForm } from "react-hook-form";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
- /* const LoginOrRegister = ({ onLogin }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [mode, setMode] = useState("login");
-    const [message, setMessage] = useState(null);*/
-
     const SignInScreen = () => {
 
         const { height } = useWindowDimensions();

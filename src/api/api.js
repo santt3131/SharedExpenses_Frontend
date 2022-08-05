@@ -27,7 +27,7 @@ const apiCall = async (method, path, body, headers) => {
 const apiPost = (path, body) => apiCall("POST", path, body);
 export const login = (userData) => apiPost("/login", userData);
 
-export const register = (userData) => apiPost("/register", userData);
+export const register = (userData) => apiPost("/users", userData);
 
 
 const authApiCall = (method, path, body) => {

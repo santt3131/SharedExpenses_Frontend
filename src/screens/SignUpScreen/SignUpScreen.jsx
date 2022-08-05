@@ -5,6 +5,8 @@ import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import * as api from "../../api/api";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -16,9 +18,24 @@ const SignUpScreen = () => {
 
   const pwd = watch("password");
 
-  const onRegisterPressed = () => {
-    navigation.navigate("ConfirmEmail");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [mode, setMode] = useState("Register");
+  const [message, setMessage] =   useState(null);
+
+  const onRegisterPressed = async (data) => {
+    const { success, result, error } = await api.register(data);
+    if (success) {
+      console.log("account created");
+      setMessage("passed");
+      navigation.navigate("ConfirmEmail");
+    } else {
+      console.log("Creation failed : user already exist");
+      setMessage(error);
+    }
   };
+
 
   const onPrivacyPolicyPressed = () => {
     alert("Privacy Policy");
