@@ -11,18 +11,18 @@ const CustomSearch = () => {
 
   return (
     <View style={styles.searchWrapperStyle}>
-        <FontAwesome name="search" size={Size.xm} color={ColorPalette.primaryRouge} style={styles.iconStyle}/>
+        <FontAwesome name="search" size={Size.xm} color={ColorPalette.primaryWhite} style={styles.iconStyle}/>
         <TextInput 
             placeholder="Search" 
-            placeholderTextColor={ColorPalette.primaryRouge}
+            placeholderTextColor={ColorPalette.primaryWhite}
             style={styles.searchInputStyle}
-            value={term}
-            onChangeText={(newText) => {
-                setTerm(newText);
+            value={text}
+            onChangeText={(text) => {
+                setTerm(text);
             }}
             />
 
-        <FontAwesome name="close" sise={Size.lm} color={ColorPalette.primaryRouge} style={styles.iconStyle}/>
+        <FontAwesome name="close" sise={Size.xl} color={ColorPalette.primaryWhite} style={styles.iconStyle}/>
     </View>
   )
 }

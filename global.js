@@ -1,11 +1,12 @@
 
 // possible servers
-const appEndpiont =  'http://localhost:3080/groups/';
+const appEndpiont =  'http://192.168.0.16:3080';
 const testEndpoint = 'https://reactnative.dev/movies.json';
 
 // global to store the server address
 const Global = {
-    baseUrl: testEndpoint
+    baseUrl: appEndpiont,
+    testUrl: testEndpoint
 }
 
 export default Global;
