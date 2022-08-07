@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import * as api from "../../api/api";
-
 import {
   View,
   Image,
@@ -19,14 +17,7 @@ import { useForm } from "react-hook-form";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
- /* const LoginOrRegister = ({ onLogin }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [mode, setMode] = useState("login");
-    const [message, setMessage] = useState(null);*/
-
-  const SignInScreen = () => {
-
+const SignInScreen = () => {
   const { height } = useWindowDimensions();
 
   const navigation = useNavigation();
@@ -38,47 +29,14 @@ const EMAIL_REGEX =
   const email = watch("email");
 
   const onSignInPressed = async (data) => {
-      const { success, result, error } = await api.login(data);
-      if (success) {
-        console.log(result.accessToken);
-        //onLogin(token);
-        navigation.navigate("Home");
-
-      } else {
-        setMessage(error);
-
-      }
-    };
-/*
-    alert(JSON.stringify(data));
-    api.login(data);
-
-    
-    if (loading) {
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    } catch (e) {
-      console.warn(e);
-    }
-
-    setLoading(false);
-
     navigation.navigate("Home");
-    
-  };*/
-
+  };
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });
   };
 
   const onSignUpPressed = () => {
-
     navigation.navigate("SignUp");
   };
 
@@ -98,10 +56,10 @@ const EMAIL_REGEX =
           placeholder="Email"
           keyboardType="email-address"
           control={control}
-          //rules={{
-          //  required: "Email is required",
-          //  pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
-          //}}
+          rules={{
+            required: "Email is required",
+            pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
+          }}
         />
 
         <CustomInput
@@ -109,13 +67,13 @@ const EMAIL_REGEX =
           placeholder="Password"
           control={control}
           secureTextEntry={true}
-          //rules={{
-          //  required: "Password is required",
-          //  minLength: {
-          //    value: 3,
-          //    message: "Password should be at least 3 characters long",
-          //  },
-          //}}
+          rules={{
+            required: "Password is required",
+            minLength: {
+              value: 3,
+              message: "Password should be at least 3 characters long",
+            },
+          }}
         />
 
         <CustomButton
