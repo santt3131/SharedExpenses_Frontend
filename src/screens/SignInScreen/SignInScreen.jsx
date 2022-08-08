@@ -35,14 +35,16 @@ const SignInScreen = () => {
   const email = watch("email");
 
   const onSignInPressed = async (data) => {
-    const { success, result, error } = await api.login(data);
+    navigation.navigate("Home");
+
+    /*const { success, result, error } = await api.login(data);
     if (success) {
       console.log(result.accessToken);
       //onLogin(token);
       navigation.navigate("Home");
     } else {
       setMessage(error);
-    }
+    }*/
   };
   /*
     alert(JSON.stringify(data));
