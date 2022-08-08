@@ -32,8 +32,7 @@ const CustomTopbar = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
+    display: "flex",
     marginTop: 30,
     marginHorizontal: 10,
     flexDirection: "row",
@@ -50,6 +49,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     borderTopRightRadius: 100,
     borderBottomRightRadius: 100,
+    height: 40,
   },
   topButtonAdd: {
     width: 40,
