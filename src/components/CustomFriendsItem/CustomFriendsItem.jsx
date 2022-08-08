@@ -22,7 +22,7 @@ const CustomFriendsItem = ({ friends }) => {
     const authUser = "62b5e88ba6e78636d6488646";
 
     axios
-      .post("http://192.168.6.69:8080/email/reinvitation", {
+      .post("http://192.169.176.126:3000/email/reinvitation", {
         email: email,
         authUser: authUser,
       })

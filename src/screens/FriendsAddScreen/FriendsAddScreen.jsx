@@ -53,7 +53,7 @@ const FriendsAddScreen = () => {
 
   const onSendPressed = () => {
     axios
-      .post("http://192.168.6.69:8080/email/invitation", {
+      .post("http://192.169.176.126:3000/email/invitation", {
         name: name,
         email: email,
         message: message,

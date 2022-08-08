@@ -22,7 +22,7 @@ const FriendsListScreen = () => {
   const onPressList = () => {
     axios
       .get(
-        "http://192.168.6.69:8080/users/62b5e88ba6e78636d6488646/friends",
+        "http://192.169.176.126:3000/users/62b5e88ba6e78636d6488646/friends",
         {}
       )
       .then(function (response) {
