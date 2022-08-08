@@ -6,6 +6,7 @@ import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -14,6 +15,19 @@ const FriendsAddScreen = () => {
   const navigation = useNavigation();
 
   const { control, handleSubmit, watch } = useForm();
+
+  const name = watch("name");
+  const email = watch("email");
+  const message = `<h2>Shared Expenses Invitation</h2>
+  <p>Hello, ${name}</p>
+  <p>Your friend USUARIO AUTENTICADO has invited you to share expenses in an easy way through Shared Expenses, 
+  for this you can:</p>
+  <ol>
+  <li>Download the application<br />
+  <strong>Android: </strong>https://play.google.com/store/apps/details?id=com.SharedExpenses.SharedExpensesMobile<br />
+  <strong>iOS: </strong>https://apps.apple.com/us/app/sharedexpenses/id512463895</li>
+  <li>Register using this link<br />https://wwww.sharedexpenses.com/register?friend=Hg67TG</li>
+  <ol>`;
 
   const onPressAdd = () => {
     navigation.navigate("FriendsAdd");
@@ -24,7 +38,20 @@ const FriendsAddScreen = () => {
   };
 
   const onSendPressed = () => {
-    console.log("Send");
+    axios
+      .post("http://192.168.6.69:8080/email/invitation", {
+        name: name,
+        email: email,
+        message: message,
+      })
+      .then(function (response) {
+        // handle success
+        alert(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        // handle error
+        alert(error.message);
+      });
   };
 
   return (
