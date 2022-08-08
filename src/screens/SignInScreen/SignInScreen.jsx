@@ -26,7 +26,7 @@ const EMAIL_REGEX =
     const [message, setMessage] = useState(null);*/
 
   const SignInScreen = () => {
-
+  const [message, setMessage] = useState(null);
   const { height } = useWindowDimensions();
 
   const navigation = useNavigation();
@@ -38,16 +38,16 @@ const EMAIL_REGEX =
   const email = watch("email");
 
   const onSignInPressed = async (data) => {
-      const { success, result, error } = await api.login(data);
-      if (success) {
-        console.log(result.accessToken);
+      //const { success, result, error } = await api.login(data);
+      //if (success) {
+      //  console.log(result.accessToken);
         //onLogin(token);
         navigation.navigate("Home");
 
-      } else {
-        setMessage(error);
-
-      }
+      //} else {
+      //  setMessage(error);
+//
+      //}
     };
 /*
     alert(JSON.stringify(data));
