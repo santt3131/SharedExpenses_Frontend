@@ -5,6 +5,7 @@ import CustomTopbar from "../../components/CustomTopbar";
 import CustomFriendsItem from "../../components/CustomFriendsItem";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import Global from "../../../global";
 
 const FriendsListScreen = () => {
   const navigation = useNavigation();
@@ -21,10 +22,7 @@ const FriendsListScreen = () => {
 
   const onPressList = () => {
     axios
-      .get(
-        "http://192.169.176.126:3000/users/62b5e88ba6e78636d6488646/friends",
-        {}
-      )
+      .get(`${Global.server}/users/62b5e88ba6e78636d6488646/friends`, {})
       .then(function (response) {
         const allFriends = response.data.results[0].friends;
         setFriends(allFriends);

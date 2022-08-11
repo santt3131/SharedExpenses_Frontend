@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomSpinner from "../CustomSpinner/CustomSpinner";
 import axios from "axios";
+import Global from "../../../global";
 
 const CustomFriendsItem = ({ friends }) => {
   if (friends === null || friends === undefined) {
@@ -22,13 +23,31 @@ const CustomFriendsItem = ({ friends }) => {
     const authUser = "62b5e88ba6e78636d6488646";
 
     axios
-      .post("http://192.169.176.126:3000/email/reinvitation", {
+      .post(`${Global.server}/email/reinvitation`, {
         email: email,
         authUser: authUser,
       })
       .then(function (response) {
         // handle success
         alert("Invitation resent successfully");
+      })
+      .catch(function (error) {
+        // handle error
+        alert(error.response.data.error);
+      });
+  };
+
+  const onDeletePress = (fm) => {
+    const email = fm;
+    const authUser = "62b5e88ba6e78636d6488646";
+
+    axios
+      .delete(`${Global.server}/users/${authUser}/friends`, {
+        data: { email: email },
+      })
+      .then(function (response) {
+        // handle success
+        alert("Friend deleted successfully");
       })
       .catch(function (error) {
         // handle error
@@ -44,14 +63,22 @@ const CustomFriendsItem = ({ friends }) => {
             <Text style={styles.friendName}>{friendName}</Text>
             <Text style={styles.friendEmail}>{friendEmail}</Text>
           </View>
-          {invitationId !== "" && (
+          <View>
+            {invitationId !== "" && (
+              <Pressable
+                style={styles.reinviteButton}
+                onPress={() => onSendPress(friendEmail)}
+              >
+                <Text style={styles.friendButtonText}>Reinvite</Text>
+              </Pressable>
+            )}
             <Pressable
-              style={styles.friendButton}
-              onPress={() => onSendPress(friendEmail)}
+              style={styles.deleteButton}
+              onPress={() => onDeletePress(friendEmail)}
             >
-              <Text style={styles.friendButtonText}>Reinvite</Text>
+              <Text style={styles.friendButtonText}>Delete</Text>
             </Pressable>
-          )}
+          </View>
         </View>
       ))}
     </View>
@@ -99,17 +126,26 @@ const styles = StyleSheet.create({
     color: ColorPalette.primaryGray,
     fontSize: Size.ls,
   },
-  friendButton: {
+  reinviteButton: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: ColorPalette.primaryBlue,
     borderRadius: 4,
+    marginBottom: 2,
   },
   friendButtonText: {
     color: ColorPalette.primaryWhite,
     padding: 5,
     textTransform: "uppercase",
     fontWeight: "bold",
+  },
+  deleteButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: ColorPalette.primaryRed,
+    borderRadius: 4,
+    width: 75,
   },
 });
 

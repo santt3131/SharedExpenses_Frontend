@@ -7,6 +7,7 @@ import CustomButton from "../../components/CustomButton";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import Global from "../../../global";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -53,7 +54,7 @@ const FriendsAddScreen = () => {
 
   const onSendPressed = () => {
     axios
-      .post("http://192.169.176.126:3000/email/invitation", {
+      .post(`${Global.server}/email/invitation`, {
         name: name,
         email: email,
         message: message,
