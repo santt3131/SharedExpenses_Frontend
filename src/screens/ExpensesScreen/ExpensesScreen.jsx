@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomDropdown from "../../components/CustomDropdown";
 import CustomModal from "../../components/CustomModal";
@@ -133,12 +133,6 @@ const ExprensesScreen = () => {
 				console.log("no ha puesto gasto total TRUE");
 				setmodalVisible(true);
 				trigger();
-				//console.log("el estado del modal es ", modalVisible);
-
-				// <CustomModal
-				// 		title="Mensaje de error"
-				// 		message="Tiene que haber rellenado el gasto total"
-				// 	></CustomModal>
 			} else {
 				console.log("HA puesto gasto total FALSE");
 				setmodalVisible(false);
@@ -151,8 +145,6 @@ const ExprensesScreen = () => {
 			});
 			setarrayDesiredPay(equalPartsArray);
 		}
-
-		//console.log("arrayDesiredPay es", arrayDesiredPay);
 	};
 
 	//1.4 Set Debe (con input de paid)
@@ -160,6 +152,19 @@ const ExprensesScreen = () => {
 	if (debt) {
 		console.log("debt es", debt);
 	}
+
+	//PRUEBA
+	const [paidArrayValues, setpaidArrayValues] = useState([]);
+	const [debtArrayValues, setdebtArrayValues] = useState([]);
+
+	const handleChangePaid = (index, name, value) => {
+		setpaidArrayValues([...paidArrayValues, { [name]: +value }]);
+		let debtValue = arrayDesiredPay[index] - value;
+		setdebtArrayValues([...debtArrayValues, { [name]: +debtValue }]);
+	};
+
+	console.log("todos los valores de PAID son ", paidArrayValues);
+	console.log("todos los valores de DEBT son ", debtArrayValues);
 
 	return (
 		<ScrollView showsVerticalScrollIndicator={false}>
@@ -197,10 +202,10 @@ const ExprensesScreen = () => {
 					placeholder="total cost"
 					control={control}
 					//onChange={console.log("expenseTotal es : ", expTotal)}
-					onChange={console.log(
-						"expenseTotal es : ",
-						getValues("expenseTotal")
-					)}
+					// onChange={console.log(
+					// 	"expenseTotal es : ",
+					// 	getValues("expenseTotal")
+					// )}
 					rules={{
 						required: "Total cost is required",
 						pattern: { value: NUMBER_REGEX, message: "Total cost  is invalid" },
@@ -241,21 +246,28 @@ const ExprensesScreen = () => {
 								</Row>
 							);
 						})}
-						{/* <Row key="paid2" style={styles.cellHeader}>
-              <Text>30</Text>
-            </Row>
-            <Row key="paid3" style={styles.cellHeader}>
-              <Text>30</Text>
-            </Row>
-            <Row key="paid4" style={styles.cellHeader}>
-              <Text>30</Text>
-            </Row> */}
 					</Col>
 					<Col size={30}>
 						<Row key="paid" style={styles.cellHeader}>
 							<Text>PAID</Text>
 						</Row>
 						{userByGroupId?.map((data, index) => {
+							let nameKey = `paid_${data._id}`;
+							return (
+								<Row key={nameKey} style={styles.cellInput}>
+									<TextInput
+										onChangeText={(text) =>
+											handleChangePaid(index, data._id, text)
+										}
+										control={control}
+										name={nameKey}
+										label={nameKey}
+									/>
+								</Row>
+							);
+						})}
+
+						{/* {userByGroupId?.map((data, index) => {
 							let nameKey = `paid_${data._id}`;
 							//console.log("name es: ", nameKey);
 							return (
@@ -275,14 +287,22 @@ const ExprensesScreen = () => {
 									/>
 								</Row>
 							);
-						})}
+						})} */}
 					</Col>
 					<Col size={30}>
 						<Row key="debt" style={styles.cellHeader}>
 							<Text>DEBT</Text>
 						</Row>
-
-						{userByGroupId?.map((data) => {
+						{debtArrayValues?.map((data, index) => {
+							let key = Object.keys(data)[0];
+							let keyTotal = `user_${key}`;
+							return (
+								<Row key={keyTotal} style={styles.cellHeader}>
+									<Text>{data[key]}</Text>
+								</Row>
+							);
+						})}
+						{/* {userByGroupId?.map((data) => {
 							let nameKey = `debt_${data._id}`;
 							return (
 								<Row key={nameKey} style={styles.cellInput}>
@@ -300,7 +320,7 @@ const ExprensesScreen = () => {
 									/>
 								</Row>
 							);
-						})}
+						})} */}
 					</Col>
 				</Grid>
 
