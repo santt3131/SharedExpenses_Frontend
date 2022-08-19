@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomDropdown from "../../components/CustomDropdown";
 import CustomModal from "../../components/CustomModal";
@@ -8,6 +9,7 @@ import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Global from "../../../global";
+import CustomRadioGroup from "../../components/CustomRadioGroup";
 
 const ExprensesScreen = () => {
 	const TEXT_REGEX = /^[a-zA-Z0-9_ ]*$/;
@@ -34,7 +36,7 @@ const ExprensesScreen = () => {
 	const onSubmit = (data) => {
 		data.categories = selectCategories.category;
 		data.division = selectDivision.division;
-		console.log(data);
+		console.log('aqui', data);
 		//navigation.navigate("Debts");
 		const dataSend = {
 			categoryId: "62b9d9eb355700006d004aa2", // lo traerá la otra pantalla c
@@ -82,17 +84,24 @@ const ExprensesScreen = () => {
 
 	//1.Categorias
 	//1.1-Loading data
-	const [loadCategorieList, setloadCategorieList] = useState(null);
+	const [CategoryList, setCategoryList] = useState(null);
 
 	const loadCategories = async () => {
 		const response = await fetch(`${Global.server}/categories/`);
 		const json = await response.json();
-		setloadCategorieList(json);
+		setCategoryList(json);
 	};
 
 	useEffect(() => {
 		loadCategories();
-	}, []);
+	}, [CategoryList]);
+
+
+	// Radiobutton group to replace the dropdown component ===========================================>
+	//const radioButtonsData = [CategoryList] // loading the array of categories
+	//console.log('data for the group', radioButtonsData)
+	// end of the Radiobutton group ===========================================>
+
 
 	//1.2-Select
 	const [selectCategories, setselectCategories] = useState(null);
@@ -163,27 +172,40 @@ const ExprensesScreen = () => {
 		setdebtArrayValues([...debtArrayValues, { [name]: +debtValue }]);
 	};
 
-	console.log("todos los valores de PAID son ", paidArrayValues);
-	console.log("todos los valores de DEBT son ", debtArrayValues);
+	//console.log("todos los valores de PAID son ", paidArrayValues);
+	//console.log("todos los valores de DEBT son ", debtArrayValues);
+
+	let timestamp = Date.now();	
+	let date = new Date(timestamp*1000);
+	let formatedDay = "Date: "+date.getDate()+
+			"/"+(date.getMonth()+1)+
+			"/"+date.getFullYear()+
+			" "+date.getHours()+
+			":"+date.getMinutes()+
+			":"+date.getSeconds();
+
 
 	return (
 		<ScrollView showsVerticalScrollIndicator={false}>
 			<View>
+				<StatusBar/>
 				<Text
 					style={{
 						fontSize: Size.xl,
 						alignSelf: "center",
 						marginTop: 20,
-						color: ColorPalette.primaryBlue,
+						color: ColorPalette.primaryGreen,
 						fontWeight: "bold",
 					}}
 				>
-					Expenses Screen
+					Expenses
 				</Text>
+				
+				<CustomRadioGroup/>
 
 				<CustomInput
 					name="title"
-					placeholder="expense title"
+					value={`We expend on ${selectedCategories} the ${formatedDay}`}
 					control={control}
 					rules={{
 						required: "Title is required",
@@ -193,7 +215,7 @@ const ExprensesScreen = () => {
 
 				<CustomDropdown
 					title="Categorias"
-					listdrop={loadCategorieList}
+					listdrop={CategoryList}
 					selected={selectedCategories}
 				></CustomDropdown>
 

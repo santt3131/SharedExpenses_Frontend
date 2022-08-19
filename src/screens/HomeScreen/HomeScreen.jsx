@@ -1,38 +1,25 @@
 import { View, Text, StyleSheet, Modal, Pressable, Image } from "react-native";
 import React, { useState } from "react";
 import { ColorPalette, Size } from "../../../appStyles";
-import ListOfFeatures from "../../components/listOfFeatures";
+//import ListOfFeatures from "../../components/listOfFeatures";
+import CustomModal from "../../components/CustomModal/CustomModal";
+import appLogo from "../../../assets/images/SharedExpenses.png";
 
+const title = "Share expenses!";
+const message = 'Boom! \n Ya no tienes que preocuparte de llevar las cuentas...'; 
+const logoOrIcon = appLogo;
+const isShown = true;
 
 const HomeScreen = () => {
-	const [modalVisible, setModalVisible] = useState(true);
 	return (
-		<View style={styles.centeredView}>
-			<Modal
-				animationType="slide"
-				visible={modalVisible}
-			>
-				
-				<View style={styles.centeredView}>
-					<View style={styles.modalView}>
-						<Text style={styles.modalTitle}>Share expenses!</Text>
-						<Image style={styles.logo} source={require('../../../assets/images/SharedExpenses.png')}/>
-						
-						<Text style={styles.bodyTitle}>Boom! {"\n"}Ya no tienes que preocuparte de llevar las cuentas...</Text>
-						<Pressable
-							style={styles.button}
-							onPress={() => setModalVisible(!modalVisible)}
-						>
-						<Text style={styles.bodyText}>ok</Text>
-						</Pressable>
-					</View>
-				</View>
-			</Modal>
-			
-			<Text style={styles.bodyText}>
-				Selecciona una categoría y empieza a gestionar los gastos
-			</Text>
-		</View>
+		<>
+			<CustomModal // modal de bienvenida...
+				title = {title}
+				message = {message}
+				logoOrIcon = {logoOrIcon}
+				isShown = {isShown}
+			/>
+		</>
 	);
 };
 
@@ -53,33 +40,9 @@ const styles = StyleSheet.create({
     marginTop: Size.mm,
 	backgroundColor: ColorPalette.background
   },
-  modalView: {
-    margin: Size.xm,
-    backgroundColor: "white",
-    borderRadius: Size.mm,
-    padding: Size.xxl,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  button: {
-	color: "white",
-    borderRadius: 30,
-    paddingRight: Size.xss,
-	paddingLeft: Size.xss,
-    elevation: 0,
-	backgroundColor: ColorPalette.eggBlue,
-	paddingTop: 0,
-	paddingBottom: 0,
-  },
+  
   bodyTitle: {
-	fontSize: Size.xm,
+	fontSize: Size.xl,
     textAlign: "center",
 	marginTop: 20,
     marginBottom: 15,
@@ -96,12 +59,7 @@ const styles = StyleSheet.create({
 	color: ColorPalette.primaryBlack,
 	fontWeight: "bold"
   },
-  logo: {
-    width: 66,
-    height: 66,
-	marginTop: Size.xm,
-	marginBottom: Size.xm
-  },
+
 
 
 });
