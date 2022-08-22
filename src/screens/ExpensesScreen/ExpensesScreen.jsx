@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import Collapsible from 'react-native-collapsible';
 import { StatusBar } from "expo-status-bar";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomDropdown from "../../components/CustomDropdown";
@@ -10,10 +11,19 @@ import CustomButton from "../../components/CustomButton";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Global from "../../../global";
 import CustomRadioGroup from "../../components/CustomRadioGroup";
+import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
+
+const screenTitle = "Expenses";
 
 const ExprensesScreen = () => {
 	const TEXT_REGEX = /^[a-zA-Z0-9_ ]*$/;
 	const NUMBER_REGEX = /^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
+	const [collapsed, setCollapsed] = useState(true);
+
+	const toggleExpanded = () => {
+		//Toggling the state of single Collapsible
+		setCollapsed(!collapsed);
+  	};
 
 	const {
 		control,
@@ -189,19 +199,16 @@ const ExprensesScreen = () => {
 		<ScrollView showsVerticalScrollIndicator={false}>
 			<View>
 				<StatusBar/>
-				<Text
-					style={{
-						fontSize: Size.xl,
-						alignSelf: "center",
-						marginTop: 20,
-						color: ColorPalette.primaryGreen,
-						fontWeight: "bold",
-					}}
-				>
-					Expenses
-				</Text>
+				<CustomTopbar screenTitle={screenTitle}/>
 				
-				<CustomRadioGroup/>
+				<TouchableOpacity onPress={toggleExpanded}>
+					<>
+						<Text style={styles.categoryTitle}>Select a Category</Text>
+					</>
+				</TouchableOpacity>
+				<Collapsible collapsed={collapsed} align="center">
+					<CustomRadioGroup/>
+				</Collapsible>
 
 				<CustomInput
 					name="title"
@@ -391,6 +398,13 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "column",
 	},
+	categoryTitle: {
+        fontSize: Size.xl,
+        marginVertical: Size.xss,
+        marginLeft: 10,
+        fontWeight: "bold",
+        color: ColorPalette.primarySeance
+    }
 });
 
 export default ExprensesScreen;

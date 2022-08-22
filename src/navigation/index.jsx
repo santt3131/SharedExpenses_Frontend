@@ -167,14 +167,16 @@ const Navigation = () => {
 
 const styles = StyleSheet.create ({
   navContainer: {
-    backgroundColor: ColorPalette.primaryWhite,
-    flex: 1/6,
+    backgroundColor: "#efe8dc61",
+    flex: 1/7,
     flexDirection: "row",
     justifyContent: "space-evenly",
+    borderTopWidth: 1,
+    borderTopColor: ColorPalette.primaryWhite
   },
   navBarIcons: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
   },
 
 })

@@ -102,7 +102,7 @@ const CustomRadioGroup = () => {
             value: category.category
         };
     });*/
-    console.log(radioButtonsData)
+    //console.log(radioButtonsData)
 
     function onPressRadioButton(radioButtonsArray) {
         setRadioButtons(radioButtonsArray);
@@ -110,7 +110,6 @@ const CustomRadioGroup = () => {
 
     return (
         <>
-            <Text style={styles.categoryTitle}>1. Select a category</Text>
             <RadioGroup
                 layout='column'
                 style={styles.groupText}

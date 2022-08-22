@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Modal, Pressable, Image } from "react-native";
 import React, { useState } from "react";
+import { StatusBar } from "expo-status-bar";
 import { ColorPalette, Size } from "../../../appStyles";
 //import ListOfFeatures from "../../components/listOfFeatures";
 import CustomModal from "../../components/CustomModal/CustomModal";
@@ -12,14 +13,19 @@ const isShown = true;
 
 const HomeScreen = () => {
 	return (
-		<>
-			<CustomModal // modal de bienvenida...
-				title = {title}
-				message = {message}
-				logoOrIcon = {logoOrIcon}
-				isShown = {isShown}
-			/>
-		</>
+		<View style={styles.container}>
+		
+		
+			<StatusBar/>
+			<View style={{borderBottomWidth: 1, borderBottomColor: ColorPalette.veryLightGrey, marginBottom: 15}}>
+				<Text style={styles.header1}>Expenses</Text>
+			</View>
+			<Text style={styles.header2}># Friends</Text>
+			<Text style={styles.header2}># Groups</Text>
+			<Text style={styles.header2}># Shared expenses</Text>
+			<Text style={styles.header2}># in debs</Text>
+		</View>
+		
 	);
 };
 
@@ -33,21 +39,29 @@ const HomeScreen = () => {
 
 
 const styles = StyleSheet.create({
-	centeredView: {
+	container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    marginTop: Size.mm,
-	backgroundColor: ColorPalette.background
+    padding: Size.mm,
+	//backgroundColor: ColorPalette.background
   },
   
-  bodyTitle: {
-	fontSize: Size.xl,
+  header1: {
+	fontSize: Size.xxl*1.2,
     textAlign: "center",
-	marginTop: 20,
-    marginBottom: 15,
-	color: ColorPalette.primaryRouge,
-	fontWeight: "bold"
+	marginTop: 40,
+    marginBottom: 0,
+	color: ColorPalette.primaryGreen,
+	//fontWeight: "bold"
+	
+  },
+  header2: {
+	fontSize: Size.ml,
+    paddingLeft: Size.ll,
+	marginTop: 10,
+    marginBottom: 10,
+	color: ColorPalette.primarySeance,
+	//fontWeight: "bold"
   },
   bodyText: {
 	fontSize: Size.xm,
@@ -59,7 +73,7 @@ const styles = StyleSheet.create({
 	color: ColorPalette.primaryBlack,
 	fontWeight: "bold"
   },
-
+  
 
 
 });
