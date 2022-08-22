@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Modal, Pressable } from "react-native";
+import { View, Text, Image, StyleSheet, Modal, Pressable } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 
-const CustomModal = ({ title, message, isShown }) => {
+
+const CustomModal = ({ title, message, logoOrIcon, isShown }) => {
 	const [modalVisible, setModalVisible] = useState(isShown);
 
 	return (
@@ -11,12 +12,13 @@ const CustomModal = ({ title, message, isShown }) => {
 				<View style={styles.centeredView}>
 					<View style={styles.modalView}>
 						<Text style={styles.bodyTitle}>{title}</Text>
+						<Image style={styles.logo} source={logoOrIcon}/>
 						<Text style={styles.bodyText}>{message}</Text>
 						<Pressable
 							style={styles.button}
 							onPress={() => setModalVisible(!modalVisible)}
 						>
-							<Text style={styles.bodyText}>ok</Text>
+							<Text style={styles.button}>Go!</Text>
 						</Pressable>
 					</View>
 				</View>
@@ -49,17 +51,17 @@ const styles = StyleSheet.create({
 		elevation: 5,
 	},
 	button: {
-		color: "white",
-		borderRadius: 30,
-		paddingRight: Size.xss,
-		paddingLeft: Size.xss,
+		fontSize: Size.xm,
+		fontWeight: "bold",
+		color: ColorPalette.primaryWhite,
+		borderRadius: 25,
+		paddingHorizontal: Size.xs,
+		paddingVertical: Size.xss*.5,
 		elevation: 0,
-		backgroundColor: ColorPalette.eggBlue,
-		paddingTop: 0,
-		paddingBottom: 0,
+		backgroundColor: ColorPalette.primaryGreen,
 	},
 	bodyTitle: {
-		fontSize: Size.xm,
+		fontSize: Size.xl,
 		textAlign: "center",
 		marginTop: 20,
 		marginBottom: 15,
@@ -69,13 +71,18 @@ const styles = StyleSheet.create({
 	bodyText: {
 		fontSize: Size.xm,
 		textAlign: "center",
-		marginTop: Size.ls,
-		marginBottom: Size.ls,
+		marginVertical: Size.xm,
 		margin: Size.xm,
 		marginRight: Size.xm,
 		color: ColorPalette.primaryBlack,
 		fontWeight: "bold",
 	},
+	logo: {
+		width: 70,
+		height: 70,
+		marginTop: Size.xm,
+		marginBottom: Size.xs
+  	}
 });
 
 export default CustomModal;

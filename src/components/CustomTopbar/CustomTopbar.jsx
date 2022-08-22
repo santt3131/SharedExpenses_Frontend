@@ -1,6 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
+import { FontAwesome5  } from '@expo/vector-icons'; 
+import { StatusBar } from "expo-status-bar";
+
+// fn clears the search box  ========================>
+  const clearSearchBar = () => {
+      setSearch('')
+      setFilteredDataSource(masterDataSource);
+    }
+
+
+
+
+
 
 const CustomTopbar = ({
   screenTitle,
@@ -11,67 +24,75 @@ const CustomTopbar = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.topBarText}>{screenTitle}</Text>
+      <StatusBar/>
+      <View style={styles.topBar}>
+        <FontAwesome5  name="filter" size={Size.xm} color={ColorPalette.primaryWhite} />
+        <Text style={{color: "white", flex: 1, fontSize: 22, margin : 5, }}>{screenTitle}</Text>
+        <Text style={{color: "white", fontSize: 18, fontWeight: "bold", margin : 5, }}>x</Text>
+      </View>
       <TouchableOpacity
         onPress={onPressAdd}
-        style={styles.topButtonAdd}
+        style={styles.topBarButton}
         disabled={addDisabled}
       >
-        <Text style={styles.topButtonText}>Add</Text>
+        <FontAwesome5  name="user-plus" size={Size.xm} color={ColorPalette.primaryWhite} />
+        
       </TouchableOpacity>
       <TouchableOpacity
         onPress={onPressList}
-        style={styles.topButtonList}
+        style={styles.topBarButton}
         disabled={listDisabled}
       >
-        <Text style={styles.topButtonText}>List</Text>
+        <FontAwesome5  name="list" size={Size.xm} color={ColorPalette.primaryWhite} />
       </TouchableOpacity>
     </View>
   );
 };
 
+
+
+
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    marginTop: 30,
+    marginTop: Size.xm,
+    marginBottom: Size.xs,
     marginHorizontal: 10,
     flexDirection: "row",
   },
-  topBarText: {
+  topBar: {
+    flexDirection: "row",
+    justifyContent:"space-between",
     flex: 1,
+    alignItems: "center",
+    backgroundColor: ColorPalette.primaryGreen,
+    textTransform: "uppercase",
+    paddingHorizontal: 5,
+    marginRight: 5,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+  },
+  topBarText: {
+    margin: 5,
     color: ColorPalette.primaryWhite,
     fontSize: Size.lm,
-    fontWeight: "bold",
-    backgroundColor: ColorPalette.primaryBlue,
-    textTransform: "uppercase",
-    paddingLeft: 10,
-    textAlignVertical: "center",
-    marginRight: 5,
-    borderTopRightRadius: 100,
-    borderBottomRightRadius: 100,
-    height: 40,
+    //fontWeight: "bold",
+    //textTransform: "uppercase",
   },
-  topButtonAdd: {
-    width: 40,
-    height: 40,
+  topBarButton: {
+    width: 45,
+    height: 45,
+    borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 100,
-    backgroundColor: ColorPalette.primaryBlue,
-    marginRight: 5,
-  },
-  topButtonList: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 100,
-    backgroundColor: ColorPalette.primaryBlue,
+    backgroundColor: ColorPalette.primaryGreen,
+    marginLeft: 5,
   },
   topButtonText: {
-    color: ColorPalette.primaryWhite,
-    fontWeight: "bold",
+    fontSize: Size.xs,
+    //fontWeight: "bold",
     textTransform: "uppercase",
+    color: ColorPalette.primaryWhite,
   },
 });
 
