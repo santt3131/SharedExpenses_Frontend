@@ -1,20 +1,21 @@
 const ColorPalette = {
-  background: "#F9FBFC",
-  primaryBlue: "#2083E8",
-  primaryOrange: "#F08A5D",
+  background: "#c8beab61",
+  primaryBlue: "#0071C5",
+  //primaryBlue: "#2083E8",
   primaryWhite: "#FFFFFF",
   primaryGray: "#808080",
   veryLightGrey: "#CCCCCC",
   primaryBlack: "#000000",
   primaryRed: "#FF0000",
-
+  
   primaryYellow: "#F9ed69",
+  primaryOrange: "#F08A5D",
   primaryRouge: "#B83B5E",
   primarySeance: "#6A2C70",
   primaryPurple: "#3B71F3",
   
   governorBay: "#514FA0",
-  navyBlue: "#0071C5",
+  //navyBlue: "#0071C5",
   pacificBlue: "#0091D8",
   irisBlue: "#00AED5",
   primaryGreen: "#00C8C0",

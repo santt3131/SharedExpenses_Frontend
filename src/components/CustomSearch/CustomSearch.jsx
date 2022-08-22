@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, ActivityIndicator, TextInput } from 'react-native';
 import React, { useState } from 'react';
 import { ColorPalette, Size } from '../../../appStyles';
-import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome5 } from '@expo/vector-icons'; 
 
 const CustomSearch = () => {
     const [term, setTerm] = useState('');
@@ -11,7 +11,7 @@ const CustomSearch = () => {
 
   return (
     <View style={styles.searchWrapperStyle}>
-        <FontAwesome name="search" size={Size.xm} color={ColorPalette.primaryWhite} style={styles.iconStyle}/>
+        <FontAwesome5 name="search" size={Size.xm} color={ColorPalette.primaryWhite} style={styles.iconStyle}/>
         <TextInput 
             placeholder="Search" 
             placeholderTextColor={ColorPalette.primaryWhite}
@@ -22,7 +22,7 @@ const CustomSearch = () => {
             }}
             />
 
-        <FontAwesome name="close" sise={Size.xl} color={ColorPalette.primaryWhite} style={styles.iconStyle}/>
+        <FontAwesome5 name="close" sise={Size.xl} color={ColorPalette.primaryWhite} style={styles.iconStyle}/>
     </View>
   )
 }
