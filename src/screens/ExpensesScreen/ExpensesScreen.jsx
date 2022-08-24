@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from "react-native";
-import Collapsible from 'react-native-collapsible';
+import { useNavigation } from "@react-navigation/native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	ScrollView,
+	TextInput,
+	TouchableOpacity,
+} from "react-native";
+import Collapsible from "react-native-collapsible";
 import { StatusBar } from "expo-status-bar";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomDropdown from "../../components/CustomDropdown";
@@ -20,10 +28,19 @@ const ExprensesScreen = () => {
 	const NUMBER_REGEX = /^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
 	const [collapsed, setCollapsed] = useState(true);
 
+	const navigation = useNavigation();
+	const onPressAdd = () => {
+		navigation.navigate("ExpensesAdd");
+	};
+
+	const onPressList = () => {
+		navigation.navigate("Expenses");
+	};
+
 	const toggleExpanded = () => {
 		//Toggling the state of single Collapsible
 		setCollapsed(!collapsed);
-  	};
+	};
 
 	const {
 		control,
@@ -46,7 +63,7 @@ const ExprensesScreen = () => {
 	const onSubmit = (data) => {
 		data.categories = selectCategories.category;
 		data.division = selectDivision.division;
-		console.log('aqui', data);
+		console.log("aqui", data);
 		//navigation.navigate("Debts");
 		const dataSend = {
 			categoryId: "62b9d9eb355700006d004aa2", // lo traerá la otra pantalla c
@@ -106,12 +123,10 @@ const ExprensesScreen = () => {
 		loadCategories();
 	}, [CategoryList]);
 
-
 	// Radiobutton group to replace the dropdown component ===========================================>
 	//const radioButtonsData = [CategoryList] // loading the array of categories
 	//console.log('data for the group', radioButtonsData)
 	// end of the Radiobutton group ===========================================>
-
 
 	//1.2-Select
 	const [selectCategories, setselectCategories] = useState(null);
@@ -185,29 +200,41 @@ const ExprensesScreen = () => {
 	//console.log("todos los valores de PAID son ", paidArrayValues);
 	//console.log("todos los valores de DEBT son ", debtArrayValues);
 
-	let timestamp = Date.now();	
-	let date = new Date(timestamp*1000);
-	let formatedDay = "Date: "+date.getDate()+
-			"/"+(date.getMonth()+1)+
-			"/"+date.getFullYear()+
-			" "+date.getHours()+
-			":"+date.getMinutes()+
-			":"+date.getSeconds();
-
+	let timestamp = Date.now();
+	let date = new Date(timestamp * 1000);
+	let formatedDay =
+		"Date: " +
+		date.getDate() +
+		"/" +
+		(date.getMonth() + 1) +
+		"/" +
+		date.getFullYear() +
+		" " +
+		date.getHours() +
+		":" +
+		date.getMinutes() +
+		":" +
+		date.getSeconds();
 
 	return (
 		<ScrollView showsVerticalScrollIndicator={false}>
 			<View>
-				<StatusBar/>
-				<CustomTopbar screenTitle={screenTitle}/>
-				
+				<StatusBar />
+				<CustomTopbar
+					screenTitle="Expenses"
+					onPressAdd={onPressAdd}
+					onPressList={onPressList}
+					addDisabled={true}
+					listDisabled={false}
+				/>
+
 				<TouchableOpacity onPress={toggleExpanded}>
 					<>
 						<Text style={styles.categoryTitle}>Select a Category</Text>
 					</>
 				</TouchableOpacity>
 				<Collapsible collapsed={collapsed} align="center">
-					<CustomRadioGroup/>
+					<CustomRadioGroup />
 				</Collapsible>
 
 				<CustomInput
@@ -399,12 +426,12 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 	},
 	categoryTitle: {
-        fontSize: Size.xl,
-        marginVertical: Size.xss,
-        marginLeft: 10,
-        fontWeight: "bold",
-        color: ColorPalette.primarySeance
-    }
+		fontSize: Size.xl,
+		marginVertical: Size.xss,
+		marginLeft: 10,
+		fontWeight: "bold",
+		color: ColorPalette.primarySeance,
+	},
 });
 
 export default ExprensesScreen;
