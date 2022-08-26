@@ -14,7 +14,8 @@ import FriendsAddScreen from "../screens/FriendsAddScreen";
 import GroupsScreen from "../screens/GroupsScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
 import DebtsScreen from "../screens/DebtsScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import GroupsListScreen from "../screens/GroupsListScreen";
+import GroupsAddScreen from "../screens/GroupsAddScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -128,7 +129,7 @@ const Navigation = () => {
         />
         <Tab.Screen
           name="Groups"
-          component={GroupsScreen}
+          component={GroupsListScreen}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
@@ -144,6 +145,14 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
+          name="GroupsAdd"
+          component={GroupsAddScreen}
+          options={{
+            tabBarButton: () => null,
             tabBarShowLabel: false,
           }}
         />
@@ -178,48 +187,6 @@ const Navigation = () => {
                   focused
                     ? require("../../assets/icons/debts.png")
                     : require("../../assets/icons/debts.png")
-                }
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 0,
-                }}
-              />
-            ),
-            tabBarShowLabel: false,
-          }}
-        />
-        <Tab.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/icons/settings.png")
-                    : require("../../assets/icons/settings.png")
-                }
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 0,
-                }}
-              />
-            ),
-            tabBarShowLabel: false,
-          }}
-        />
-        <Tab.Screen
-          name="Exit"
-          component={Exit}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/icons/exit.png")
-                    : require("../../assets/icons/exit.png")
                 }
                 style={{
                   width: 40,

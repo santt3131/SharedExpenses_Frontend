@@ -35,22 +35,6 @@ const SignInScreen = () => {
   const email = watch("email");
 
   const onSignInPressed = async (data) => {
-    navigation.navigate("Home");
-
-    /*const { success, result, error } = await api.login(data);
-    if (success) {
-      console.log(result.accessToken);
-      //onLogin(token);
-      navigation.navigate("Home");
-    } else {
-      setMessage(error);
-    }*/
-  };
-  /*
-    alert(JSON.stringify(data));
-    api.login(data);
-
-    
     if (loading) {
       return;
     }
@@ -66,8 +50,7 @@ const SignInScreen = () => {
     setLoading(false);
 
     navigation.navigate("Home");
-    
-  };*/
+  };
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });

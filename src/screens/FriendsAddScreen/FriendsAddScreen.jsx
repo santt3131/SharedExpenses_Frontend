@@ -31,7 +31,7 @@ const FriendsAddScreen = () => {
   const name = watch("name");
   const email = watch("email");
   const invitationId = invitationIdGenerator();
-  const authUser = "62b5e88ba6e78636d6488646";
+  const authUser = Global.authUserId;
 
   const message = `<h2>Shared Expenses Invitation</h2>
   <p>Hello, ${name}</p>
