@@ -139,81 +139,80 @@ const GroupsAddScreen = () => {
             }}
           />
 
-          <SafeAreaView style={styles.container}>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: ColorPalette.primaryWhite,
-                borderColor: ColorPalette.primaryGray,
-                borderRadius: 5,
-                marginTop: 5,
-                marginBottom: 5,
-              }}
-            >
-              <TouchableOpacity onPress={openList}>
-                <View
-                  style={{
-                    padding: 10,
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    borderColor: ColorPalette.primaryGray,
-                    height: 48,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: Size.xm,
-                      color: ColorPalette.primaryGray,
-                    }}
-                  >
-                    Select Friends
-                  </Text>
-                </View>
-              </TouchableOpacity>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: ColorPalette.primaryWhite,
+              borderRadius: 5,
+              marginTop: 5,
+              marginBottom: 5,
+            }}
+          >
+            <TouchableOpacity onPress={openList}>
               <View
                 style={{
-                  padding: 10,
+                  paddingTop: 11,
+                  paddingLeft: 10,
+                  borderWidth: 1,
+                  borderRadius: 5,
+                  borderColor: ColorPalette.veryLightGrey,
+                  height: 50,
                 }}
               >
-                {friends
-                  .filter((item) => item.selected)
-                  .map((item) => (
-                    <Text
-                      key={item.friendEmail}
-                      style={{
-                        fontSize: Size.xm,
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      - {item.friendName}
-                    </Text>
-                  ))}
+                <Text
+                  style={{
+                    fontSize: Size.xm,
+                    color: ColorPalette.primaryGray,
+                  }}
+                >
+                  Select Friends
+                </Text>
               </View>
-            </View>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={open === true}
+            </TouchableOpacity>
+            <View
+              style={{
+                padding: 0,
+                paddingLeft: 10,
+              }}
             >
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={closeList}
-                style={{ flex: 1 }}
-              >
-                <View style={{ flex: 1, marginTop: 250 }}>
-                  <View style={styles.listWrapper}>
-                    <View style={styles.listContainer}>
-                      <FlatList
-                        data={friends}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.friendEmail}
-                      />
-                    </View>
+              {friends
+                .filter((item) => item.selected)
+                .map((item) => (
+                  <Text
+                    key={item.friendEmail}
+                    style={{
+                      fontSize: Size.xm,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    - {item.friendName}
+                  </Text>
+                ))}
+            </View>
+          </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={open === true}
+          >
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={closeList}
+              style={{ flex: 1 }}
+            >
+              <View style={{ flex: 1, marginTop: 280, marginBottom: 50 }}>
+                <View style={styles.listWrapper}>
+                  <View style={styles.listContainer}>
+                    <FlatList
+                      data={friends}
+                      renderItem={renderItem}
+                      keyExtractor={(item) => item.friendEmail}
+                    />
                   </View>
                 </View>
-              </TouchableOpacity>
-            </Modal>
-          </SafeAreaView>
+              </View>
+            </TouchableOpacity>
+          </Modal>
 
           <CustomButton text="Create" onPress={handleSubmit(onCreatePressed)} />
         </View>
@@ -245,9 +244,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
   },
-  container: {
-    flex: 1,
-  },
   listWrapper: {
     flex: 1,
     shadowColor: ColorPalette.primaryBlack,
@@ -255,6 +251,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     elevation: 10,
     shadowRadius: 5,
+    paddingLeft: 30,
+    paddingRight: 30,
   },
   listContainer: {
     flex: 1,
