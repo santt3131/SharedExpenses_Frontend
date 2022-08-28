@@ -151,7 +151,7 @@ const ExpensesListScreen = () => {
 										);
 									})
 								) : handlerLent(users) > 0 ? (
-									<Text>Usted a pagado su parte, no debe pagar nada</Text>
+									<Text>Pago completado</Text>
 								) : (
 									<Text>No ha realizado ningún pago hasta al momento</Text>
 								)}
