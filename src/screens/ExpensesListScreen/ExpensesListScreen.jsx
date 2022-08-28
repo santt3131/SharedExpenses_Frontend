@@ -166,7 +166,6 @@ const ExpensesListScreen = () => {
 												return (
 													<>
 														<Text>{objUser.userId}</Text>
-														<Text>Fecha:{objUser.debt.$numberDecimal}</Text>
 														<Text>Cantidad:{objUser.debt.$numberDecimal}</Text>
 													</>
 												);
