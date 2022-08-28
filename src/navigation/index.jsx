@@ -11,11 +11,11 @@ import NewPasswordScreen from "../screens/NewPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FriendsListScreen from "../screens/FriendsListScreen";
 import FriendsAddScreen from "../screens/FriendsAddScreen";
-import GroupsScreen from "../screens/GroupsScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
 import DebtsScreen from "../screens/DebtsScreen";
 import GroupsListScreen from "../screens/GroupsListScreen";
 import GroupsAddScreen from "../screens/GroupsAddScreen";
+import GroupsUpdateScreen from "../screens/GroupsUpdateScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -151,6 +151,14 @@ const Navigation = () => {
         <Tab.Screen
           name="GroupsAdd"
           component={GroupsAddScreen}
+          options={{
+            tabBarButton: () => null,
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
+          name="GroupsUpdate"
+          component={GroupsUpdateScreen}
           options={{
             tabBarButton: () => null,
             tabBarShowLabel: false,

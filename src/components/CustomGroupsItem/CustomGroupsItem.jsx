@@ -2,10 +2,13 @@ import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomSpinner from "../CustomSpinner/CustomSpinner";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Global from "../../../global";
 
 const CustomGroupsItem = ({ groups }) => {
+  const navigation = useNavigation();
+
   if (groups === null || groups === undefined) {
     return <CustomSpinner />;
   }
@@ -23,7 +26,16 @@ const CustomGroupsItem = ({ groups }) => {
       .get(`${Global.server}/groups/${groupId}`, {})
       .then(function (response) {
         // handle success
-        alert("Let's edit this group");
+        console.log(response.data.results[0].groupName);
+        const groupName = response.data.results[0].groupName;
+        const groupDescription = response.data.results[0].groupDescription;
+        const users = response.data.results[0].users;
+        navigation.navigate("GroupsUpdate", {
+          groupId,
+          groupName,
+          groupDescription,
+          users,
+        });
       })
       .catch(function (error) {
         // handle error

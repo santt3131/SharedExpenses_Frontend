@@ -17,11 +17,21 @@ import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Global from "../../../global";
+import { useRoute } from "@react-navigation/native";
 
-const GroupsAddScreen = () => {
+const GroupsUpdateScreen = () => {
   const navigation = useNavigation();
 
-  const { control, handleSubmit, watch } = useForm();
+  const route = useRoute();
+
+  const groupId = route?.params?.groupId;
+  const groupName = route?.params?.groupName;
+  const groupDescription = route?.params?.groupDescription;
+  const users = route?.params?.users;
+
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: { name: groupName, description: groupDescription },
+  });
 
   const [friends, setFriends] = useState([]);
   const [open, setOpen] = useState(false);
@@ -70,7 +80,7 @@ const GroupsAddScreen = () => {
     navigation.navigate("Groups");
   };
 
-  const onCreatePressed = () => {
+  const onUpdatePressed = () => {
     axios
       .post(`${Global.server}/groups`, {
         groupName: name,
@@ -80,7 +90,7 @@ const GroupsAddScreen = () => {
       })
       .then(function (response) {
         // handle success
-        alert("Group created successfully");
+        alert("Group updated successfully");
         navigation.navigate("Groups");
       })
       .catch(function (error) {
@@ -95,13 +105,13 @@ const GroupsAddScreen = () => {
         screenTitle="Groups"
         onPressAdd={onPressAdd}
         onPressList={onPressList}
-        addDisabled={true}
+        addDisabled={false}
         listDisabled={false}
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Text style={styles.text}>Adding New Groups</Text>
+          <Text style={styles.text}>Updating Groups</Text>
 
           <CustomInput
             name="name"
@@ -214,7 +224,7 @@ const GroupsAddScreen = () => {
             </TouchableOpacity>
           </Modal>
 
-          <CustomButton text="Create" onPress={handleSubmit(onCreatePressed)} />
+          <CustomButton text="Update" onPress={handleSubmit(onUpdatePressed)} />
         </View>
       </ScrollView>
     </>
@@ -273,4 +283,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GroupsAddScreen;
+export default GroupsUpdateScreen;
