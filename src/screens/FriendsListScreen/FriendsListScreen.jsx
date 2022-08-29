@@ -45,7 +45,6 @@ const FriendsListScreen = () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Text style={styles.text}>My Friends</Text>
           <CustomFriendsItem friends={friends} />
         </View>
       </ScrollView>
