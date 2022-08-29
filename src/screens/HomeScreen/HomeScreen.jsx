@@ -6,61 +6,31 @@ import { ColorPalette, Size } from "../../../appStyles";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import appLogo from "../../../assets/images/SharedExpenses.png";
 
-<<<<<<< HEAD
 const title = "Share expenses!";
-const message = 'Boom! \n Ya no tienes que preocuparte de llevar las cuentas...'; 
+const message =
+  "Boom! \n Ya no tienes que preocuparte de llevar las cuentas...";
 const logoOrIcon = appLogo;
 const isShown = true;
 
 const HomeScreen = () => {
-	return (
-		<View style={styles.container}>
-		
-		
-			<StatusBar/>
-			<View style={{borderBottomWidth: 1, borderBottomColor: ColorPalette.veryLightGrey, marginBottom: 15}}>
-				<Text style={styles.header1}>Expenses</Text>
-			</View>
-			<Text style={styles.header2}># Friends</Text>
-			<Text style={styles.header2}># Groups</Text>
-			<Text style={styles.header2}># Shared expenses</Text>
-			<Text style={styles.header2}># in debs</Text>
-		</View>
-		
-	);
-=======
-const HomeScreen = () => {
-  const [modalVisible, setModalVisible] = useState(true);
   return (
-    <View style={styles.centeredView}>
-      <Modal animationType="slide" visible={modalVisible}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Share expenses!</Text>
-            <Image
-              style={styles.logo}
-              source={require("../../../assets/images/SharedExpenses.png")}
-            />
-
-            <Text style={styles.bodyTitle}>
-              Boom! {"\n"}Ya no tienes que preocuparte de llevar las cuentas...
-            </Text>
-            <Pressable
-              style={styles.button}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.bodyText}>ok</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-
-      <Text style={styles.bodyText}>
-        Selecciona una categoría y empieza a gestionar los gastos
-      </Text>
+    <View style={styles.container}>
+      <StatusBar />
+      <View
+        style={{
+          borderBottomWidth: 1,
+          borderBottomColor: ColorPalette.veryLightGrey,
+          marginBottom: 15,
+        }}
+      >
+        <Text style={styles.header1}>Expenses</Text>
+      </View>
+      <Text style={styles.header2}># Friends</Text>
+      <Text style={styles.header2}># Groups</Text>
+      <Text style={styles.header2}># Shared expenses</Text>
+      <Text style={styles.header2}># in debs</Text>
     </View>
   );
->>>>>>> ramiro-branch
 };
 
 /*
@@ -72,71 +42,28 @@ const HomeScreen = () => {
 <listOfFeatures>Decide cómo repartir los gastos</listOfFeatures> */
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
-	container: {
+  container: {
     flex: 1,
     justifyContent: "center",
     padding: Size.mm,
-	//backgroundColor: ColorPalette.background
+    //backgroundColor: ColorPalette.background
   },
-  
+
   header1: {
-	fontSize: Size.xxl*1.2,
+    fontSize: Size.xxl * 1.2,
     textAlign: "center",
-	marginTop: 40,
+    marginTop: 40,
     marginBottom: 0,
-	color: ColorPalette.primaryGreen,
-	//fontWeight: "bold"
-	
+    color: ColorPalette.primaryGreen,
+    //fontWeight: "bold"
   },
   header2: {
-	fontSize: Size.ml,
+    fontSize: Size.ml,
     paddingLeft: Size.ll,
-	marginTop: 10,
+    marginTop: 10,
     marginBottom: 10,
-	color: ColorPalette.primarySeance,
-	//fontWeight: "bold"
-=======
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: Size.mm,
-    backgroundColor: ColorPalette.background,
-  },
-  modalView: {
-    margin: Size.xm,
-    backgroundColor: "white",
-    borderRadius: Size.mm,
-    padding: Size.xxl,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    color: "white",
-    borderRadius: 30,
-    paddingRight: Size.xss,
-    paddingLeft: Size.xss,
-    elevation: 0,
-    backgroundColor: ColorPalette.eggBlue,
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-  bodyTitle: {
-    fontSize: Size.xm,
-    textAlign: "center",
-    marginTop: 20,
-    marginBottom: 15,
-    color: ColorPalette.primaryRouge,
-    fontWeight: "bold",
->>>>>>> ramiro-branch
+    color: ColorPalette.primarySeance,
+    //fontWeight: "bold"
   },
   bodyText: {
     fontSize: Size.xm,
@@ -148,18 +75,6 @@ const styles = StyleSheet.create({
     color: ColorPalette.primaryBlack,
     fontWeight: "bold",
   },
-<<<<<<< HEAD
-  
-
-
-=======
-  logo: {
-    width: 66,
-    height: 66,
-    marginTop: Size.xm,
-    marginBottom: Size.xm,
-  },
->>>>>>> ramiro-branch
 });
 
 export default HomeScreen;
