@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
 		fontSize: Size.xl,
 	},
 	picker: {
-		marginVertical: Size.xxl,
-		width: 300,
-		padding: Size.xss,
+		marginVertical: Size.xss,
+		width: 280,
+		padding: Size.xs,
 		borderColor: ColorPalette.primaryPurple,
 	},
 });

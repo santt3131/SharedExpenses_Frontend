@@ -144,7 +144,7 @@ const GroupsScreen = () => {
   return ( // the view
     <View style={styles.container}>
       <StatusBar/>
-      <CustomTopbar screenTitle={screenTitle}/>
+      <CustomTopbar screenTitle={screenTitle} sectionIcon='user-plus'/>
         
       <View style={styles.listWrapper}> 
         <FlatList

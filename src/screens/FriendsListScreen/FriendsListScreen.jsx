@@ -44,6 +44,7 @@ const FriendsListScreen = () => {
         onPressList={onPressList}
         addDisabled={false}
         listDisabled={true}
+        sectionIcon='user-plus'
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>

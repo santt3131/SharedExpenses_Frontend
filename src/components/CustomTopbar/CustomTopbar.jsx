@@ -21,6 +21,7 @@ const CustomTopbar = ({
   onPressList,
   addDisabled,
   listDisabled,
+  sectionIcon
 }) => {
   return (
     <View style={styles.container}>
@@ -35,7 +36,7 @@ const CustomTopbar = ({
         style={styles.topBarButton}
         disabled={addDisabled}
       >
-        <FontAwesome5  name="user-plus" size={Size.xm} color={ColorPalette.primaryWhite} />
+        <FontAwesome5  name={sectionIcon} size={Size.xm} color={ColorPalette.primaryWhite} />
         
       </TouchableOpacity>
       <TouchableOpacity
