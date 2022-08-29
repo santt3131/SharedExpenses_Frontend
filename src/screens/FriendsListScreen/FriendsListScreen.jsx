@@ -5,64 +5,68 @@ import CustomTopbar from "../../components/CustomTopbar";
 import CustomFriendsItem from "../../components/CustomFriendsItem";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import Global from "../../../global";
 
 const FriendsListScreen = () => {
-  const navigation = useNavigation();
+	const navigation = useNavigation();
 
-  const [friends, setFriends] = useState([]);
+	const [friends, setFriends] = useState("");
 
-  useEffect(() => {
-    onPressList();
-  }, []);
+	useEffect(() => {
+		onPressList();
+	}, []);
 
-  const onPressAdd = async () => {
-    navigation.navigate("FriendsAdd");
-  };
+	const onPressAdd = () => {
+		navigation.navigate("FriendsAdd");
+	};
 
-  const onPressList = () => {
-    axios
-      .get(`${Global.server}/users/${Global.authUserId}/friends`, {})
-      .then(function (response) {
-        setFriends(response.data.results[0].friends);
-      })
-      .catch(function (error) {
-        alert(error.message);
-      });
+	const onPressList = () => {
+		console.log("friends");
+		axios
+			.get(
+				"http://192.169.176.126:3000/users/62b5e88ba6e78636d6488646/friends",
+				{}
+			)
+			.then(function (response) {
+				const allFriends = response.data.results[0].friends;
+				setFriends(allFriends);
+			})
+			.catch(function (error) {
+				alert(error.message);
+			});
 
-    navigation.navigate("Friends");
-  };
+		navigation.navigate("Friends");
+	};
 
-  return (
-    <>
-      <CustomTopbar
-        screenTitle="Friends"
-        onPressAdd={onPressAdd}
-        onPressList={onPressList}
-        addDisabled={false}
-        listDisabled={true}
-      />
+	return (
+		<>
+			<CustomTopbar
+				screenTitle="Friends"
+				onPressAdd={onPressAdd}
+				onPressList={onPressList}
+				addDisabled={false}
+				listDisabled={true}
+			/>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.container}>
-          <CustomFriendsItem friends={friends} />
-        </View>
-      </ScrollView>
-    </>
-  );
+			<ScrollView showsVerticalScrollIndicator={false}>
+				<View style={styles.container}>
+					<CustomFriendsItem friends={friends} />
+				</View>
+			</ScrollView>
+		</>
+	);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 10,
-  },
-  text: {
-    color: ColorPalette.primaryBlue,
-    fontSize: Size.xl,
-    margin: 10,
-    fontWeight: "bold",
-    alignSelf: "center",
-  },
+	container: {
+		paddingBottom: 10,
+	},
+	text: {
+		color: ColorPalette.primaryBlue,
+		fontSize: Size.xl,
+		margin: 10,
+		fontWeight: "bold",
+		alignSelf: "center",
+	},
 });
 
 export default FriendsListScreen;
