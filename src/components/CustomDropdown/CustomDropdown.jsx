@@ -31,7 +31,7 @@ const CustomDropdown = ({ title, listdrop, selected }) => {
 
 					selected({
 						_id: objTotal._id,
-						category: objTotal.category,
+						property: objTotal.category,
 					});
 					setoptionSelect(objTotal[property]);
 				}}

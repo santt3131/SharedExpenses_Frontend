@@ -1,7 +1,8 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import ConfirmEmailScreen from "../screens/ConfirmEmailScreen";
@@ -10,11 +11,11 @@ import NewPasswordScreen from "../screens/NewPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FriendsListScreen from "../screens/FriendsListScreen";
 import FriendsAddScreen from "../screens/FriendsAddScreen";
-import GroupsScreen from "../screens/GroupsScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
 import DebtsScreen from "../screens/DebtsScreen";
-import SettingsScreen from "../screens/SettingsScreen";
-import { ColorPalette, Size } from "../../appStyles";
+import GroupsListScreen from "../screens/GroupsListScreen";
+import GroupsAddScreen from "../screens/GroupsAddScreen";
+import GroupsUpdateScreen from "../screens/GroupsUpdateScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -128,7 +129,7 @@ const Navigation = () => {
         />
         <Tab.Screen
           name="Groups"
-          component={GroupsScreen}
+          component={GroupsListScreen}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
@@ -144,6 +145,22 @@ const Navigation = () => {
                 }}
               />
             ),
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
+          name="GroupsAdd"
+          component={GroupsAddScreen}
+          options={{
+            tabBarButton: () => null,
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
+          name="GroupsUpdate"
+          component={GroupsUpdateScreen}
+          options={{
+            tabBarButton: () => null,
             tabBarShowLabel: false,
           }}
         />
@@ -189,65 +206,9 @@ const Navigation = () => {
             tabBarShowLabel: false,
           }}
         />
-        <Tab.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/icons/settings.png")
-                    : require("../../assets/icons/settings.png")
-                }
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 0,
-                }}
-              />
-            ),
-            tabBarShowLabel: false,
-          }}
-        />
-        <Tab.Screen
-          name="Exit"
-          component={Exit}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/icons/exit.png")
-                    : require("../../assets/icons/exit.png")
-                }
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 0,
-                }}
-              />
-            ),
-            tabBarShowLabel: false,
-          }}
-        />
       </Tab.Navigator>
     </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  navContainer: {
-    backgroundColor: "#efe8dc61",
-    flex: 1 / 7,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    borderTopWidth: 1,
-    borderTopColor: ColorPalette.primaryWhite,
-  },
-  navBarIcons: {
-    width: 55,
-    height: 55,
-  },
-});
 export default Navigation;

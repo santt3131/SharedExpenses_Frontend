@@ -1,19 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
-import { FontAwesome5  } from '@expo/vector-icons'; 
-import { StatusBar } from "expo-status-bar";
-
-// fn clears the search box  ========================>
-  const clearSearchBar = () => {
-      setSearch('')
-      setFilteredDataSource(masterDataSource);
-    }
-
-
-
-
-
 
 const CustomTopbar = ({
   screenTitle,
@@ -24,75 +11,67 @@ const CustomTopbar = ({
 }) => {
   return (
     <View style={styles.container}>
-      <StatusBar/>
-      <View style={styles.topBar}>
-        <FontAwesome5  name="filter" size={Size.xm} color={ColorPalette.primaryWhite} />
-        <Text style={{color: "white", flex: 1, fontSize: 22, margin : 5, }}>{screenTitle}</Text>
-        <Text style={{color: "white", fontSize: 18, fontWeight: "bold", margin : 5, }}>x</Text>
-      </View>
+      <Text style={styles.topBarText}>{screenTitle}</Text>
       <TouchableOpacity
         onPress={onPressAdd}
-        style={styles.topBarButton}
+        style={styles.topButtonAdd}
         disabled={addDisabled}
       >
-        <FontAwesome5  name="user-plus" size={Size.xm} color={ColorPalette.primaryWhite} />
-        
+        <Text style={styles.topButtonText}>Add</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={onPressList}
-        style={styles.topBarButton}
+        style={styles.topButtonList}
         disabled={listDisabled}
       >
-        <FontAwesome5  name="list" size={Size.xm} color={ColorPalette.primaryWhite} />
+        <Text style={styles.topButtonText}>List</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    marginTop: Size.xm,
-    marginBottom: Size.xs,
+    marginTop: 30,
     marginHorizontal: 10,
     flexDirection: "row",
   },
-  topBar: {
-    flexDirection: "row",
-    justifyContent:"space-between",
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: ColorPalette.primaryGreen,
-    textTransform: "uppercase",
-    paddingHorizontal: 5,
-    marginRight: 5,
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-  },
   topBarText: {
-    margin: 5,
+    flex: 1,
     color: ColorPalette.primaryWhite,
     fontSize: Size.lm,
-    //fontWeight: "bold",
-    //textTransform: "uppercase",
+    fontWeight: "bold",
+    backgroundColor: ColorPalette.primaryBlue,
+    textTransform: "uppercase",
+    paddingLeft: 10,
+    textAlignVertical: "center",
+    marginRight: 5,
+    borderTopRightRadius: 100,
+    borderBottomRightRadius: 100,
+    height: 40,
   },
-  topBarButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 5,
+  topButtonAdd: {
+    width: 40,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: ColorPalette.primaryGreen,
-    marginLeft: 5,
+    borderRadius: 100,
+    backgroundColor: ColorPalette.primaryBlue,
+    marginRight: 5,
+  },
+  topButtonList: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 100,
+    backgroundColor: ColorPalette.primaryBlue,
   },
   topButtonText: {
-    fontSize: Size.xs,
-    //fontWeight: "bold",
-    textTransform: "uppercase",
     color: ColorPalette.primaryWhite,
+    fontWeight: "bold",
+    textTransform: "uppercase",
   },
 });
 

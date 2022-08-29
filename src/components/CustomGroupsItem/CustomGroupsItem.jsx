@@ -26,6 +26,7 @@ const CustomGroupsItem = ({ groups }) => {
       .get(`${Global.server}/groups/${groupId}`, {})
       .then(function (response) {
         // handle success
+        console.log(response.data.results[0].groupName);
         const groupName = response.data.results[0].groupName;
         const groupDescription = response.data.results[0].groupDescription;
         const users = response.data.results[0].users;

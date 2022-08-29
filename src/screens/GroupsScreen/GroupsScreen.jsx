@@ -1,17 +1,17 @@
 
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, FlatList} from "react-native";
+import { View, Text, TextInput, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, Modal} from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import { StatusBar } from "expo-status-bar";
 import Global from "../../../global";
-import Checkbox from 'expo-checkbox';
-import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
-import { FontAwesome  } from '@expo/vector-icons';
-
+//import CustomSearch from "../../components/CustomSearch";
 const axios = require('axios');
+//import RetrievedItem, { checked } from "../../components/CustomSearch/RetrievedItem";
+import { FontAwesome } from '@expo/vector-icons'; 
+import Checkbox from 'expo-checkbox';
 
 const axiosInstance = axios.create({
-  baseURL: Global.server,
+  baseURL: Global.baseUrl,
   //timeout: 1000,
   headers: {
     'Accept': 'application/json',
@@ -19,10 +19,6 @@ const axiosInstance = axios.create({
   },
   withCredentials: false // hasta que no hayamos implementado el acceso con token
 });
-
-const screenTitle = "Groups";
-
-
 
 const GroupsScreen = () => {
 
@@ -66,15 +62,26 @@ const GroupsScreen = () => {
   if(isLoading) {
     return (
       <View style={styles.container}>
-        <StatusBar screenTitle={screenTitle}/>
-        <CustomTopbar screenTitle={screenTitle}/>
+        <StatusBar/>
+        <View style={styles.searchWrapperStyle}>
+          <FontAwesome name="search" size={Size.xm} color={ColorPalette.primaryRouge} style={styles.iconStyle}/>
+          <TextInput 
+              placeholder="Search" 
+              placeholderTextColor={ColorPalette.primaryRouge}
+              style={styles.searchInputStyle}
+              value={search}
+              onChangeText={(filterTerm) => { searchFilterFunction(filterTerm); }}
+              />
+
+          <FontAwesome name="close" sise={Size.lm} color={ColorPalette.primaryRouge} style={styles.iconStyle}/>
+        </View>
         <ActivityIndicator style={styles.loadingStyle}/>
       </View>
     );
   }; // end of loading 
 
 
-  // filter or search on screen =======================>
+  // // filter or search on screen =======================>
   const searchFilterFunction = (filterTerm) => { 
     if (filterTerm) {
       // Filter the masterDataSource and update FilteredDataSource
@@ -93,13 +100,8 @@ const GroupsScreen = () => {
     }
   }; // end of filter
 
-  // fn clears the search box  ========================>
-  const clearSearchBar = () => {
-      setSearch('')
-      setFilteredDataSource(masterDataSource);
-    }
 
-  // fn to update checkboxes  ========================>
+  // callback of the render function ========================>
   const onValueChange =(item) => {
     const newIds = [...checked];
     const index = newIds.indexOf(item._id);
@@ -140,11 +142,37 @@ const GroupsScreen = () => {
     )
   }
 
+  const clearSearchBar = () => {
+    setSearch('')
+    setFilteredDataSource(masterDataSource);
+  }
+
+
+
 
   return ( // the view
     <View style={styles.container}>
       <StatusBar/>
-      <CustomTopbar screenTitle={screenTitle}/>
+      <View style={styles.searchWrapperStyle}>
+        <View style={styles.searchBarStyle}>
+          <FontAwesome name="search" size={Size.xm} color={ColorPalette.primaryWhite} style={styles.iconStyle}/>
+          <TextInput 
+              placeholder="Search" 
+              placeholderTextColor={ColorPalette.primaryWhite}
+              style={styles.searchInputStyle}
+              value={search}
+              onChangeText={(filterTerm) => { searchFilterFunction(filterTerm); }}
+              />
+          <FontAwesome name="close" sise={24} color={ColorPalette.primaryWhite} style={styles.iconStyle}
+          onPress={() => clearSearchBar()}/>
+        </View>
+        <TouchableOpacity style={styles.addButtonStyle}
+          onPress={() => showCreateGroup()}
+          accessibilityLabel={"Add a new group"}
+        > 
+          <Text style={styles.buttonTitle}>Add</Text>
+        </TouchableOpacity>
+      </View>
         
       <View style={styles.listWrapper}> 
         <FlatList
@@ -156,13 +184,13 @@ const GroupsScreen = () => {
       </View>
     </View>
   ); // end of the view
-};
 
 
   
 
 
 
+};
 
 
 
@@ -171,10 +199,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'start',
+    marginTop: Size.xl,
   },
-
-
-  // list components
   listWrapper:{
     padding: Size.xs
   },
@@ -188,7 +214,63 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   
+  itemTitle: {
+    fontSize: Size.xm,
+    fontWeight: 'bold',
+    marginBottom: Size.xxs
+  },
+  itemText: {
+    fontSize: Size.xm,
+    marginBottom: Size.xs
+  },
 
+  // search component
+  searchWrapperStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  searchBarStyle: {
+    flexDirection: 'row',
+    flex: 1,
+    backgroundColor: ColorPalette.primaryGreen,
+    marginRight: Size.xss,
+    borderRadius: 10,
+    marginLeft: Size.xss
+  },
+  searchInputStyle: {
+      flex: 1,
+      fontSize: Size.mm,
+      paddingVertical: Size.xss,
+      paddingHorizontal: 0,
+      margin: 0,
+      backgroundColor: ColorPalette.primaryGreen,
+      color: ColorPalette.primaryWhite,
+  },
+      
+  iconStyle: {
+      margin: Size.xs,
+  },
+  addButtonStyle: {
+    marginRight: Size.xss,
+    backgroundColor: ColorPalette.primaryGreen,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 45,
+    width: 60,
+    borderRadius: 10
+  },
+  buttonTitle: {
+    fontSize: Size.mm,
+    color: ColorPalette.primaryWhite
+  },
+  loadingStyle: {
+    flex: 1, 
+    marginTop: Size.xl*7,
+    alignItems: 'center',
+    size: Size.xxl
+  },
+  
+  // list components
   itemList: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -211,14 +293,29 @@ const styles = StyleSheet.create({
     borderColor: ColorPalette.primaryGray
   },
 
-
-  loadingStyle: {
-    flex: 1, 
-    marginTop: Size.xl*7,
-    alignItems: 'center',
-    size: Size.xxl
+// modal styles
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: Size.mm,
+	backgroundColor: ColorPalette.background
   },
-
+  modalView: {
+    margin: Size.xm,
+    backgroundColor: "white",
+    borderRadius: Size.mm,
+    padding: Size.xxl,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
 
 });
 
