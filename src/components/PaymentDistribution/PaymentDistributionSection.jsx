@@ -1,36 +1,58 @@
 import { StyleSheet, Text, View, TextInput} from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { ColorPalette, Size } from '../../../appStyles'
 
 
 const PaymentDistributionSection = ({dataArray}) => {
+
+    console.log('dataArray: ', dataArray)
+
+    const [userShare, setUserShare] = useState([]);
+    const [userSettle, setUserSettle] = useState([]);
+
+    // check for debts
+
+    const checkDebts= () => {
+        let takeAction = ''
+        if(userShare === null || userShare === undefined || userShare === 0) {
+            takeAction = 'you pay'
+        }
+
+    }
+
+
+
+
+    
     if (dataArray === null || dataArray === undefined) {
         return (
-            <View style={styles.container}>
-                <Text style={styles.initialText}>Don't you have any friends yet?</Text>
+            <View>
+                <Text>Testing the component</Text>
             </View>
         );
     }
 
      if (dataArray.length === 0) {
         return (
-        <View style={styles.container}>
-            <Text style={styles.initialText}>Don't you have any friends yet?</Text>
+        <View>
+            <Text>Testing the component</Text>
         </View>
         );
     }
 
   return (
         
-    dataArray?.map((data, index) => {
+    dataArray?.map((dataArray, takeAction) => {
         return(
-            <View key={`user_${index}`}>
+            <View key={`user_${dataArray.id}`} style={styles.container}>
                 <View  style={[styles.itemContainer]}>
-                    <Text style={[styles.userName]}> {data.name}'s share </Text>
+                    <Text style={[styles.userName]}> {dataArray.userName}'s share </Text>
                     <TextInput 
-                        
                         style={[styles.otherTextInput]}
                         keyboardType='number-pad'
+                        value={userShare}
+                        defaultValue={dataArray.toPay}
+                        onChangeText={(text) => {setUserShare(text)}}
                     ></TextInput>
                 </View>
             
@@ -38,12 +60,13 @@ const PaymentDistributionSection = ({dataArray}) => {
                     <Text style={[styles.paymentConcepts]}>Already paid</Text>
                     <TextInput style={[styles.otherTextInput]}
                         keyboardType='number-pad'
+                        defaultValue={'0.00'}
                     ></TextInput>
                 </View>
             
             
                 <View style={[styles.itemContainer]}>
-                    <Text style={[styles.paymentConcepts]}>to  recieve/ to pay</Text>
+                    <Text style={[styles.paymentConcepts]}>{takeAction}</Text>
                     <Text 
                         style={[styles.plainTextInput]}
                     ></Text>
@@ -64,15 +87,8 @@ export default PaymentDistributionSection
 
 const styles = StyleSheet.create({
     container: {
-		width: "100%",
-		padding: 16,
-		paddingTop: 100,
-		backgroundColor: "#fff",
-	},
-	
-	inputControll: {
-		width:'40%',
-	},
+        margin: 0,
+    },
 	categoryTitle: {
         fontSize: Size.mm,
         marginVertical: 10,
@@ -80,14 +96,7 @@ const styles = StyleSheet.create({
 		marginRight: 5,
         color: ColorPalette.primaryBlack
     },
-	item: {
-		width: 280,
-		opacity: 1,
-		height: 40,
-		marginTop: 5,
-		marginLeft: 10,
-		marginBottom: 15
-	},
+	
 	itemContainer: {
 		flexDirection: 'row',
 		justifyContent: 'end',
@@ -114,6 +123,7 @@ const styles = StyleSheet.create({
 	},
 	otherTextInput: {
 		minWidth: '20%',
+        height: 40,
 		fontSize: 18, 
 		borderColor: ColorPalette.primaryGray, 
 		borderWidth: 1, 
@@ -126,14 +136,16 @@ const styles = StyleSheet.create({
 	},
 	plainTextInput: {
 		minWidth: '20%',
+        height: 40,
 		fontSize: 18, 
+        fontWeight:'bold',
 		borderColor: ColorPalette.primaryGray, 
 		borderWidth: 1, 
 		borderRadius: 5, 
 		marginLeft: 5,
 		marginVertical: 0,
 		paddingHorizontal: 10,
-		paddingVertical: 10,
+		paddingVertical: 12,
 
 	},
 	userName: {
@@ -150,10 +162,5 @@ const styles = StyleSheet.create({
 		marginBottom:0,
 		marginLeft: 5
 	},
-	debValue: {
-		fontSize: Size.lm,
-		fontWeight: 'bold',
-		marginBottom: 0,
-		color: ColorPalette.primaryBlue
-	}
+	
 })

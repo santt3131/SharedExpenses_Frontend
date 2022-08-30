@@ -62,8 +62,9 @@ const ExprensesScreen = () => {
 	console.log('shares: ', arrayDesiredPay)
 
 	const distributePayments = () => {
-		let equalPartsArray = [];
-		let equalPartsAmount = 0;
+		let shareArray = [];
+		let userShareArray = [];
+		let userShare = 0;
 
 		if (expTotal === null) {
 			console.log("Introduce the amount spended in the field 'How Much' ");
@@ -74,25 +75,22 @@ const ExprensesScreen = () => {
 			setmodalVisible(false);
 			let numberOfUser = userByGroupId.length
 			if(userByGroupId) {
-				equalPartsAmount = expTotal / numberOfUser;
+				userShare = expTotal / numberOfUser;
 			} 
 
-			userByGroupId?.map((item) => {
-				equalPartsArray = [{userId: item._id, userName: item.name, toPay:equalPartsAmount} ];
-			});
-			setarrayDesiredPay(equalPartsArray);
+			for(let i = 0; i < numberOfUser; i++) {
+				let roundedShare = Math.round((userShare + Number.EPSILON) * 100) / 100
+				shareArray.push(roundedShare.toString())
+			}
+			userShareArray = userByGroupId.map(function(item, index) {
+				return(
+					{ id: item._id, userName: item.name, toPay: shareArray[index]}
+					);
+			})
+			setarrayDesiredPay(userShareArray);
 		}
 	};
 	
-	//const [userShareArray, setUserShareArray] = useState([])
-	const addDesiredPay = () => {
-		if(arrayDesiredPay) {
-			userShareArray = [...userByGroupId, ...arrayDesiredPay]
-		} else {
-			userShareArray = userByGroupId
-		}
-	//	setUserShareArray(userShareArray)
-	}
 	//console.log('user Share array: ', userShareArray)
 
 	const onSubmit = (data) => {
@@ -243,7 +241,7 @@ const ExprensesScreen = () => {
 				/>
 			</View>
 				
-			<ScrollView showsVerticalScrollIndicator={true}>
+			<ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
 				
 				
 				<TouchableOpacity onPress={toggleCategory}>
@@ -286,6 +284,7 @@ const ExprensesScreen = () => {
 				
 				
 				<PaymentDistributionSection dataArray={arrayDesiredPay}/>
+					
 
 				{/*Probando */}
 				<Grid>
@@ -307,11 +306,11 @@ const ExprensesScreen = () => {
 							<Text>PAGO DESEADO</Text>
 						</Row>
 						{/* <h1>TODO</h1> */}
-						{arrayDesiredPay?.map((pay, index) => {
+						{arrayDesiredPay?.map((item, index) => {
 							let key = `paid_deseado_${index}`;
 							return (
 								<Row key={key} style={styles.cellHeader}>
-									<Text>{pay}</Text>
+									<Text>{item.toPay}</Text>
 								</Row>
 							);
 						})}
@@ -407,12 +406,6 @@ const ExprensesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		width: "100%",
-		padding: 16,
-		paddingTop: 100,
-		backgroundColor: "#fff",
-	},
 	cellHeader: {
 		borderWidth: 1,
 		borderColor: "#ddd",
@@ -467,7 +460,7 @@ const styles = StyleSheet.create({
 	},
 	totalCostContainer: {
 		flexDirection: 'row',
-		marginBottom: 20,
+		marginBottom: 10,
 		minWidth:'40%',
 	},
 	totalTextInput: {
