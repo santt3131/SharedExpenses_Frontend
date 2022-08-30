@@ -1,17 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	ScrollView,
+	TextInput,
+	TouchableOpacity,
+} from "react-native";
+import Collapsible from "react-native-collapsible";
+import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomDropdown from "../../components/CustomDropdown";
 import CustomModal from "../../components/CustomModal";
 import { useForm } from "react-hook-form";
-import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Global from "../../../global";
+import { FontAwesome5 } from "@expo/vector-icons";
+import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
+//import numbro from 'numbro'
+import PaymentDistributionSection from "../../components/PaymentDistribution/PaymentDistributionSection";
+
+const screenTitle = "Expenses";
 
 const ExprensesScreen = () => {
 	const TEXT_REGEX = /^[a-zA-Z0-9_ ]*$/;
-	const NUMBER_REGEX = /^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
+	const NUMBER_REGEX = /^[+-]?([0-9]+\,?[0-9]*|\,[0-9]+)$/;
+	const [collapsCategory, setcollapsCategory] = useState(true);
+	const [collapsTitle, setcollapsTitle] = useState(true);
+	const [collapsShareMethod, setcollapsShareMethod] = useState(true);
+
+	const toggleCategory = () => {
+		setcollapsCategory(!collapsCategory);
+	};
+	const toggleTitle = () => {
+		setcollapsTitle(!collapsTitle);
+	};
+	const toggleShareMethod = () => {
+		setcollapsShareMethod(!collapsShareMethod);
+	};
+	const navigation = useNavigation();
+	const onPressAdd = () => {
+		navigation.navigate("ExpensesAdd");
+	};
+
+	const onPressList = () => {
+		navigation.navigate("Expenses");
+	};
+
+	const toggleExpanded = () => {
+		//Toggling the state of single Collapsible
+		setCollapsed(!collapsed);
+	};
 
 	const {
 		control,
@@ -25,16 +66,55 @@ const ExprensesScreen = () => {
 			title: "",
 			categories: "",
 			division: "",
-			expenseTotal: "0",
+			expenseTotal: 0,
 		},
 	});
 
-	const expTotal = watch("expenseTotal");
+	const [expTotal, setExpTotal] = useState(null);
+	useEffect(() => {
+		distributePayments();
+	}, [expTotal]);
+
+	console.log("\n\nTotal spending: ", expTotal);
+	//const expTotal = watch("expenseTotal");
+
+	const [arrayDesiredPay, setarrayDesiredPay] = useState([]); //Pago deseado
+	console.log("shares: ", arrayDesiredPay);
+
+	const distributePayments = () => {
+		let shareArray = [];
+		let userShareArray = [];
+		let userShare = 0;
+
+		if (expTotal === null) {
+			console.log("Introduce the amount spended in the field 'How Much' ");
+			setmodalVisible(true);
+			trigger();
+		}
+		if (userByGroupId && expTotal) {
+			setmodalVisible(false);
+			let numberOfUser = userByGroupId.length;
+			if (userByGroupId) {
+				userShare = expTotal / numberOfUser;
+			}
+
+			for (let i = 0; i < numberOfUser; i++) {
+				let roundedShare = Math.round((userShare + Number.EPSILON) * 100) / 100;
+				shareArray.push(roundedShare.toString());
+			}
+			userShareArray = userByGroupId.map(function (item, index) {
+				return { id: item._id, userName: item.name, toPay: shareArray[index] };
+			});
+			setarrayDesiredPay(userShareArray);
+		}
+	};
+
+	//console.log('user Share array: ', userShareArray)
 
 	const onSubmit = (data) => {
 		data.categories = selectCategories.category;
 		data.division = selectDivision.division;
-		console.log(data);
+		console.log("aqui", data);
 		//navigation.navigate("Debts");
 		const dataSend = {
 			categoryId: "62b9d9eb355700006d004aa2", // lo traerá la otra pantalla c
@@ -82,14 +162,14 @@ const ExprensesScreen = () => {
 
 	//1.Categorias
 	//1.1-Loading data
-	const [loadCategorieList, setloadCategorieList] = useState(null);
+	const [CategoryList, setCategoryList] = useState(null);
 
 	const loadCategories = async () => {
 		const response = await fetch(`${Global.server}/categories/`);
 		const json = await response.json();
-		setloadCategorieList(json);
+		setCategoryList(json);
 	};
-
+	//console.log(CategoryList)
 	useEffect(() => {
 		loadCategories();
 	}, []);
@@ -99,53 +179,25 @@ const ExprensesScreen = () => {
 	const selectedCategories = (dataSelected) => {
 		setselectCategories(dataSelected);
 	};
-
+	console.log("category: ", selectCategories);
 	//Método de división
-	const arrayDivision = {
+	const arraySharingMethod = {
 		results: [
 			{
 				_id: "62e6f9f2d4bb142140b63c91",
-				category: "Equal parts",
+				category: "Even (equal parts)",
 			},
 			{
 				_id: "62e6f9fc1375baa55c88354b",
-				category: "Percentages",
-			},
-			{
-				_id: "62e6fa0b6e2ff2ef0f87881d",
-				category: "Different parts",
+				category: "Not even",
 			},
 		],
 	};
 
-	const [selectDivision, setselectDivision] = useState("");
-	const [arrayDesiredPay, setarrayDesiredPay] = useState([]); //1.3-Pago deseado
+	const [selectDivision, setSelectDivision] = useState(undefined);
 
 	//Modal
 	const [modalVisible, setmodalVisible] = useState(false);
-
-	const cbSelectedDivision = (division) => {
-		setselectDivision(division);
-
-		if (division.category === "Equal parts") {
-			let lengthUser = userByGroupId.length;
-			if (!expTotal) {
-				console.log("no ha puesto gasto total TRUE");
-				setmodalVisible(true);
-				trigger();
-			} else {
-				console.log("HA puesto gasto total FALSE");
-				setmodalVisible(false);
-			}
-
-			let equalPartsAmount = expTotal / lengthUser;
-			let equalPartsArray = [];
-			userByGroupId.forEach((el) => {
-				equalPartsArray = [...equalPartsArray, equalPartsAmount];
-			});
-			setarrayDesiredPay(equalPartsArray);
-		}
-	};
 
 	//1.4 Set Debe (con input de paid)
 	const [debt, setdebt] = useState("");
@@ -159,64 +211,107 @@ const ExprensesScreen = () => {
 
 	const handleChangePaid = (index, name, value) => {
 		setpaidArrayValues([...paidArrayValues, { [name]: +value }]);
-		let debtValue = arrayDesiredPay[index] - value;
+		let debtValue = arrayDesiredPay[index] / value;
 		setdebtArrayValues([...debtArrayValues, { [name]: +debtValue }]);
 	};
 
-	console.log("todos los valores de PAID son ", paidArrayValues);
-	console.log("todos los valores de DEBT son ", debtArrayValues);
+	//console.log("todos los valores de PAID son ", paidArrayValues);
+	//console.log("todos los valores de DEBT son ", debtArrayValues);
+
+	let timestamp = Date.now();
+	let date = new Date(timestamp * 1000);
+	let formatedDay =
+		"Date: " +
+		date.getDate() +
+		"/" +
+		(date.getMonth() + 1) +
+		"/" +
+		date.getFullYear() +
+		" " +
+		date.getHours() +
+		":" +
+		date.getMinutes() +
+		":" +
+		date.getSeconds();
 
 	return (
-		<ScrollView showsVerticalScrollIndicator={false}>
-			<View>
-				<Text
-					style={{
-						fontSize: Size.xl,
-						alignSelf: "center",
-						marginTop: 20,
-						color: ColorPalette.primaryBlue,
-						fontWeight: "bold",
-					}}
-				>
-					Expenses Screen
-				</Text>
+		<View style={{ flex: 1 }}>
+			<StatusBar />
+			<CustomTopbar screenTitle={screenTitle} sectionIcon="euro-sign" />
 
-				<CustomInput
-					name="title"
-					placeholder="expense title"
-					control={control}
-					rules={{
-						required: "Title is required",
-						pattern: { value: TEXT_REGEX, message: "Title is invalid" },
-					}}
-				/>
-
-				<CustomDropdown
-					title="Categorias"
-					listdrop={loadCategorieList}
-					selected={selectedCategories}
-				></CustomDropdown>
-
-				<CustomInput
+			<View style={styles.totalCostContainer}>
+				<Text style={styles.categoryTitle}>How much?</Text>
+				<TextInput
 					name="expenseTotal"
 					placeholder="total cost"
 					control={control}
+					onChangeText={(text) => {
+						setExpTotal(text);
+					}}
+					onEndEditing={(text) => {
+						distributePayments(text);
+					}}
 					//onChange={console.log("expenseTotal es : ", expTotal)}
 					// onChange={console.log(
 					// 	"expenseTotal es : ",
 					// 	getValues("expenseTotal")
 					// )}
+					keyboardType="number-pad"
 					rules={{
-						required: "Total cost is required",
-						pattern: { value: NUMBER_REGEX, message: "Total cost  is invalid" },
+						required: "Total cost must be a valid number",
+						pattern: { value: NUMBER_REGEX, message: "Total cost is invalid" },
 					}}
+					style={[styles.totalTextInput, { paddingVertical: 0 }]}
 				/>
+			</View>
 
-				<CustomDropdown
-					title="División"
-					listdrop={arrayDivision}
-					selected={cbSelectedDivision}
-				></CustomDropdown>
+			<ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
+				<TouchableOpacity onPress={toggleCategory}>
+					<View style={{ flexDirection: "row" }}>
+						<Text style={styles.categoryTitle}>Select a Category</Text>
+						<FontAwesome5
+							name={selectCategories === undefined ? "question" : "check"}
+							size={Size.ls}
+							color={ColorPalette.primarySeance}
+							style={{ marginTop: 13, marginLeft: 0 }}
+						/>
+					</View>
+				</TouchableOpacity>
+				<Collapsible collapsed={collapsCategory} align="center">
+					<CustomDropdown
+						title="Categorias"
+						listdrop={CategoryList}
+						selected={(obj) => selectedCategories(obj.category)}
+						onValueChange={(_id, category) => setselectCategories(category)}
+					></CustomDropdown>
+				</Collapsible>
+
+				<TouchableOpacity onPress={toggleTitle}>
+					<View style={{ flexDirection: "row" }}>
+						<Text style={styles.categoryTitle}>A name for this expense</Text>
+						<FontAwesome5
+							name="question"
+							size={Size.ls}
+							color={ColorPalette.primarySeance}
+							style={{ marginTop: 13, marginLeft: 0 }}
+						/>
+					</View>
+				</TouchableOpacity>
+				<Collapsible collapsed={collapsTitle} align="center">
+					<TextInput
+						name="title"
+						value={`We spend on ${selectedCategories} the ${formatedDay}`}
+						control={control}
+						//style={styles.inputControll}
+						rules={{
+							required: "Title is required",
+							pattern: { value: TEXT_REGEX, message: "Title is invalid" },
+						}}
+						style={styles.totalTextInput}
+					/>
+				</Collapsible>
+
+				<PaymentDistributionSection dataArray={arrayDesiredPay} />
 
 				{/*Probando */}
 				<Grid>
@@ -238,11 +333,11 @@ const ExprensesScreen = () => {
 							<Text>PAGO DESEADO</Text>
 						</Row>
 						{/* <h1>TODO</h1> */}
-						{arrayDesiredPay?.map((pay, index) => {
+						{arrayDesiredPay?.map((item, index) => {
 							let key = `paid_deseado_${index}`;
 							return (
 								<Row key={key} style={styles.cellHeader}>
-									<Text>{pay}</Text>
+									<Text>{item.toPay}</Text>
 								</Row>
 							);
 						})}
@@ -327,23 +422,17 @@ const ExprensesScreen = () => {
 				<CustomButton text="Add" onPress={handleSubmit(onSubmit)} />
 				{modalVisible ? (
 					<CustomModal
-						title="Mensaje de error"
-						message="Tiene que haber rellenado el gasto total"
+						title="Data needed"
+						message="Please introduce a total in the field   'How much'"
 						isShown={true}
 					></CustomModal>
 				) : null}
-			</View>
-		</ScrollView>
+			</ScrollView>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		width: "100%",
-		padding: 16,
-		paddingTop: 100,
-		backgroundColor: "#fff",
-	},
 	cellHeader: {
 		borderWidth: 1,
 		borderColor: "#ddd",
@@ -368,6 +457,92 @@ const styles = StyleSheet.create({
 		flex: 1,
 		display: "flex",
 		flexDirection: "column",
+	},
+
+	inputControll: {
+		width: "40%",
+	},
+	categoryTitle: {
+		fontSize: Size.mm,
+		marginVertical: 10,
+		marginLeft: 10,
+		marginRight: 5,
+		color: ColorPalette.primaryBlack,
+	},
+	item: {
+		width: 280,
+		opacity: 1,
+		height: 40,
+		marginTop: 5,
+		marginLeft: 10,
+		marginBottom: 15,
+	},
+	itemContainer: {
+		flexDirection: "row",
+		justifyContent: "end",
+		alignItems: "center",
+		height: 40,
+		marginTop: 5,
+		marginBottom: 0,
+	},
+	totalCostContainer: {
+		flexDirection: "row",
+		marginBottom: 10,
+		minWidth: "40%",
+	},
+	totalTextInput: {
+		fontSize: 20,
+		borderColor: ColorPalette.primaryGray,
+		borderWidth: 1,
+		borderRadius: 5,
+		marginHorizontal: 5,
+		marginVertical: 0,
+		paddingHorizontal: 10,
+		paddingVertical: 15,
+		backgroundColor: ColorPalette.primaryWhite,
+	},
+	otherTextInput: {
+		minWidth: "20%",
+		fontSize: 18,
+		borderColor: ColorPalette.primaryGray,
+		borderWidth: 1,
+		borderRadius: 5,
+		marginLeft: 5,
+		marginVertical: 0,
+		paddingHorizontal: 10,
+		paddingVertical: 7,
+		backgroundColor: ColorPalette.primaryWhite,
+	},
+	plainTextInput: {
+		minWidth: "20%",
+		fontSize: 18,
+		borderColor: ColorPalette.primaryGray,
+		borderWidth: 1,
+		borderRadius: 5,
+		marginLeft: 5,
+		marginVertical: 0,
+		paddingHorizontal: 10,
+		paddingVertical: 10,
+	},
+	userName: {
+		width: "70%",
+		fontSize: Size.mm,
+		textAlign: "right",
+		marginLeft: 5,
+		marginBottom: 0,
+	},
+	paymentConcepts: {
+		width: "70%",
+		fontSize: Size.xm,
+		textAlign: "right",
+		marginBottom: 0,
+		marginLeft: 5,
+	},
+	debValue: {
+		fontSize: Size.lm,
+		fontWeight: "bold",
+		marginBottom: 0,
+		color: ColorPalette.primaryBlue,
 	},
 });
 

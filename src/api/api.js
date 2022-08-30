@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const BASE_URL = "http://localhost:8080";
+import Global from "../../global";
+const BASE_URL = `http://localhost:${PORT}`;
 
 const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
 

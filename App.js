@@ -6,6 +6,9 @@ import { ColorPalette, Size } from "./appStyles";
 import * as tk from "./src/token";
 import SignInScreen from "./src/screens/SignInScreen";
 
+
+
+
 const App = () => {
   //eliminate tk.readtoken
   const [token, setToken] = useState(null);
@@ -27,6 +30,7 @@ const App = () => {
       </SafeAreaView>
     );
   }
+  
 };
 
 /*

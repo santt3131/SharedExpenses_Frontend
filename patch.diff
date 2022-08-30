@@ -1,0 +1,573 @@
+From 5147b3019ff13303333c839caaeffb206ecd73f9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ramiro=20Mej=C3=ADas=20Rodr=C3=ADguez?=
+ <ramiro.mejias@gmail.com>
+Date: Sun, 28 Aug 2022 16:44:04 -0700
+Subject: [PATCH] GroupsUpdateScreen Added
+
+---
+ .../CustomGroupsItem/CustomGroupsItem.jsx     |  14 +-
+ src/navigation/index.jsx                      |  10 +-
+ .../GroupsAddScreen/GroupsAddScreen.jsx       |   4 +-
+ .../GroupsUpdateScreen/GroupsUpdateScreen.jsx | 286 ++++++++++++++++++
+ src/screens/GroupsUpdateScreen/index.jsx      |   1 +
+ src/screens/HomeScreen/HomeScreen.jsx         | 105 ++++---
+ 6 files changed, 362 insertions(+), 58 deletions(-)
+ create mode 100644 src/screens/GroupsUpdateScreen/GroupsUpdateScreen.jsx
+ create mode 100644 src/screens/GroupsUpdateScreen/index.jsx
+
+diff --git a/src/components/CustomGroupsItem/CustomGroupsItem.jsx b/src/components/CustomGroupsItem/CustomGroupsItem.jsx
+index bd8e0a8..474dba1 100644
+--- a/src/components/CustomGroupsItem/CustomGroupsItem.jsx
++++ b/src/components/CustomGroupsItem/CustomGroupsItem.jsx
+@@ -2,10 +2,13 @@ import React from "react";
+ import { View, Text, StyleSheet, Pressable } from "react-native";
+ import { ColorPalette, Size } from "../../../appStyles";
+ import CustomSpinner from "../CustomSpinner/CustomSpinner";
++import { useNavigation } from "@react-navigation/native";
+ import axios from "axios";
+ import Global from "../../../global";
+ 
+ const CustomGroupsItem = ({ groups }) => {
++  const navigation = useNavigation();
++
+   if (groups === null || groups === undefined) {
+     return <CustomSpinner />;
+   }
+@@ -23,7 +26,16 @@ const CustomGroupsItem = ({ groups }) => {
+       .get(`${Global.server}/groups/${groupId}`, {})
+       .then(function (response) {
+         // handle success
+-        alert("Let's edit this group");
++        console.log(response.data.results[0].groupName);
++        const groupName = response.data.results[0].groupName;
++        const groupDescription = response.data.results[0].groupDescription;
++        const users = response.data.results[0].users;
++        navigation.navigate("GroupsUpdate", {
++          groupId,
++          groupName,
++          groupDescription,
++          users,
++        });
+       })
+       .catch(function (error) {
+         // handle error
+diff --git a/src/navigation/index.jsx b/src/navigation/index.jsx
+index e5ff0d6..235d65a 100644
+--- a/src/navigation/index.jsx
++++ b/src/navigation/index.jsx
+@@ -11,11 +11,11 @@ import NewPasswordScreen from "../screens/NewPasswordScreen";
+ import HomeScreen from "../screens/HomeScreen";
+ import FriendsListScreen from "../screens/FriendsListScreen";
+ import FriendsAddScreen from "../screens/FriendsAddScreen";
+-import GroupsScreen from "../screens/GroupsScreen";
+ import ExpensesScreen from "../screens/ExpensesScreen";
+ import DebtsScreen from "../screens/DebtsScreen";
+ import GroupsListScreen from "../screens/GroupsListScreen";
+ import GroupsAddScreen from "../screens/GroupsAddScreen";
++import GroupsUpdateScreen from "../screens/GroupsUpdateScreen";
+ 
+ const Tab = createBottomTabNavigator();
+ 
+@@ -156,6 +156,14 @@ const Navigation = () => {
+             tabBarShowLabel: false,
+           }}
+         />
++        <Tab.Screen
++          name="GroupsUpdate"
++          component={GroupsUpdateScreen}
++          options={{
++            tabBarButton: () => null,
++            tabBarShowLabel: false,
++          }}
++        />
+         <Tab.Screen
+           name="Expenses"
+           component={ExpensesScreen}
+diff --git a/src/screens/GroupsAddScreen/GroupsAddScreen.jsx b/src/screens/GroupsAddScreen/GroupsAddScreen.jsx
+index 6bea314..b89e020 100644
+--- a/src/screens/GroupsAddScreen/GroupsAddScreen.jsx
++++ b/src/screens/GroupsAddScreen/GroupsAddScreen.jsx
+@@ -6,7 +6,6 @@ import {
+   ScrollView,
+   FlatList,
+   Switch,
+-  SafeAreaView,
+   TouchableOpacity,
+   Modal,
+ } from "react-native";
+@@ -82,6 +81,7 @@ const GroupsAddScreen = () => {
+       .then(function (response) {
+         // handle success
+         alert("Group created successfully");
++        navigation.navigate("Groups");
+       })
+       .catch(function (error) {
+         // handle error
+@@ -106,7 +106,7 @@ const GroupsAddScreen = () => {
+           <CustomInput
+             name="name"
+             placeholder="Group Name"
+-            autoCapitalize="words"
++            autoCapitalize="sentences"
+             control={control}
+             rules={{
+               required: "Group Name is required",
+diff --git a/src/screens/GroupsUpdateScreen/GroupsUpdateScreen.jsx b/src/screens/GroupsUpdateScreen/GroupsUpdateScreen.jsx
+new file mode 100644
+index 0000000..b72dea0
+--- /dev/null
++++ b/src/screens/GroupsUpdateScreen/GroupsUpdateScreen.jsx
+@@ -0,0 +1,286 @@
++import React, { useEffect, useState } from "react";
++import {
++  View,
++  Text,
++  StyleSheet,
++  ScrollView,
++  FlatList,
++  Switch,
++  TouchableOpacity,
++  Modal,
++} from "react-native";
++import { ColorPalette, Size } from "../../../appStyles";
++import CustomTopbar from "../../components/CustomTopbar";
++import CustomInput from "../../components/CustomInput";
++import CustomButton from "../../components/CustomButton";
++import { useForm } from "react-hook-form";
++import { useNavigation } from "@react-navigation/native";
++import axios from "axios";
++import Global from "../../../global";
++import { useRoute } from "@react-navigation/native";
++
++const GroupsUpdateScreen = () => {
++  const navigation = useNavigation();
++
++  const route = useRoute();
++
++  const groupId = route?.params?.groupId;
++  const groupName = route?.params?.groupName;
++  const groupDescription = route?.params?.groupDescription;
++  const users = route?.params?.users;
++
++  const { control, handleSubmit, watch } = useForm({
++    defaultValues: { name: groupName, description: groupDescription },
++  });
++
++  const [friends, setFriends] = useState([]);
++  const [open, setOpen] = useState(false);
++
++  const openList = () => setOpen(true);
++  const closeList = () => setOpen(false);
++  const onUpdateValue = (index, value) => {
++    friends[index].selected = value;
++    return setFriends([...friends]);
++  };
++
++  const renderItem = ({ item, index }) => (
++    <ItemRenderer
++      key={index}
++      index={index}
++      selected={item.selected}
++      label={item.friendName}
++      onUpdateValue={onUpdateValue}
++    />
++  );
++
++  useEffect(() => {
++    getFriends();
++  }, []);
++
++  const getFriends = async () => {
++    await axios
++      .get(`${Global.server}/users/${Global.authUserId}/friends`, {})
++      .then(function (response) {
++        setFriends(response.data.results[0].friends);
++      })
++      .catch(function (error) {
++        console.log(error);
++      });
++  };
++
++  const name = watch("name");
++  const description = watch("description");
++  const authUser = Global.authUserId;
++
++  const onPressAdd = () => {
++    navigation.navigate("GroupsAdd");
++  };
++
++  const onPressList = () => {
++    navigation.navigate("Groups");
++  };
++
++  const onUpdatePressed = () => {
++    axios
++      .post(`${Global.server}/groups`, {
++        groupName: name,
++        groupDescription: description,
++        ownerId: authUser,
++        friends: friends,
++      })
++      .then(function (response) {
++        // handle success
++        alert("Group updated successfully");
++        navigation.navigate("Groups");
++      })
++      .catch(function (error) {
++        // handle error
++        alert(error.response.data.error);
++      });
++  };
++
++  return (
++    <>
++      <CustomTopbar
++        screenTitle="Groups"
++        onPressAdd={onPressAdd}
++        onPressList={onPressList}
++        addDisabled={false}
++        listDisabled={false}
++      />
++
++      <ScrollView showsVerticalScrollIndicator={false}>
++        <View style={styles.container}>
++          <Text style={styles.text}>Updating Groups</Text>
++
++          <CustomInput
++            name="name"
++            placeholder="Group Name"
++            autoCapitalize="sentences"
++            control={control}
++            rules={{
++              required: "Group Name is required",
++              minLength: {
++                value: 3,
++                message: "Group Name should be at least 3 characters long",
++              },
++              maxLength: {
++                value: 100,
++                message: "Group Name should be max 100 characters long",
++              },
++            }}
++          />
++
++          <CustomInput
++            name="description"
++            placeholder="Group Description"
++            control={control}
++            rules={{
++              required: "Group Description is required",
++              minLength: {
++                value: 3,
++                message:
++                  "Group Description should be at least 3 characters long",
++              },
++              maxLength: {
++                value: 100,
++                message: "Group Description should be max 100 characters long",
++              },
++            }}
++          />
++
++          <View
++            style={{
++              flex: 1,
++              backgroundColor: ColorPalette.primaryWhite,
++              borderRadius: 5,
++              marginTop: 5,
++              marginBottom: 5,
++            }}
++          >
++            <TouchableOpacity onPress={openList}>
++              <View
++                style={{
++                  paddingTop: 11,
++                  paddingLeft: 10,
++                  borderWidth: 1,
++                  borderRadius: 5,
++                  borderColor: ColorPalette.veryLightGrey,
++                  height: 50,
++                }}
++              >
++                <Text
++                  style={{
++                    fontSize: Size.xm,
++                    color: ColorPalette.primaryGray,
++                  }}
++                >
++                  Select Friends
++                </Text>
++              </View>
++            </TouchableOpacity>
++            <View
++              style={{
++                padding: 0,
++                paddingLeft: 10,
++              }}
++            >
++              {friends
++                .filter((item) => item.selected)
++                .map((item) => (
++                  <Text
++                    key={item.friendEmail}
++                    style={{
++                      fontSize: Size.xm,
++                      textTransform: "capitalize",
++                    }}
++                  >
++                    - {item.friendName}
++                  </Text>
++                ))}
++            </View>
++          </View>
++          <Modal
++            animationType="slide"
++            transparent={true}
++            visible={open === true}
++          >
++            <TouchableOpacity
++              activeOpacity={1}
++              onPress={closeList}
++              style={{ flex: 1 }}
++            >
++              <View style={{ flex: 1, marginTop: 275, marginBottom: 50 }}>
++                <View style={styles.listWrapper}>
++                  <View style={styles.listContainer}>
++                    <FlatList
++                      data={friends}
++                      renderItem={renderItem}
++                      keyExtractor={(item) => item.friendEmail}
++                    />
++                  </View>
++                </View>
++              </View>
++            </TouchableOpacity>
++          </Modal>
++
++          <CustomButton text="Update" onPress={handleSubmit(onUpdatePressed)} />
++        </View>
++      </ScrollView>
++    </>
++  );
++};
++
++const ItemRenderer = ({ index, label, selected, onUpdateValue }) => (
++  <View style={styles.item}>
++    <Text style={styles.title}>{label}</Text>
++    <Switch
++      value={selected}
++      onValueChange={(value) => onUpdateValue(index, value)}
++    />
++  </View>
++);
++
++const styles = StyleSheet.create({
++  container: {
++    paddingBottom: 10,
++    paddingLeft: 30,
++    paddingRight: 30,
++  },
++  text: {
++    color: ColorPalette.primaryBlue,
++    fontSize: Size.xl,
++    margin: 10,
++    fontWeight: "bold",
++    alignSelf: "center",
++  },
++  listWrapper: {
++    flex: 1,
++    shadowColor: ColorPalette.primaryBlack,
++    shadowOffset: { width: 0, height: 4 },
++    shadowOpacity: 0.5,
++    elevation: 10,
++    shadowRadius: 5,
++    paddingLeft: 30,
++    paddingRight: 30,
++  },
++  listContainer: {
++    flex: 1,
++    backgroundColor: ColorPalette.primaryWhite,
++    padding: 10,
++  },
++  item: {
++    flexDirection: "row",
++    alignItems: "center",
++    justifyContent: "space-between",
++    padding: 2,
++    borderBottomWidth: 1,
++    borderBottomColor: ColorPalette.primaryGray,
++  },
++  title: {
++    textTransform: "capitalize",
++    color: ColorPalette.primaryGray,
++  },
++});
++
++export default GroupsUpdateScreen;
+diff --git a/src/screens/GroupsUpdateScreen/index.jsx b/src/screens/GroupsUpdateScreen/index.jsx
+new file mode 100644
+index 0000000..517d17c
+--- /dev/null
++++ b/src/screens/GroupsUpdateScreen/index.jsx
+@@ -0,0 +1 @@
++export { default } from "./GroupsUpdateScreen";
+diff --git a/src/screens/HomeScreen/HomeScreen.jsx b/src/screens/HomeScreen/HomeScreen.jsx
+index 5c759e7..798d268 100644
+--- a/src/screens/HomeScreen/HomeScreen.jsx
++++ b/src/screens/HomeScreen/HomeScreen.jsx
+@@ -3,37 +3,37 @@ import React, { useState } from "react";
+ import { ColorPalette, Size } from "../../../appStyles";
+ import ListOfFeatures from "../../components/listOfFeatures";
+ 
+-
+ const HomeScreen = () => {
+-	const [modalVisible, setModalVisible] = useState(true);
+-	return (
+-		<View style={styles.centeredView}>
+-			<Modal
+-				animationType="slide"
+-				visible={modalVisible}
+-			>
+-				
+-				<View style={styles.centeredView}>
+-					<View style={styles.modalView}>
+-						<Text style={styles.modalTitle}>Share expenses!</Text>
+-						<Image style={styles.logo} source={require('../../../assets/images/SharedExpenses.png')}/>
+-						
+-						<Text style={styles.bodyTitle}>Boom! {"\n"}Ya no tienes que preocuparte de llevar las cuentas...</Text>
+-						<Pressable
+-							style={styles.button}
+-							onPress={() => setModalVisible(!modalVisible)}
+-						>
+-						<Text style={styles.bodyText}>ok</Text>
+-						</Pressable>
+-					</View>
+-				</View>
+-			</Modal>
+-			
+-			<Text style={styles.bodyText}>
+-				Selecciona una categoría y empieza a gestionar los gastos
+-			</Text>
+-		</View>
+-	);
++  const [modalVisible, setModalVisible] = useState(true);
++  return (
++    <View style={styles.centeredView}>
++      <Modal animationType="slide" visible={modalVisible}>
++        <View style={styles.centeredView}>
++          <View style={styles.modalView}>
++            <Text style={styles.modalTitle}>Share expenses!</Text>
++            <Image
++              style={styles.logo}
++              source={require("../../../assets/images/SharedExpenses.png")}
++            />
++
++            <Text style={styles.bodyTitle}>
++              Boom! {"\n"}Ya no tienes que preocuparte de llevar las cuentas...
++            </Text>
++            <Pressable
++              style={styles.button}
++              onPress={() => setModalVisible(!modalVisible)}
++            >
++              <Text style={styles.bodyText}>ok</Text>
++            </Pressable>
++          </View>
++        </View>
++      </Modal>
++
++      <Text style={styles.bodyText}>
++        Selecciona una categoría y empieza a gestionar los gastos
++      </Text>
++    </View>
++  );
+ };
+ 
+ /*
+@@ -44,14 +44,13 @@ const HomeScreen = () => {
+ <listOfFeatures>Añade tus amig@s</listOfFeatures>
+ <listOfFeatures>Decide cómo repartir los gastos</listOfFeatures> */
+ 
+-
+ const styles = StyleSheet.create({
+-	centeredView: {
++  centeredView: {
+     flex: 1,
+     justifyContent: "center",
+     alignItems: "center",
+     marginTop: Size.mm,
+-	backgroundColor: ColorPalette.background
++    backgroundColor: ColorPalette.background,
+   },
+   modalView: {
+     margin: Size.xm,
+@@ -62,48 +61,46 @@ const styles = StyleSheet.create({
+     shadowColor: "#000",
+     shadowOffset: {
+       width: 0,
+-      height: 2
++      height: 2,
+     },
+     shadowOpacity: 0.25,
+     shadowRadius: 4,
+-    elevation: 5
++    elevation: 5,
+   },
+   button: {
+-	color: "white",
++    color: "white",
+     borderRadius: 30,
+     paddingRight: Size.xss,
+-	paddingLeft: Size.xss,
++    paddingLeft: Size.xss,
+     elevation: 0,
+-	backgroundColor: ColorPalette.eggBlue,
+-	paddingTop: 0,
+-	paddingBottom: 0,
++    backgroundColor: ColorPalette.eggBlue,
++    paddingTop: 0,
++    paddingBottom: 0,
+   },
+   bodyTitle: {
+-	fontSize: Size.xm,
++    fontSize: Size.xm,
+     textAlign: "center",
+-	marginTop: 20,
++    marginTop: 20,
+     marginBottom: 15,
+-	color: ColorPalette.primaryRouge,
+-	fontWeight: "bold"
++    color: ColorPalette.primaryRouge,
++    fontWeight: "bold",
+   },
+   bodyText: {
+-	fontSize: Size.xm,
++    fontSize: Size.xm,
+     textAlign: "center",
+-	marginTop: Size.ls,
++    marginTop: Size.ls,
+     marginBottom: Size.ls,
+-	margin: Size.xm,
+-	marginRight: Size.xm,
+-	color: ColorPalette.primaryBlack,
+-	fontWeight: "bold"
++    margin: Size.xm,
++    marginRight: Size.xm,
++    color: ColorPalette.primaryBlack,
++    fontWeight: "bold",
+   },
+   logo: {
+     width: 66,
+     height: 66,
+-	marginTop: Size.xm,
+-	marginBottom: Size.xm
++    marginTop: Size.xm,
++    marginBottom: Size.xm,
+   },
+-
+-
+ });
+ 
+ export default HomeScreen;
+-- 
+2.36.1.windows.1
+

@@ -2,33 +2,39 @@ import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomSpinner from "../CustomSpinner/CustomSpinner";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Global from "../../../global";
 
-const CustomFriendsItem = ({ friends }) => {
-	if (friends === null || friends === undefined) {
+const CustomGroupsItem = ({ groups }) => {
+	const navigation = useNavigation();
+
+	if (groups === null || groups === undefined) {
 		return <CustomSpinner />;
 	}
 
-	if (friends.length === 0) {
+	if (groups.length === 0) {
 		return (
 			<View style={styles.container}>
-				<Text style={styles.initialText}>Don't you have any friends yet?</Text>
+				<Text style={styles.initialText}>Don't you have any groups yet?</Text>
 			</View>
 		);
 	}
 
-	const onSendPress = (fm) => {
-		const email = fm;
-
+	const onEditPress = (groupId) => {
 		axios
-			.post(`${Global.server}/email/reinvitation`, {
-				email: email,
-				authUser: Global.authUserId,
-			})
+			.get(`${Global.server}/groups/${groupId}`, {})
 			.then(function (response) {
 				// handle success
-				alert("Invitation resent successfully");
+				const groupName = response.data.results[0].groupName;
+				const groupDescription = response.data.results[0].groupDescription;
+				const users = response.data.results[0].users;
+				navigation.navigate("GroupsUpdate", {
+					groupId,
+					groupName,
+					groupDescription,
+					users,
+				});
 			})
 			.catch(function (error) {
 				// handle error
@@ -36,17 +42,12 @@ const CustomFriendsItem = ({ friends }) => {
 			});
 	};
 
-	const onDeletePress = (fm) => {
-		const email = fm;
-		const authUser = Global.authUserId;
-
+	const onDeletePress = (groupId) => {
 		axios
-			.delete(`${Global.server}/users/${authUser}/friends`, {
-				data: { email: email },
-			})
+			.delete(`${Global.server}/groups/${groupId}`, {})
 			.then(function (response) {
 				// handle success
-				alert("Friend deleted successfully");
+				alert("Group deleted successfully");
 			})
 			.catch(function (error) {
 				// handle error
@@ -56,27 +57,29 @@ const CustomFriendsItem = ({ friends }) => {
 
 	return (
 		<View style={styles.container}>
-			{friends.map(({ friendName, friendEmail, invitationId }) => (
-				<View key={friendEmail} style={styles.friendContainer}>
-					<View style={styles.friendData}>
-						<Text style={styles.friendName}>{friendName}</Text>
-						<Text style={styles.friendEmail}>{friendEmail}</Text>
+			{groups.map(({ _id, groupName, groupDescription, ownerId }) => (
+				<View key={_id} style={styles.groupContainer}>
+					<View style={styles.groupData}>
+						<Text style={styles.groupName}>{groupName}</Text>
+						<Text style={styles.groupEmail}>{groupDescription}</Text>
 					</View>
 					<View>
-						{invitationId !== "" && (
-							<Pressable
-								style={styles.reinviteButton}
-								onPress={() => onSendPress(friendEmail)}
-							>
-								<Text style={styles.friendButtonText}>Reinvite</Text>
-							</Pressable>
+						{ownerId === Global.authUserId && (
+							<>
+								<Pressable
+									style={styles.editButton}
+									onPress={() => onEditPress(_id)}
+								>
+									<Text style={styles.groupButtonText}>Edit</Text>
+								</Pressable>
+								<Pressable
+									style={styles.deleteButton}
+									onPress={() => onDeletePress(_id)}
+								>
+									<Text style={styles.groupButtonText}>Delete</Text>
+								</Pressable>
+							</>
 						)}
-						<Pressable
-							style={styles.deleteButton}
-							onPress={() => onDeletePress(friendEmail)}
-						>
-							<Text style={styles.friendButtonText}>Delete</Text>
-						</Pressable>
 					</View>
 				</View>
 			))}
@@ -98,12 +101,12 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 		paddingRight: 10,
 	},
-	friendContainer: {
+	groupContainer: {
 		display: "flex",
 		flexDirection: "row",
 		marginBottom: 10,
 	},
-	friendData: {
+	groupData: {
 		flex: 1,
 		flexDirection: "column",
 		paddingLeft: 10,
@@ -116,23 +119,23 @@ const styles = StyleSheet.create({
 		borderBottomEndRadius: 4,
 		marginRight: 2,
 	},
-	friendName: {
+	groupName: {
 		color: ColorPalette.primaryBlack,
 		fontSize: Size.xm,
 		fontWeight: "bold",
 	},
-	friendEmail: {
+	groupEmail: {
 		color: ColorPalette.primaryGray,
 		fontSize: Size.ls,
 	},
-	reinviteButton: {
+	editButton: {
 		alignItems: "center",
 		justifyContent: "center",
 		backgroundColor: ColorPalette.primaryBlue,
 		borderRadius: 4,
 		marginBottom: 2,
 	},
-	friendButtonText: {
+	groupButtonText: {
 		color: ColorPalette.primaryWhite,
 		padding: 5,
 		textTransform: "uppercase",
@@ -148,4 +151,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default CustomFriendsItem;
+export default CustomGroupsItem;
