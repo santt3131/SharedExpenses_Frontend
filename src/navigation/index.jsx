@@ -193,7 +193,7 @@ const Navigation = () => {
 							<Image
 								source={
 									focused
-										? require("../../assets/icons/debts.png")
+										? require("../../assets/icons/debtsActive.png")
 										: require("../../assets/icons/debts.png")
 								}
 								style={{
