@@ -29,6 +29,8 @@ const GroupsUpdateScreen = () => {
   const groupDescription = route?.params?.groupDescription;
   const users = route?.params?.users;
 
+  console.log(users);
+
   const { control, handleSubmit, watch } = useForm({
     defaultValues: { name: groupName, description: groupDescription },
   });
@@ -61,7 +63,22 @@ const GroupsUpdateScreen = () => {
     await axios
       .get(`${Global.server}/users/${Global.authUserId}/friends`, {})
       .then(function (response) {
-        setFriends(response.data.results[0].friends);
+        const friendsReceived = response.data.results[0].friends;
+        let newFriends = [];
+        friendsReceived.forEach(function (fr) {
+          if (fr.friendId === "62b5e88ba6e78636d6488645") {
+            fr.selected = true;
+          } else {
+            fr.selected = false;
+          }
+          newFriends = newFriends.push(fr);
+        });
+
+        console.log(newFriends);
+
+        //console.log(friendsReceived);
+
+        //setFriends(response.data.results[0].friends);
       })
       .catch(function (error) {
         console.log(error);
