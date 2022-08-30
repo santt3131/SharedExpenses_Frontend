@@ -8,63 +8,63 @@ import axios from "axios";
 import Global from "../../../global";
 
 const GroupsListScreen = () => {
-  const navigation = useNavigation();
+	const navigation = useNavigation();
 
-  const [groups, setGroups] = useState("");
+	const [groups, setGroups] = useState("");
 
-  useEffect(() => {
-    onPressList();
-  }, []);
+	useEffect(() => {
+		onPressList();
+	}, []);
 
-  const onPressAdd = async () => {
-    navigation.navigate("GroupsAdd");
-  };
+	const onPressAdd = async () => {
+		navigation.navigate("GroupsAdd");
+	};
 
-  const onPressList = () => {
-    axios
-      .get(`${Global.server}/users/${Global.authUserId}/groups`, {})
-      .then(function (response) {
-        const allGroups = response.data.results[0].groups;
-        setGroups(allGroups);
-      })
-      .catch(function (error) {
-        alert(error.message);
-      });
+	const onPressList = () => {
+		axios
+			.get(`${Global.server}/users/${Global.authUserId}/groups`, {})
+			.then(function (response) {
+				const allGroups = response.data.results[0].groups;
+				setGroups(allGroups);
+			})
+			.catch(function (error) {
+				alert(error.message);
+			});
 
-    navigation.navigate("Groups");
-  };
+		navigation.navigate("Groups");
+	};
 
-  return (
-    <>
-      <CustomTopbar
-        screenTitle="Groups"
-        onPressAdd={onPressAdd}
-        onPressList={onPressList}
-        addDisabled={false}
-        listDisabled={true}
-      />
+	return (
+		<>
+			<CustomTopbar
+				screenTitle="Groups"
+				onPressAdd={onPressAdd}
+				onPressList={onPressList}
+				addDisabled={false}
+				listDisabled={true}
+			/>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.container}>
-          <Text style={styles.text}>My Groups</Text>
-          <CustomGroupsItem groups={groups} />
-        </View>
-      </ScrollView>
-    </>
-  );
+			<ScrollView showsVerticalScrollIndicator={false}>
+				<View style={styles.container}>
+					<Text style={styles.text}>My Groups</Text>
+					<CustomGroupsItem groups={groups} />
+				</View>
+			</ScrollView>
+		</>
+	);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 10,
-  },
-  text: {
-    color: ColorPalette.primaryBlue,
-    fontSize: Size.xl,
-    margin: 10,
-    fontWeight: "bold",
-    alignSelf: "center",
-  },
+	container: {
+		paddingBottom: 10,
+	},
+	text: {
+		color: ColorPalette.primaryBlue,
+		fontSize: Size.xl,
+		margin: 10,
+		fontWeight: "bold",
+		alignSelf: "center",
+	},
 });
 
 export default GroupsListScreen;

@@ -27,7 +27,7 @@ const ExpensesListScreen = () => {
 
 	const onPressList = () => {
 		axios
-			.get("http://localhost:8080/users/62b5e88ba6e78636d6488645/expenses", {})
+			.get(`${Global.server}/users/62b5e88ba6e78636d6488645/expenses`, {})
 			.then(function (response) {
 				const expensesList = response.data.results;
 				setExpensesList(expensesList);
