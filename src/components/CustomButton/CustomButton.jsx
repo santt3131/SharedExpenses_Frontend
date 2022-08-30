@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 
 const CustomButton = ({
@@ -10,24 +10,27 @@ const CustomButton = ({
   fgColor,
 }) => {
   return (
-    <Pressable
-      onPress={onPress}
-      style={[
-        styles.container,
-        styles[`container_${type}`],
-        bgColor ? { backgroundColor: bgColor } : {},
-      ]}
-    >
-      <Text
+    <View style={styles.container}>
+
+      <Pressable
+        onPress={onPress}
         style={[
-          styles.text,
-          styles[`text_${type}`],
-          fgColor ? { color: fgColor } : {},
+          styles.button,
+          styles[`container_${type}`],
+          bgColor ? { backgroundColor: bgColor } : {},
         ]}
       >
-        {text}
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.text,
+            styles[`text_${type}`],
+            fgColor ? { color: fgColor } : {},
+          ]}
+        >
+          {text}
+        </Text>
+      </Pressable>
+    </View>
   );
 };
 
@@ -35,15 +38,24 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
 
-    padding: 13,
+    padding: 1,
     marginVertical: 5,
 
     alignItems: "center",
+    //borderColor: 'red',
+    //borderWidth: 2
+  },
+  
+  button: {
     borderRadius: 5,
+    width: "100%",
+    padding: 13,
+    marginVertical: 5,
+    alignItems: 'center'
   },
 
   container_PRIMARY: {
-    backgroundColor: ColorPalette.primaryGreen,
+    backgroundColor: ColorPalette.primaryBlue,
   },
 
   container_SECONDARY: {
