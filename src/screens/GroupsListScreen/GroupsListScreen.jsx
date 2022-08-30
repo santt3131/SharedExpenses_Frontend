@@ -2,41 +2,42 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Button } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
-import CustomFriendsItem from "../../components/CustomFriendsItem";
+import CustomGroupsItem from "../../components/CustomGroupsItem";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Global from "../../../global";
 
-const FriendsListScreen = () => {
+const GroupsListScreen = () => {
 	const navigation = useNavigation();
 
-	const [friends, setFriends] = useState([]);
+	const [groups, setGroups] = useState("");
 
 	useEffect(() => {
 		onPressList();
 	}, []);
 
 	const onPressAdd = async () => {
-		navigation.navigate("FriendsAdd");
+		navigation.navigate("GroupsAdd");
 	};
 
 	const onPressList = () => {
 		axios
-			.get(`${Global.server}/users/${Global.authUserId}/friends`, {})
+			.get(`${Global.server}/users/${Global.authUserId}/groups`, {})
 			.then(function (response) {
-				setFriends(response.data.results[0].friends);
+				const allGroups = response.data.results[0].groups;
+				setGroups(allGroups);
 			})
 			.catch(function (error) {
 				alert(error.message);
 			});
 
-		navigation.navigate("Friends");
+		navigation.navigate("Groups");
 	};
 
 	return (
 		<>
 			<CustomTopbar
-				screenTitle="Friends"
+				screenTitle="Groups"
 				onPressAdd={onPressAdd}
 				onPressList={onPressList}
 				addDisabled={false}
@@ -45,8 +46,8 @@ const FriendsListScreen = () => {
 
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.container}>
-					<Text style={styles.text}>My Friends</Text>
-					<CustomFriendsItem friends={friends} />
+					<Text style={styles.text}>My Groups</Text>
+					<CustomGroupsItem groups={groups} />
 				</View>
 			</ScrollView>
 		</>
@@ -66,4 +67,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default FriendsListScreen;
+export default GroupsListScreen;

@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from "react-native";
-import Collapsible from 'react-native-collapsible';
+import {
+	View,
+	Text,
+	StyleSheet,
+	ScrollView,
+	TextInput,
+	TouchableOpacity,
+} from "react-native";
+import Collapsible from "react-native-collapsible";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { ColorPalette, Size } from "../../../appStyles";
@@ -10,11 +17,10 @@ import { useForm } from "react-hook-form";
 import CustomButton from "../../components/CustomButton";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Global from "../../../global";
-import { FontAwesome5  } from '@expo/vector-icons'; 
+import { FontAwesome5 } from "@expo/vector-icons";
 import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
 //import numbro from 'numbro'
 import PaymentDistributionSection from "../../components/PaymentDistribution/PaymentDistributionSection";
-
 
 const screenTitle = "Expenses";
 
@@ -27,13 +33,13 @@ const ExprensesScreen = () => {
 
 	const toggleCategory = () => {
 		setcollapsCategory(!collapsCategory);
-  	};
+	};
 	const toggleTitle = () => {
 		setcollapsTitle(!collapsTitle);
-  	};
+	};
 	const toggleShareMethod = () => {
 		setcollapsShareMethod(!collapsShareMethod);
-  	};
+	};
 	const navigation = useNavigation();
 	const onPressAdd = () => {
 		navigation.navigate("ExpensesAdd");
@@ -63,17 +69,17 @@ const ExprensesScreen = () => {
 			expenseTotal: 0,
 		},
 	});
-	
-	const [expTotal, setExpTotal] = useState(null)
+
+	const [expTotal, setExpTotal] = useState(null);
 	useEffect(() => {
-	  distributePayments();
-	}, [expTotal])
-	
-	console.log('\n\nTotal spending: ', expTotal);
+		distributePayments();
+	}, [expTotal]);
+
+	console.log("\n\nTotal spending: ", expTotal);
 	//const expTotal = watch("expenseTotal");
-	
+
 	const [arrayDesiredPay, setarrayDesiredPay] = useState([]); //Pago deseado
-	console.log('shares: ', arrayDesiredPay)
+	console.log("shares: ", arrayDesiredPay);
 
 	const distributePayments = () => {
 		let shareArray = [];
@@ -84,27 +90,25 @@ const ExprensesScreen = () => {
 			console.log("Introduce the amount spended in the field 'How Much' ");
 			setmodalVisible(true);
 			trigger();
-		} 
-		if(userByGroupId && expTotal) {
+		}
+		if (userByGroupId && expTotal) {
 			setmodalVisible(false);
-			let numberOfUser = userByGroupId.length
-			if(userByGroupId) {
+			let numberOfUser = userByGroupId.length;
+			if (userByGroupId) {
 				userShare = expTotal / numberOfUser;
-			} 
-
-			for(let i = 0; i < numberOfUser; i++) {
-				let roundedShare = Math.round((userShare + Number.EPSILON) * 100) / 100
-				shareArray.push(roundedShare.toString())
 			}
-			userShareArray = userByGroupId.map(function(item, index) {
-				return(
-					{ id: item._id, userName: item.name, toPay: shareArray[index]}
-					);
-			})
+
+			for (let i = 0; i < numberOfUser; i++) {
+				let roundedShare = Math.round((userShare + Number.EPSILON) * 100) / 100;
+				shareArray.push(roundedShare.toString());
+			}
+			userShareArray = userByGroupId.map(function (item, index) {
+				return { id: item._id, userName: item.name, toPay: shareArray[index] };
+			});
 			setarrayDesiredPay(userShareArray);
 		}
 	};
-	
+
 	//console.log('user Share array: ', userShareArray)
 
 	const onSubmit = (data) => {
@@ -175,7 +179,7 @@ const ExprensesScreen = () => {
 	const selectedCategories = (dataSelected) => {
 		setselectCategories(dataSelected);
 	};
-	console.log('category: ', selectCategories)
+	console.log("category: ", selectCategories);
 	//Método de división
 	const arraySharingMethod = {
 		results: [
@@ -187,15 +191,13 @@ const ExprensesScreen = () => {
 				_id: "62e6f9fc1375baa55c88354b",
 				category: "Not even",
 			},
-			
 		],
 	};
 
 	const [selectDivision, setSelectDivision] = useState(undefined);
-	
+
 	//Modal
 	const [modalVisible, setmodalVisible] = useState(false);
-
 
 	//1.4 Set Debe (con input de paid)
 	const [debt, setdebt] = useState("");
@@ -233,9 +235,9 @@ const ExprensesScreen = () => {
 		date.getSeconds();
 
 	return (
-		<View style={{flex:1}}>
-			<StatusBar/>
-			<CustomTopbar screenTitle={screenTitle} sectionIcon='euro-sign'/>
+		<View style={{ flex: 1 }}>
+			<StatusBar />
+			<CustomTopbar screenTitle={screenTitle} sectionIcon="euro-sign" />
 
 			<View style={styles.totalCostContainer}>
 				<Text style={styles.categoryTitle}>How much?</Text>
@@ -243,51 +245,59 @@ const ExprensesScreen = () => {
 					name="expenseTotal"
 					placeholder="total cost"
 					control={control}
-                    onChangeText={(text) => { setExpTotal(text) }}
-					onEndEditing={(text) => { distributePayments(text) }}
-					
+					onChangeText={(text) => {
+						setExpTotal(text);
+					}}
+					onEndEditing={(text) => {
+						distributePayments(text);
+					}}
 					//onChange={console.log("expenseTotal es : ", expTotal)}
 					// onChange={console.log(
-						// 	"expenseTotal es : ",
+					// 	"expenseTotal es : ",
 					// 	getValues("expenseTotal")
 					// )}
-					keyboardType='number-pad'
+					keyboardType="number-pad"
 					rules={{
 						required: "Total cost must be a valid number",
 						pattern: { value: NUMBER_REGEX, message: "Total cost is invalid" },
 					}}
-					style={[styles.totalTextInput, {paddingVertical:0,}]}
+					style={[styles.totalTextInput, { paddingVertical: 0 }]}
 				/>
 			</View>
-				
+
 			<ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
-				
-				
 				<TouchableOpacity onPress={toggleCategory}>
-					<View style={{flexDirection:'row'}}>
+					<View style={{ flexDirection: "row" }}>
 						<Text style={styles.categoryTitle}>Select a Category</Text>
-						<FontAwesome5  name={ selectCategories === undefined ? "question" : "check"}
-						size={Size.ls} color={ColorPalette.primarySeance} style={{marginTop: 13, marginLeft:0}}/>
+						<FontAwesome5
+							name={selectCategories === undefined ? "question" : "check"}
+							size={Size.ls}
+							color={ColorPalette.primarySeance}
+							style={{ marginTop: 13, marginLeft: 0 }}
+						/>
 					</View>
 				</TouchableOpacity>
 				<Collapsible collapsed={collapsCategory} align="center">
 					<CustomDropdown
-					title="Categorias"
-					listdrop={CategoryList}
-					selected={obj => selectedCategories(obj.category)}
-					onValueChange={(_id, category) =>
-							setselectCategories(category)							
-						}
+						title="Categorias"
+						listdrop={CategoryList}
+						selected={(obj) => selectedCategories(obj.category)}
+						onValueChange={(_id, category) => setselectCategories(category)}
 					></CustomDropdown>
 				</Collapsible>
 
-				<TouchableOpacity onPress={toggleTitle}> 
-					<View style={{flexDirection:'row'}}>
+				<TouchableOpacity onPress={toggleTitle}>
+					<View style={{ flexDirection: "row" }}>
 						<Text style={styles.categoryTitle}>A name for this expense</Text>
-						<FontAwesome5  name="question" size={Size.ls} color={ColorPalette.primarySeance} style={{marginTop: 13, marginLeft:0}}/>
+						<FontAwesome5
+							name="question"
+							size={Size.ls}
+							color={ColorPalette.primarySeance}
+							style={{ marginTop: 13, marginLeft: 0 }}
+						/>
 					</View>
 				</TouchableOpacity>
-				<Collapsible collapsed={collapsTitle} align="center"> 
+				<Collapsible collapsed={collapsTitle} align="center">
 					<TextInput
 						name="title"
 						value={`We spend on ${selectedCategories} the ${formatedDay}`}
@@ -299,11 +309,9 @@ const ExprensesScreen = () => {
 						}}
 						style={styles.totalTextInput}
 					/>
-				</Collapsible>	
-				
-				
-				<PaymentDistributionSection dataArray={arrayDesiredPay}/>
-					
+				</Collapsible>
+
+				<PaymentDistributionSection dataArray={arrayDesiredPay} />
 
 				{/*Probando */}
 				<Grid>
@@ -450,93 +458,92 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "column",
 	},
-	
+
 	inputControll: {
-		width:'40%',
+		width: "40%",
 	},
 	categoryTitle: {
-        fontSize: Size.mm,
-        marginVertical: 10,
-        marginLeft: 10,
+		fontSize: Size.mm,
+		marginVertical: 10,
+		marginLeft: 10,
 		marginRight: 5,
-        color: ColorPalette.primaryBlack
-    },
+		color: ColorPalette.primaryBlack,
+	},
 	item: {
 		width: 280,
 		opacity: 1,
 		height: 40,
 		marginTop: 5,
 		marginLeft: 10,
-		marginBottom: 15
+		marginBottom: 15,
 	},
 	itemContainer: {
-		flexDirection: 'row',
-		justifyContent: 'end',
-		alignItems: 'center',
+		flexDirection: "row",
+		justifyContent: "end",
+		alignItems: "center",
 		height: 40,
 		marginTop: 5,
 		marginBottom: 0,
 	},
 	totalCostContainer: {
-		flexDirection: 'row',
+		flexDirection: "row",
 		marginBottom: 10,
-		minWidth:'40%',
+		minWidth: "40%",
 	},
 	totalTextInput: {
-		fontSize: 20, 
-		borderColor: ColorPalette.primaryGray, 
-		borderWidth: 1, 
-		borderRadius: 5, 
+		fontSize: 20,
+		borderColor: ColorPalette.primaryGray,
+		borderWidth: 1,
+		borderRadius: 5,
 		marginHorizontal: 5,
 		marginVertical: 0,
 		paddingHorizontal: 10,
 		paddingVertical: 15,
-		backgroundColor: ColorPalette.primaryWhite
+		backgroundColor: ColorPalette.primaryWhite,
 	},
 	otherTextInput: {
-		minWidth: '20%',
-		fontSize: 18, 
-		borderColor: ColorPalette.primaryGray, 
-		borderWidth: 1, 
-		borderRadius: 5, 
+		minWidth: "20%",
+		fontSize: 18,
+		borderColor: ColorPalette.primaryGray,
+		borderWidth: 1,
+		borderRadius: 5,
 		marginLeft: 5,
 		marginVertical: 0,
 		paddingHorizontal: 10,
 		paddingVertical: 7,
-		backgroundColor: ColorPalette.primaryWhite
+		backgroundColor: ColorPalette.primaryWhite,
 	},
 	plainTextInput: {
-		minWidth: '20%',
-		fontSize: 18, 
-		borderColor: ColorPalette.primaryGray, 
-		borderWidth: 1, 
-		borderRadius: 5, 
+		minWidth: "20%",
+		fontSize: 18,
+		borderColor: ColorPalette.primaryGray,
+		borderWidth: 1,
+		borderRadius: 5,
 		marginLeft: 5,
 		marginVertical: 0,
 		paddingHorizontal: 10,
 		paddingVertical: 10,
-
 	},
 	userName: {
-		width:'70%',
+		width: "70%",
 		fontSize: Size.mm,
-		textAlign: 'right',
+		textAlign: "right",
 		marginLeft: 5,
-		marginBottom:0
+		marginBottom: 0,
 	},
 	paymentConcepts: {
-		width:'70%',
+		width: "70%",
 		fontSize: Size.xm,
-		textAlign: 'right',
-		marginBottom:0,
-		marginLeft: 5
+		textAlign: "right",
+		marginBottom: 0,
+		marginLeft: 5,
 	},
 	debValue: {
 		fontSize: Size.lm,
-		fontWeight: 'bold',
+		fontWeight: "bold",
 		marginBottom: 0,
-		color: ColorPalette.primaryBlue
-	}
+		color: ColorPalette.primaryBlue,
+	},
 });
 
 export default ExprensesScreen;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -11,12 +11,11 @@ import NewPasswordScreen from "../screens/NewPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FriendsListScreen from "../screens/FriendsListScreen";
 import FriendsAddScreen from "../screens/FriendsAddScreen";
-import GroupsScreen from "../screens/GroupsScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
-import ExpensesListScreen from "../screens/ExpensesListScreen";
-import { ColorPalette, Size } from "../../appStyles";
-//import DebtsScreen from "../screens/DebtsScreen";
-//import SettingsScreen from "../screens/SettingsScreen";
+import DebtsScreen from "../screens/DebtsScreen";
+import GroupsListScreen from "../screens/GroupsListScreen";
+import GroupsAddScreen from "../screens/GroupsAddScreen";
+import GroupsUpdateScreen from "../screens/GroupsUpdateScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,12 +26,7 @@ const Exit = () => {
 const Navigation = () => {
 	return (
 		<NavigationContainer>
-			<Tab.Navigator
-				screenOptions={{
-					headerShown: false,
-					tabBarStyle: styles.navContainer,
-				}}
-			>
+			<Tab.Navigator screenOptions={{ headerShown: false }}>
 				<Tab.Screen
 					name="SignIn"
 					component={SignInScreen}
@@ -94,12 +88,15 @@ const Navigation = () => {
 										? require("../../assets/icons/homeActive.png")
 										: require("../../assets/icons/home.png")
 								}
-								style={styles.navBarIcons}
+								style={{
+									width: 40,
+									height: 40,
+									borderRadius: 0,
+								}}
 							/>
 						),
 						tabBarShowLabel: false,
 					}}
-					style={styles.navContainer}
 				/>
 				<Tab.Screen
 					name="Friends"
@@ -112,7 +109,11 @@ const Navigation = () => {
 										? require("../../assets/icons/friendsActive.png")
 										: require("../../assets/icons/friends.png")
 								}
-								style={styles.navBarIcons}
+								style={{
+									width: 40,
+									height: 40,
+									borderRadius: 0,
+								}}
 							/>
 						),
 						tabBarShowLabel: false,
@@ -128,7 +129,7 @@ const Navigation = () => {
 				/>
 				<Tab.Screen
 					name="Groups"
-					component={GroupsScreen}
+					component={GroupsListScreen}
 					options={{
 						tabBarIcon: ({ focused }) => (
 							<Image
@@ -137,15 +138,35 @@ const Navigation = () => {
 										? require("../../assets/icons/groupsActive.png")
 										: require("../../assets/icons/groups.png")
 								}
-								style={styles.navBarIcons}
+								style={{
+									width: 40,
+									height: 40,
+									borderRadius: 0,
+								}}
 							/>
 						),
 						tabBarShowLabel: false,
 					}}
 				/>
 				<Tab.Screen
+					name="GroupsAdd"
+					component={GroupsAddScreen}
+					options={{
+						tabBarButton: () => null,
+						tabBarShowLabel: false,
+					}}
+				/>
+				<Tab.Screen
+					name="GroupsUpdate"
+					component={GroupsUpdateScreen}
+					options={{
+						tabBarButton: () => null,
+						tabBarShowLabel: false,
+					}}
+				/>
+				<Tab.Screen
 					name="Expenses"
-					component={ExpensesListScreen}
+					component={ExpensesScreen}
 					options={{
 						tabBarIcon: ({ focused }) => (
 							<Image
@@ -154,17 +175,34 @@ const Navigation = () => {
 										? require("../../assets/icons/expensesActive.png")
 										: require("../../assets/icons/expenses.png")
 								}
-								style={styles.navBarIcons}
+								style={{
+									width: 40,
+									height: 40,
+									borderRadius: 0,
+								}}
 							/>
 						),
 						tabBarShowLabel: false,
 					}}
 				/>
 				<Tab.Screen
-					name="ExpensesAdd"
-					component={ExpensesScreen}
+					name="Debts"
+					component={DebtsScreen}
 					options={{
-						tabBarButton: () => null,
+						tabBarIcon: ({ focused }) => (
+							<Image
+								source={
+									focused
+										? require("../../assets/icons/debtsActive.png")
+										: require("../../assets/icons/debts.png")
+								}
+								style={{
+									width: 40,
+									height: 40,
+									borderRadius: 0,
+								}}
+							/>
+						),
 						tabBarShowLabel: false,
 					}}
 				/>
@@ -173,18 +211,4 @@ const Navigation = () => {
 	);
 };
 
-const styles = StyleSheet.create({
-	navContainer: {
-		backgroundColor: "#efe8dc61",
-		flex: 1 / 7,
-		flexDirection: "row",
-		justifyContent: "space-evenly",
-		borderTopWidth: 1,
-		borderTopColor: ColorPalette.primaryWhite,
-	},
-	navBarIcons: {
-		width: 55,
-		height: 55,
-	},
-});
 export default Navigation;

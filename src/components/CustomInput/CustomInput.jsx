@@ -10,22 +10,20 @@ const CustomInput = ({
 	placeholder,
 	secureTextEntry,
 	keyboardType,
-	autoCapitalize
+	autoCapitalize,
 }) => {
 	return (
-		<View style={styles.container}>
-			
-			<Controller
-				control={control}
-				name={name}
-				rules={rules}
-				keyboardType={keyboardType}
-				autoCapitalize={autoCapitalize}
-				render={({
-					field: { value, onChange, onBlur },
-					fieldState: { error },
-				}) => (
-					
+		<Controller
+			control={control}
+			name={name}
+			rules={rules}
+			keyboardType={keyboardType}
+			autoCapitalize={autoCapitalize}
+			render={({
+				field: { value, onChange, onBlur },
+				fieldState: { error },
+			}) => (
+				<>
 					<View
 						style={[
 							styles.container,
@@ -47,39 +45,36 @@ const CustomInput = ({
 							secureTextEntry={secureTextEntry}
 							keyboardType={keyboardType}
 						/>
+					</View>
 					{error && (
 						<Text
-						style={{ color: ColorPalette.primaryRed, alignSelf: "stretch" }}
+							style={{ color: ColorPalette.primaryRed, alignSelf: "stretch" }}
 						>
 							{error.message || "Error"}
 						</Text>
 					)}
-					</View>
-					
-				)}
-			/>
-		</View>
+				</>
+			)}
+		/>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
-		alignItems: "center",
-		//borderColor: 'red',
-    	//borderWidth: 2
-	},
-	input: {
-		width: '100%',
-		height: 40,
-		fontSize: Size.xm,
-		color: ColorPalette.primaryBlack,
 		backgroundColor: ColorPalette.primaryWhite,
+		width: "100%",
+
+		borderColor: ColorPalette.veryLightGrey,
 		borderWidth: 1,
 		borderRadius: 5,
-		borderColor: ColorPalette.veryLightGrey,
+
 		paddingHorizontal: 10,
 		marginVertical: 5,
+	},
+	input: {
+		height: 48,
+		color: ColorPalette.primaryBlack,
+		fontSize: Size.xm,
 	},
 });
 

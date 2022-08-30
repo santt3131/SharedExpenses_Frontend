@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
 
   container_PRIMARY: {
-    backgroundColor: ColorPalette.primaryGreen,
+    backgroundColor: ColorPalette.primaryBlue,
   },
 
   container_SECONDARY: {
