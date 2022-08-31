@@ -50,7 +50,7 @@ const ExpensesListScreen = () => {
 
 	useEffect(() => {
 		loadUserPayment();
-	}, []);
+	}, [userPayment]);
 
 	if (expensesList === null || expensesList === undefined) {
 		return <CustomSpinner />;
