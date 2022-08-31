@@ -12,6 +12,7 @@ import HomeScreen from "../screens/HomeScreen";
 import FriendsListScreen from "../screens/FriendsListScreen";
 import FriendsAddScreen from "../screens/FriendsAddScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
+import ExpensesListScreen from "../screens/ExpensesListScreen";
 import DebtsScreen from "../screens/DebtsScreen";
 import GroupsListScreen from "../screens/GroupsListScreen";
 import GroupsAddScreen from "../screens/GroupsAddScreen";
@@ -165,8 +166,16 @@ const Navigation = () => {
 					}}
 				/>
 				<Tab.Screen
-					name="Expenses"
+					name="ExpensesAdd"
 					component={ExpensesScreen}
+					options={{
+						tabBarButton: () => null,
+						tabBarShowLabel: false,
+					}}
+				/>
+				<Tab.Screen
+					name="Expenses"
+					component={ExpensesListScreen}
 					options={{
 						tabBarIcon: ({ focused }) => (
 							<Image
