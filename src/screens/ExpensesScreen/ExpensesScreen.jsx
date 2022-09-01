@@ -20,6 +20,7 @@ import Global from "../../../global";
 import { FontAwesome5 } from "@expo/vector-icons";
 import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
 //import numbro from 'numbro'
+import axios from "axios";
 import PaymentDistributionSection from "../../components/PaymentDistribution/PaymentDistributionSection";
 
 const screenTitle = "Expenses";
@@ -44,8 +45,17 @@ const ExprensesScreen = () => {
 	const onPressAdd = () => {
 		navigation.navigate("ExpensesAdd");
 	};
-
+	const [expensesList, setExpensesList] = useState(null);
 	const onPressList = () => {
+		axios
+			.get(`${Global.server}/users/62b5e88ba6e78636d6488645/expenses`, {})
+			.then(function (response) {
+				const expensesList = response.data.results;
+				setExpensesList(expensesList);
+			})
+			.catch(function (error) {
+				alert(error.message);
+			});
 		navigation.navigate("Expenses");
 	};
 
@@ -237,7 +247,13 @@ const ExprensesScreen = () => {
 	return (
 		<View style={{ flex: 1 }}>
 			<StatusBar />
-			<CustomTopbar screenTitle={screenTitle} sectionIcon="euro-sign" />
+			<CustomTopbar
+				screenTitle={screenTitle}
+				onPressAdd={onPressAdd}
+				onPressList={onPressList}
+				addDisabled={false}
+				listDisabled={false}
+			/>
 
 			<View style={styles.totalCostContainer}>
 				<Text style={styles.categoryTitle}>How much?</Text>
