@@ -203,7 +203,7 @@ const GroupsAddScreen = () => {
               onPress={closeList}
               style={{ flex: 1 }}
             >
-              <View style={{ flex: 1, marginTop: 305, marginBottom: 50 }}>
+              <View style={{ flex: 1, marginTop: 275, marginBottom: 50 }}>
                 <View style={styles.listWrapper}>
                   <View style={styles.listContainer}>
                     <FlatList

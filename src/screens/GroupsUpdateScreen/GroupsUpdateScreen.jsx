@@ -63,6 +63,10 @@ const GroupsUpdateScreen = () => {
       .then(function (response) {
         const friendsReceived = response.data.results[0].friends;
         let newFriends = [];
+        const friendsIds = [
+          "62b5e88ba6e78636d6488645",
+          "62b5e88ba6e78636d6488647",
+        ];
         friendsReceived.forEach(function (fr) {
           if (fr.friendId === "62b5e88ba6e78636d6488645") {
             fr.selected = true;
@@ -222,7 +226,7 @@ const GroupsUpdateScreen = () => {
               onPress={closeList}
               style={{ flex: 1 }}
             >
-              <View style={{ flex: 1, marginTop: 305, marginBottom: 50 }}>
+              <View style={{ flex: 1, marginTop: 275, marginBottom: 50 }}>
                 <View style={styles.listWrapper}>
                   <View style={styles.listContainer}>
                     <FlatList
