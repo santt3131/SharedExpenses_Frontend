@@ -12,12 +12,14 @@ const ColorPalette = {
   primaryRouge: "#B83B5E",
   primarySeance: "#6A2C70",
   primaryPurple: "#3B71F3",
-  
+
   governorBay: "#514FA0",
   navyBlue: "#0071C5",
   pacificBlue: "#0091D8",
   irisBlue: "#00AED5",
   primaryGreen: "#00C8C0",
+
+  secondaryGreen: "#008000"
 };
 
 const Size = {
