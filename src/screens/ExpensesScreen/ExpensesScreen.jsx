@@ -252,8 +252,8 @@ const ExprensesScreen = () => {
         addDisabled={false}
         listDisabled={false}
         sectionIcon="wallet"
-        leftIcon=""
-        rightIcon=""
+        leftIcon="plus"
+        rightIcon="list"
       />
 
       <View style={styles.totalCostContainer}>

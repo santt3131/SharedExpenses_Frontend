@@ -79,7 +79,7 @@ const FriendsAddScreen = () => {
         onPressList={onPressList}
         addDisabled={true}
         listDisabled={false}
-        sectionIcon="user"
+        sectionIcon="user-alt"
         leftIcon="plus"
         rightIcon="list"
       />
