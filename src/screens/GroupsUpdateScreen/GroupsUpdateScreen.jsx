@@ -71,7 +71,6 @@ const GroupsUpdateScreen = () => {
           }
           newFriends.push(fr);
         });
-        setFriends(newFriends);
       })
       .catch(function (error) {
         console.log(error);
