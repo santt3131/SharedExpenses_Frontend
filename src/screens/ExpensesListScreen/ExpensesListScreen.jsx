@@ -1,12 +1,117 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Button } from "react-native";
+import {
+	View,
+	Text,
+	Image,
+	StyleSheet,
+	ScrollView,
+	Button,
+} from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
 import axios from "axios";
 import Moment from "moment";
 import Global from "../../../global";
 import CustomSpinner from "../../components/CustomSpinner/CustomSpinner";
+
+const DetailPayment = ({ objPayment }) => {
+	const [userPayment, setLoadUserPayment] = useState(null);
+
+	if (objPayment === null || objPayment === undefined) {
+		return <CustomSpinner />;
+	}
+
+	let loadUserPayment = async (userId) => {
+		if (userId) {
+			const response = await fetch(`${Global.server}/users/${userId}`);
+			const json = await response.json();
+			setLoadUserPayment(json.results[0]);
+		}
+	};
+
+	if (objPayment.length === 0) {
+		return (
+			<View style={styles.container}>
+				<Text style={styles.initialText}>Don't you have any payment yet?</Text>
+			</View>
+		);
+	}
+
+	useEffect(() => {
+		loadUserPayment(objPayment?.userToId);
+	}, []);
+
+	return (
+		<>
+			{objPayment?.userToId !== null ? (
+				<>
+					<View style={styles.expenseRow}>
+						<Text>Note: {objPayment.note}</Text>
+						<Text>{Moment(objPayment.date).format("DD/MM/YYYY")}</Text>
+					</View>
+					<View style={styles.expenseRow}>
+						{userPayment !== null ? (
+							<Text>You have made a payment to {userPayment.name}</Text>
+						) : (
+							<Text>Nothing to display</Text>
+						)}
+						<Text>Amount: {objPayment.quantity.$numberDecimal}€</Text>
+					</View>
+				</>
+			) : (
+				<Text>Nothing to display</Text>
+			)}
+		</>
+	);
+};
+
+const ExpensesListScreenOwe = ({ userId, amount }) => {
+	const [userOwe, setUserOwe] = useState(null);
+
+	let loadUserOwe = async (userId) => {
+		if (userId) {
+			const response = await fetch(`${Global.server}/users/${userId}`);
+			const json = await response.json();
+			setUserOwe(json.results[0]);
+		}
+	};
+
+	useEffect(() => {
+		loadUserOwe(userId);
+	}, []);
+
+	if (userOwe === null || userOwe === undefined) {
+		return <CustomSpinner />;
+	}
+
+	if (userOwe.length === 0) {
+		return (
+			<View style={styles.container}>
+				<Text style={styles.initialText}>No one owes you?</Text>
+			</View>
+		);
+	}
+
+	return (
+		<>
+			{userOwe !== null ? (
+				<>
+					<Text style={styles.boldSmallLight}>
+						<Image
+							source={require("../../../assets/icons/check.png")}
+							fadeDuration={0}
+							style={{ width: 20, height: 20 }}
+						/>
+						{userOwe.name} : {amount}€
+					</Text>
+				</>
+			) : (
+				<Text>Nothing to display</Text>
+			)}
+		</>
+	);
+};
 
 const ExpensesListScreen = () => {
 	//TODO - A espera del login
@@ -17,6 +122,9 @@ const ExpensesListScreen = () => {
 	};
 	const navigation = useNavigation();
 	const [expensesList, setExpensesList] = useState(null);
+	//const [userPayment, setLoadUserPayment] = useState(null);
+	// const [userOwe, setUserOwe] = useState(null);
+
 	useEffect(() => {
 		onPressList();
 	}, []);
@@ -37,20 +145,6 @@ const ExpensesListScreen = () => {
 			});
 		navigation.navigate("Expenses");
 	};
-
-	const [userPayment, setLoadUserPayment] = useState(null);
-
-	let loadUserPayment = async (idUser) => {
-		if (idUser) {
-			const response = await fetch(`${Global.server}/users/${idUser}`);
-			const json = await response.json();
-			setLoadUserPayment(json.results[0]);
-		}
-	};
-
-	useEffect(() => {
-		loadUserPayment();
-	}, [userPayment]);
 
 	if (expensesList === null || expensesList === undefined) {
 		return <CustomSpinner />;
@@ -111,63 +205,64 @@ const ExpensesListScreen = () => {
 						<View key={index} style={styles.expenseContainer}>
 							<View style={styles.expenseData}>
 								<Text style={styles.bold}>{title}</Text>
-								<Text>{Moment(date).format("DD/MM/YYYY")}</Text>
-								<Text>Gasto total: {expenseTotal.$numberDecimal}€</Text>
-								<Text style={styles.boldSmall}>Cuenta inicial:</Text>
-								<Text>Pagaste: {handlerPaid(users)}€</Text>
 
-								{handlerLent(users) > 0 ? (
-									<Text>Prestaste: {handlerLent(users)}€</Text>
-								) : (
-									<Text>Debes: {Math.abs(handlerLent(users))}€</Text>
-								)}
-								<Text style={styles.boldSmall}>Detalle de Pagos:</Text>
+								<View style={styles.expenseRow}>
+									<Text style={styles.subtitle}>
+										Total Payment: {expenseTotal.$numberDecimal}€
+									</Text>
+									<Text style={styles.subtitle}>
+										{Moment(date).format("DD/MM/YYYY")}
+									</Text>
+								</View>
+
+								<Text style={styles.boldSmall}>Initial account:</Text>
+								<View style={styles.expenseRow}>
+									<Text>You paid: {handlerPaid(users)}€</Text>
+
+									{handlerLent(users) > 0 ? (
+										<Text style={styles.lent}>
+											You lent: {handlerLent(users)}€
+										</Text>
+									) : (
+										<Text style={styles.owe}>
+											You Owe: {Math.abs(handlerLent(users))}€
+										</Text>
+									)}
+								</View>
+
+								<Text style={styles.boldSmall}>Payment Detail:</Text>
 								{handlerPayments(payments).length > 0 ? (
 									handlerPayments(payments).map((objPayment, index) => {
-										{
-											loadUserPayment(objPayment?.userToId);
-										}
 										return (
-											<>
-												<Text key={`note_${index}`}>
-													Nota: {objPayment.note}
-												</Text>
-												<Text key={`date_${index}`}>
-													{Moment(objPayment.date).format("DD/MM/YYYY")}
-												</Text>
-
-												{userPayment !== null ? (
-													<Text key={`payment_${index}`}>
-														Haz realizado un pago a {userPayment.name}
-													</Text>
-												) : (
-													<Text>nada para visualizar</Text>
-												)}
-
-												<Text key={`quantity_${index}`}>
-													Cantidad: {objPayment.quantity.$numberDecimal}
-												</Text>
-											</>
+											<View key={index}>
+												<DetailPayment objPayment={objPayment}></DetailPayment>
+											</View>
 										);
 									})
 								) : handlerLent(users) > 0 ? (
-									<Text>Pago completado</Text>
+									<Text style={[styles.alert, styles.center]}>
+										Payment completed
+									</Text>
 								) : (
-									<Text>No ha realizado ningún pago hasta al momento</Text>
+									<Text style={styles.center}>
+										You have not made any payment so far
+									</Text>
 								)}
 
 								{handlerLent(users) > 0 ? (
-									<Text style={styles.boldSmall}>Personas que te deben:</Text>
+									<Text style={styles.boldSmall}>People who owe you:</Text>
 								) : null}
 
 								{handlerLent(users) > 0
 									? handlerPeopleOweMe(users).length > 0
 										? handlerPeopleOweMe(users).map((objUser, index) => {
 												return (
-													<>
-														<Text>{objUser.userId}</Text>
-														<Text>Cantidad:{objUser.debt.$numberDecimal}</Text>
-													</>
+													<View key={index}>
+														<ExpensesListScreenOwe
+															userId={objUser?.userId}
+															amount={objUser?.debt.$numberDecimal}
+														></ExpensesListScreenOwe>
+													</View>
 												);
 										  })
 										: null
@@ -213,6 +308,23 @@ const styles = StyleSheet.create({
 		borderBottomEndRadius: 4,
 		marginRight: 2,
 	},
+	expenseRow: {
+		display: "flex",
+		flexDirection: "row",
+		marginBottom: 10,
+		alignItems: "center",
+		justifyContent: "space-around",
+		padding: 2,
+	},
+	subtitle: {
+		color: ColorPalette.primaryBlue,
+		fontSize: Size.ls,
+		fontWeight: "600",
+	},
+	center: {
+		textAlign: "center",
+		padding: 3,
+	},
 	bold: {
 		color: ColorPalette.primaryBlue,
 		fontSize: Size.xm,
@@ -222,6 +334,24 @@ const styles = StyleSheet.create({
 		color: ColorPalette.primaryBlack,
 		fontSize: Size.ls,
 		fontWeight: "bold",
+	},
+	boldSmallLight: {
+		color: ColorPalette.primaryBlack,
+		fontSize: Size.ms,
+		fontWeight: "500",
+	},
+	lent: {
+		color: ColorPalette.secondaryGreen,
+		fontSize: Size.ms,
+		fontWeight: "500",
+	},
+	owe: {
+		color: ColorPalette.primaryRed,
+		fontSize: Size.ms,
+		fontWeight: "500",
+	},
+	alert: {
+		color: ColorPalette.primaryRed,
 	},
 });
 
