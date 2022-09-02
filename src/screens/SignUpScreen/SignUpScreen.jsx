@@ -5,6 +5,8 @@ import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import * as api from "../../api/api";
+
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import * as api from "../../api/api";
 import {
   View,
   Image,
@@ -35,22 +36,18 @@ const SignInScreen = () => {
   const email = watch("email");
 
   const onSignInPressed = async (data) => {
-    if (loading) {
-      return;
+    const { success, result, error } = await api.login(data);
+    if (success) {
+      console.log(result.accessToken);
+      //onLogin(token);
+      navigation.navigate("Home");
+
+    } else {
+      setMessage(error);
+
     }
-
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    } catch (e) {
-      console.warn(e);
-    }
-
-    setLoading(false);
-
-    navigation.navigate("Home");
   };
+
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });
