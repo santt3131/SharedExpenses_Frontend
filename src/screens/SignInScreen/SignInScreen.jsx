@@ -18,12 +18,6 @@ import { useForm } from "react-hook-form";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-/* const LoginOrRegister = ({ onLogin }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [mode, setMode] = useState("login");
-    const [message, setMessage] = useState(null);*/
-
 const SignInScreen = () => {
   const { height } = useWindowDimensions();
 
@@ -34,16 +28,17 @@ const SignInScreen = () => {
   const { control, handleSubmit, watch } = useForm();
 
   const email = watch("email");
+  const [message, setMessage] =   useState(null); 
 
   const onSignInPressed = async (data) => {
     const { success, result, error } = await api.login(data);
     if (success) {
       console.log(result.accessToken);
-      //onLogin(token);
+      onLogin(token);
       navigation.navigate("Home");
 
     } else {
-      setMessage(error);
+      console.log(error);
 
     }
   };

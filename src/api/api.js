@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Global from "../../global";
-const BASE_URL = `http://localhost:${PORT}`;
+const BASE_URL = "http://localhost:8080";
 
 const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
 
@@ -39,7 +39,5 @@ const authApiCall = (method, path, body) => {
 
 export const getTodoList = () => authApiCall("GET", "/users/me/todos");
 export const addTodo = (todo) => authApiCall("POST", "/users/me/todos", todo);
-export const updateTodo = (todo) =>
-  authApiCall("PUT", `/users/me/todos/${todo._id}`, todo);
-export const deleteTodo = (todo) =>
-  authApiCall("DELETE", `/users/me/todos/${todo._id}`);
+export const updateTodo = (todo) => authApiCall("PUT", `/users/me/todos/${todo._id}`, todo);
+export const deleteTodo = (todo) => authApiCall("DELETE", `/users/me/todos/${todo._id}`);

@@ -1,4 +1,4 @@
-import React from "react";
+import React , { useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
@@ -18,8 +18,22 @@ const SignUpScreen = () => {
 
   const pwd = watch("password");
 
-  const onRegisterPressed = () => {
-    navigation.navigate("ConfirmEmail");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [message, setMessage] =   useState(null);
+
+  const onRegisterPressed = async (data) => {
+    const { success, result, error } = await api.register(data);
+    if (success) {
+      console.log("account created");
+      setMessage("passed");
+      navigation.navigate("ConfirmEmail");
+    } else {
+      console.log("Creation failed : user already exist");
+      message.alert ("Creation failed : user already exist");
+      setMessage(error);
+    }
   };
 
   const onPrivacyPolicyPressed = () => {
