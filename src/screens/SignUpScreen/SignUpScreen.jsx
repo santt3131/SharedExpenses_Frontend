@@ -25,13 +25,12 @@ const SignUpScreen = () => {
 
   const onRegisterPressed = async (data) => {
     const { success, result, error } = await api.register(data);
-    if (success) {
+    if (success && code==200) {
       console.log("account created");
       setMessage("passed");
       navigation.navigate("ConfirmEmail");
     } else {
       console.log("Creation failed : user already exist");
-      message.alert ("Creation failed : user already exist");
       setMessage(error);
     }
   };

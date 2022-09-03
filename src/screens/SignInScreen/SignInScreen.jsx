@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import * as api from "../../api/api";
+import Global from "../../../global";
 import {
   View,
   Image,
@@ -33,8 +34,15 @@ const SignInScreen = () => {
   const onSignInPressed = async (data) => {
     const { success, result, error } = await api.login(data);
     if (success) {
-      console.log(result.accessToken);
-      onLogin(token);
+      Global.authUserId = result.userId;
+      Global.authUserGroups = result.userGroups;
+      
+      console.log(result.userId);
+      console.log(result.userToken.accessToken);
+      console.log(result.userGroups);
+      
+      //onLogin(token);
+      
       navigation.navigate("Home");
 
     } else {

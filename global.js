@@ -6,12 +6,15 @@
 //Santi: mi servidor local.
 const serverEndpoint = "http://192.168.1.106:8080";
 
-const authUserId = "62b5e88ba6e78636d6488646";
+//const authUserId = "62b5e88ba6e78636d6488646";
+const authUserId = null;
+const authUserGroups = null;
 
 // global to store the server address
 const Global = {
   server: serverEndpoint,
   authUserId: authUserId,
+  authUserGroups:authUserGroups
 };
 
 export default Global;
