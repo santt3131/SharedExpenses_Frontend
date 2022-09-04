@@ -31,23 +31,23 @@ const SignInScreen = () => {
   const email = watch("email");
   const [message, setMessage] =   useState(null); 
 
-  const onSignInPressed = async (data) => {
+  const onSignInPressed = async (data) => 
+  {
     const { success, result, error } = await api.login(data);
-    if (success) {
+    if (success && (result.loginResult == "good")) 
+    {
       Global.authUserId = result.userId;
       Global.authUserGroups = result.userGroups;
-      
       console.log(result.userId);
       console.log(result.userToken.accessToken);
       console.log(result.userGroups);
-      
       //onLogin(token);
-      
       navigation.navigate("Home");
-
-    } else {
-      console.log(error);
-
+    } else if (result.loginResult == "bad") 
+    {
+    alert ("login failed");
+    console.log(error);
+    console.log(result.error);
     }
   };
 

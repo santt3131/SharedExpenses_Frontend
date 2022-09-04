@@ -22,17 +22,33 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [message, setMessage] =   useState(null);
+  const exist = (httpCode) => httpCode === 200 || httpCode === 201;
 
   const onRegisterPressed = async (data) => {
-    const { success, result, error } = await api.register(data);
-    if (success && code==200) {
-      console.log("account created");
-      setMessage("passed");
+    const registerResponse = await api.register(data);
+    
+    console.log(registerResponse.success);
+    
+    if (registerResponse.success) {
+        
+      if(registerResponse.result.message == 'user_exist')
+      {
+      console.log("user exist"); 
+      alert("User exist");
+      }
+      else if(registerResponse.result.message == 'user_created')
+      {
+      console.log("user created");      
+      alert("User created");
       navigation.navigate("ConfirmEmail");
-    } else {
-      console.log("Creation failed : user already exist");
-      setMessage(error);
+      }
+      else 
+      {
+      console.log(registerResponse.error);
+      alert("Creation failed");
+      }
     }
+    
   };
 
   const onPrivacyPolicyPressed = () => {

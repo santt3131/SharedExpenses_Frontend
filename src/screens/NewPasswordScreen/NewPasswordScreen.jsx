@@ -6,6 +6,9 @@ import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 
+import * as api from "../../api/api";
+import Global from "../../../global";
+
 const NewPasswordScreen = () => {
   const navigation = useNavigation();
 
@@ -14,6 +17,9 @@ const NewPasswordScreen = () => {
   const pwd = watch("password");
 
   const onSubmitPressed = () => {
+
+    const email = Global.authUserEmail;
+
     navigation.navigate("Home");
   };
 
@@ -25,6 +31,15 @@ const NewPasswordScreen = () => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.root}>
         <Text style={styles.title}>Reset your password</Text>
+
+
+        <CustomInput
+          name="email"
+          value= {email}
+          //hidden="hidden"
+          control={control}
+        />
+
 
         <CustomInput
           name="code"

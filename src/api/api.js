@@ -29,7 +29,9 @@ const apiPost = (path, body) => apiCall("POST", path, body);
 
 export const login = (userData) => apiPost("/login", userData);
 
-export const register = (userData) => apiPost("/register", userData);
+export const register = (userData) => apiPost("/users", userData);
+
+export const resetpassword = (userData) => apiPost("/email/resetpassword", userData);
 
 const authApiCall = (method, path, body) => {
   const { accessToken } = JSON.parse(AsyncStorage.getItem("token"));
@@ -38,7 +40,7 @@ const authApiCall = (method, path, body) => {
   });
 };
 
-export const getTodoList = () => authApiCall("GET", "/users/me/todos");
+/*export const getTodoList = () => authApiCall("GET", "/users/me/todos");
 export const addTodo = (todo) => authApiCall("POST", "/users/me/todos", todo);
 export const updateTodo = (todo) => authApiCall("PUT", `/users/me/todos/${todo._id}`, todo);
-export const deleteTodo = (todo) => authApiCall("DELETE", `/users/me/todos/${todo._id}`);
+export const deleteTodo = (todo) => authApiCall("DELETE", `/users/me/todos/${todo._id}`);*/

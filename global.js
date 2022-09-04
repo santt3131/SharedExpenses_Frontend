@@ -9,12 +9,16 @@ const serverEndpoint = "http://192.168.1.106:8080";
 //const authUserId = "62b5e88ba6e78636d6488646";
 const authUserId = null;
 const authUserGroups = null;
+const resetPasswordCode = null;
+const authUserEmail = null;
 
 // global to store the server address
 const Global = {
   server: serverEndpoint,
   authUserId: authUserId,
-  authUserGroups:authUserGroups
+  authUserGroups:authUserGroups,
+  authUserEmail: authUserEmail,
+  resetPasswordCode:resetPasswordCode
 };
 
 export default Global;
