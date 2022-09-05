@@ -27,10 +27,11 @@ const ForgotPasswordScreen = () => {
 
     if (success && (result.status == "good")) 
     {
-      Global.resetPasswordCode = result.code;
-      Global.authUserEmail = result.user;
+      //Global.resetPasswordCode = result.code;
+      //Global.authUserEmail = result.user;
       console.log(result.code);
       
+      navigation.navigate("NewPasswordScreen");
       
     } else if (result.status == "bad") 
     {

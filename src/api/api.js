@@ -31,7 +31,7 @@ export const login = (userData) => apiPost("/login", userData);
 
 export const register = (userData) => apiPost("/users", userData);
 
-export const resetpassword = (userData) => apiPost("/email/resetpassword", userData);
+export const resetpassword = (userData) => apiPost("/pwdreset/request", userData);
 
 const authApiCall = (method, path, body) => {
   const { accessToken } = JSON.parse(AsyncStorage.getItem("token"));
