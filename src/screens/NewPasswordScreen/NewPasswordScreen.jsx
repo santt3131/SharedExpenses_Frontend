@@ -16,11 +16,22 @@ const NewPasswordScreen = () => {
 
   const pwd = watch("password");
 
-  const onSubmitPressed = () => {
+  const onSubmitPressed = async (data) => {
 
-    const email = Global.authUserEmail;
+  const { success, result, error } = await api.updatepassword(data);  
 
-    navigation.navigate("Home");
+  if (success && (result.status == "success")) 
+  {
+    console.log(result.status);
+    
+    navigation.navigate("home");
+    alert ("Passord reset successefully");
+    
+  } else if (result.status == "failed") 
+  {
+  alert ("Passord reset failed");
+  console.log(error);
+  }
   };
 
   const onSignInPressed = () => {
@@ -35,8 +46,6 @@ const NewPasswordScreen = () => {
 
         <CustomInput
           name="email"
-          value= {email}
-          //hidden="hidden"
           control={control}
         />
 
