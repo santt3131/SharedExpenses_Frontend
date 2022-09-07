@@ -11,6 +11,7 @@ const CustomInput = ({
 	secureTextEntry,
 	keyboardType,
 	autoCapitalize,
+	defaultValue
 }) => {
 	return (
 		<Controller
@@ -35,7 +36,7 @@ const CustomInput = ({
 						]}
 					>
 						<TextInput
-							value={value}
+							value={defaultValue??value}
 							onChangeText={onChange}
 							onBlur={onBlur}
 							autoCapitalize={autoCapitalize ? autoCapitalize : "none"}

@@ -127,8 +127,7 @@ const ExprensesScreen = () => {
 	const [checkPaid, setCheckPaid] = useState(false);
 	const [checkShares, setCheckShares] = useState(false);
 
-	const [modalVisible, setModalVisible] = useState(false)
-
+	const [modalVisible, setModalVisible] = useState(false);
 
 	// toggle sections
 	const toggleCategory = () => {

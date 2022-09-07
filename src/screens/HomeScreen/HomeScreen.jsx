@@ -13,7 +13,12 @@ const HomeScreen = () => {
         simple...
       </Text>
     </View>
+ 
   );
+  <CustomButton
+  text="Sign Out"
+  onPress={handleSubmit(onSignOutPressed)}
+/>
 };
 
 const styles = StyleSheet.create({

@@ -5,16 +5,38 @@ import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { useRoute } from "@react-navigation/native";
+import * as api from "../../api/api";
+import Global from "../../../global";
 
-const NewPasswordScreen = () => {
-  const navigation = useNavigation();
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
+  const NewPasswordScreen = (props) => {
   const { control, handleSubmit, watch } = useForm();
+ ({defaultValues:{email:route?.params?.email}});
+      const pwd = watch("password");
 
-  const pwd = watch("password");
+  //console.log(props.route?.params?.email);
+  const navigation = useNavigation();
+  const route = useRoute();
+  
+  
+  const onSubmitPressed = async (data) => {
+    console.log("in");  
+    const { success, result, error } = await api.updatepassword(data);  
 
-  const onSubmitPressed = () => {
-    navigation.navigate("Home");
+    if (success && (result.status == "success")) 
+    {
+      console.log(result.status);
+      
+      navigation.navigate("HomeScreen");
+      alert ("Passord reset successefully");
+      
+    } else if (result.status == "failed") 
+    {
+    alert ("Passord reset failed");
+    console.log(error);
+    }
   };
 
   const onSignInPressed = () => {
@@ -25,6 +47,20 @@ const NewPasswordScreen = () => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.root}>
         <Text style={styles.title}>Reset your password</Text>
+
+
+        <View style={{display:"none"}}><CustomInput
+          name="email"
+          placeholder="Email"
+          keyboardType="email-address"
+          control={control}
+          rules={{
+            required: "Email is required",
+            pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
+          }}
+          //defaultValue={props.route?.params?.email}
+        />
+</View>
 
         <CustomInput
           name="code"

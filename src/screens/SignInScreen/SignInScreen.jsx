@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import * as api from "../../api/api";
+import Global from "../../../global";
+import * as token from "../../token";
+
+
 import {
   View,
   Image,
@@ -17,12 +22,6 @@ import { useForm } from "react-hook-form";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-/* const LoginOrRegister = ({ onLogin }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [mode, setMode] = useState("login");
-    const [message, setMessage] = useState(null);*/
-
 const SignInScreen = () => {
   const { height } = useWindowDimensions();
 
@@ -33,24 +32,28 @@ const SignInScreen = () => {
   const { control, handleSubmit, watch } = useForm();
 
   const email = watch("email");
+  const [message, setMessage] =   useState(null); 
 
-  const onSignInPressed = async (data) => {
-    if (loading) {
-      return;
+  const onSignInPressed = async (data) => 
+  {
+    const { success, result, error } = await api.login(data);
+    if (success && (result.loginResult == "good")) 
+    {
+      Global.authUserId = result.userId;
+      Global.authUserGroups = result.userGroups;
+      //console.log(result.userId);
+      //console.log(result.userToken.accessToken);
+      //console.log(result.userGroups);
+      token.saveToken(result.userToken.accessToken);
+      navigation.navigate("Home");
+    } else if (result.loginResult == "bad") 
+    {
+    alert ("login failed");
+    console.log(error);
+    console.log(result.error);
     }
-
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    } catch (e) {
-      console.warn(e);
-    }
-
-    setLoading(false);
-
-    navigation.navigate("Home");
   };
+
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });

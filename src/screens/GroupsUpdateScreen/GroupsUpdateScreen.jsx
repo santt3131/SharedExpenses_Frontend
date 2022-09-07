@@ -63,18 +63,19 @@ const GroupsUpdateScreen = () => {
       .then(function (response) {
         const friendsReceived = response.data.results[0].friends;
         let newFriends = [];
-        const friendsIds = [
-          "62b5e88ba6e78636d6488645",
-          "62b5e88ba6e78636d6488647",
-        ];
+        const friendsIds = [];
+        users.forEach(function (u) {
+          friendsIds.push(u._id);
+        });
         friendsReceived.forEach(function (fr) {
-          if (fr.friendId === "62b5e88ba6e78636d6488645") {
+          if (friendsIds.includes(fr.friendId)) {
             fr.selected = true;
           } else {
             fr.selected = false;
           }
           newFriends.push(fr);
         });
+        setFriends(newFriends);
       })
       .catch(function (error) {
         console.log(error);
