@@ -1,14 +1,12 @@
-import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, Modal, Pressable } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 
 
-const CustomModal = ({ title, message, logoOrIcon, isShown }) => {
-	const [modalVisible, setModalVisible] = useState(isShown);
+const CustomModal = ({ showMe, title, message, logoOrIcon, buttonText,  onPressfn}) => {
 
 	return (
 		<View style={styles.centeredView}>
-			<Modal animationType="slide" visible={modalVisible}>
+			<Modal animationType="slide" visible={showMe}>
 				<View style={styles.centeredView}>
 					<View style={styles.modalView}>
 						<Text style={styles.bodyTitle}>{title}</Text>
@@ -16,9 +14,9 @@ const CustomModal = ({ title, message, logoOrIcon, isShown }) => {
 						<Text style={styles.bodyText}>{message}</Text>
 						<Pressable
 							style={styles.button}
-							onPress={() => setModalVisible(!modalVisible)}
+							onPress={onPressfn ? onPressfn : () => setModalVisible(!modalVisible) }
 						>
-							<Text style={styles.button}>Go!</Text>
+							<Text style={styles.button}> { buttonText? buttonText: 'Go!' }</Text>
 						</Pressable>
 					</View>
 				</View>

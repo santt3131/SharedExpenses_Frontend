@@ -187,12 +187,14 @@ const ExpensesListScreen = () => {
 	};
 
 	const handlerPayments = (payments) => {
-		let objFoundPaymentByUser = payments.filter(
-			(obj) => obj.userFromId === Global.authUserId
-		);
-
-		return objFoundPaymentByUser;
+		if(payments) {
+			let objFoundPaymentByUser = payments.filter(
+				(obj) => obj.userFromId === Global.authUserId
+			);
+			return objFoundPaymentByUser;
+		}
 	};
+	
 
 	const handlerPeopleOweMe = (users) => {
 		const peopleOweMe = users.filter(
