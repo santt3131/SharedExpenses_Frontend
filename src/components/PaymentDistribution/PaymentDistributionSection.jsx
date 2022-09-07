@@ -3,14 +3,64 @@ import React, { useState, useEffect } from 'react'
 import { ColorPalette, Size } from '../../../appStyles'
 
 
-const PaymentDistributionSection = ({dataArray}) => {
+const PaymentDistributionSection = ({
+    expTotal,
+    usersArray,
+}) => {
+    
+    console.log('total inside component: ', expTotal);
+    console.log('users array: ', usersArray);
+    const [newUserData, setNewUserData] = useState(null);
+    useEffect(() => {
+        distributePayments()
+    }, [expTotal])
 
-    console.log('dataArray: ', dataArray)
 
-    const [userShare, setUserShare] = useState([]);
-    const [userSettle, setUserSettle] = useState([]);
+    const [defaultShareArray, setDefaultShareArray] = useState(); //Pago deseado
 
-    // check for debts
+	const distributePayments = () => {
+		let shareArray = [];
+		let sharesArray = [];
+		let userShare = 0;
+
+		if (usersArray && expTotal) {
+			let numberOfUser = usersArray.length;
+            userShare = expTotal / numberOfUser;
+
+			for (let i = 0; i < numberOfUser; i++) {
+				let roundedShare = Math.round((userShare + Number.EPSILON) * 100) / 100;
+				shareArray.push({toPay: roundedShare.toString(), alreadyPaid: '0', settleSharing: roundedShare.toString()});
+			}
+			sharesArray = usersArray.map(function (item, index) {
+				return (
+                    { id: item._id, userName: item.name, ...shareArray[index]}
+                    );
+			});
+			setDefaultShareArray(sharesArray);
+		}
+	};
+    console.log("default shares: ", defaultShareArray);
+    
+     
+
+    const handleToPayChange = (name, value, id) => {
+        
+        const newToPayArray = [...defaultShareArray];
+        for(let i; i < newToPayArray.length; i++) {
+            if(newToPayArray[i].id === id)
+                newToPayArray[i] = {
+                    ...newToPayArray[i],
+                    [name]: value
+            };
+        }
+        setDefaultShareArray(newToPayArray);
+    };
+    console.log('new data: ', defaultShareArray);
+
+
+
+    //Debts (only if already paid < user share)
+	const [debt, setdebt] = useState("");
 
     const checkDebts= () => {
         let takeAction = ''
@@ -19,12 +69,8 @@ const PaymentDistributionSection = ({dataArray}) => {
         }
 
     }
-
-
-
-
     
-    if (dataArray === null || dataArray === undefined) {
+    if (defaultShareArray === null || defaultShareArray === undefined || defaultShareArray.length === 0) {
         return (
             <View>
                 <Text>Testing the component</Text>
@@ -32,44 +78,41 @@ const PaymentDistributionSection = ({dataArray}) => {
         );
     }
 
-     if (dataArray.length === 0) {
-        return (
-        <View>
-            <Text>Testing the component</Text>
-        </View>
-        );
-    }
+    
 
   return (
         
-    dataArray?.map((dataArray, takeAction) => {
+    defaultShareArray.map(({id, userName, toPay, alreadyPaid, settleSharing}, index) => {
         return(
-            <View key={`user_${dataArray.id}`} style={styles.container}>
+            <View key={index} style={styles.container}>
                 <View  style={[styles.itemContainer]}>
-                    <Text style={[styles.userName]}> {dataArray.userName}'s share </Text>
-                    <TextInput 
+                    <Text style={[styles.userName]}> {userName}'s share </Text>
+                    <TextInput
+                        name='toPay'
                         style={[styles.otherTextInput]}
                         keyboardType='number-pad'
-                        value={userShare}
-                        defaultValue={dataArray.toPay}
-                        onChangeText={(text) => {setUserShare(text)}}
+                        value={toPay}
+                        defaultValue={toPay}
+                        onEndEditing={(val) => console.log(val)}
                     ></TextInput>
                 </View>
             
                 <View  style={[styles.itemContainer]}>
                     <Text style={[styles.paymentConcepts]}>Already paid</Text>
                     <TextInput style={[styles.otherTextInput]}
+                        name='alreadyPaid'
                         keyboardType='number-pad'
-                        defaultValue={'0.00'}
+                        defaultValue={alreadyPaid}
                     ></TextInput>
                 </View>
             
             
                 <View style={[styles.itemContainer]}>
-                    <Text style={[styles.paymentConcepts]}>{takeAction}</Text>
+                    <Text style={[styles.paymentConcepts]}>Settle</Text>
                     <Text 
+                        name='settleSharing'
                         style={[styles.plainTextInput]}
-                    ></Text>
+                    >{settleSharing}</Text>
                 </View>
                     <Text style={{backgroundColor:ColorPalette.primaryGray, 
                         height:1, 

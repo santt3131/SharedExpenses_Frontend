@@ -55,15 +55,18 @@ const styles = StyleSheet.create({
   },
 
   container_PRIMARY: {
-    backgroundColor: ColorPalette.primaryBlue,
+    backgroundColor: ColorPalette.primaryGreen,
   },
 
   container_SECONDARY: {
-    borderColor: ColorPalette.primaryBlue,
-    borderWidth: 2,
+    backgroundColor: ColorPalette.primarySeance,
+    borderColor: ColorPalette.primarySeance,
   },
 
-  container_TERTIARY: {},
+  container_TERTIARY: {
+    backgroundColor: ColorPalette.veryLightGrey,
+    borderColor: ColorPalette.veryLightGrey,
+  },
 
   text: {
     fontWeight: "bold",
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
   },
 
   text_TERTIARY: {
-    color: ColorPalette.primaryGray,
+    color: ColorPalette.primaryWhite,
   },
 });
 

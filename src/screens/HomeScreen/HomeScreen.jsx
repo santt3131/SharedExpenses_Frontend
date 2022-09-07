@@ -5,9 +5,11 @@ import { ColorPalette, Size } from "../../../appStyles";
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome to Shared Expenses App!</Text>
+      <Text style={[styles.welcomeText, {color:ColorPalette.primaryGreen}]}>Welcome to</Text>
+      <Text style={styles.welcomeText}>Shared Expenses!</Text>
       <Text style={styles.explainText}>
-        the place where sharing expenses between friends has never been so
+        Sharing expenses {'\n'}
+        has never been so
         simple...
       </Text>
     </View>
@@ -24,6 +26,7 @@ const styles = StyleSheet.create({
     fontSize: Size.lm,
     color: ColorPalette.primaryBlue,
     fontWeight: "bold",
+    marginBottom:10
   },
   explainText: {
     fontSize: Size.xm,

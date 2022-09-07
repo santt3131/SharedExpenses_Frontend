@@ -1,566 +1,611 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Button } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 import { ColorPalette, Size } from "../../../appStyles";
+import logoOrIcon from '../../../assets/images/SharedExpenses.png';
 import CustomDropdown from "../../components/CustomDropdown";
 import CustomModal from "../../components/CustomModal";
-import { useForm } from "react-hook-form";
 import CustomButton from "../../components/CustomButton";
-import { Col, Row, Grid } from "react-native-easy-grid";
 import Global from "../../../global";
 import { FontAwesome5 } from "@expo/vector-icons";
 import CustomTopbar from "../../components/CustomTopbar/CustomTopbar";
-//import numbro from 'numbro'
 import axios from "axios";
-import PaymentDistributionSection from "../../components/PaymentDistribution/PaymentDistributionSection";
+
+
+//import PaymentDistributionSection from "../../components/PaymentDistribution/PaymentDistributionSection";
 
 const screenTitle = "Expenses";
 
+// fn to controll the rendering of the component (user data):
+// 2 TextInput (user's share & user's already paid amount) + 1 Text components (show payments and debts)
+		  
+const RenderComponent = (props) => {
+
+	
+	 // the view of the component
+    return (
+		<View key={props.index} style={{margin: 0}}>
+			<View  style={styles.itemContainer}>
+				<Text style={styles.userName}> {props.data[props.index].userName}'s share </Text>
+				<TextInput
+					style={
+						props.checkShares ? 
+						styles.otherTextInput :
+						[styles.otherTextInput, {borderColor: ColorPalette.primaryOrange, borderWidth:3}]
+					}
+					name='toPay'
+					keyboardType='number-pad'
+					defaultValue={props.data[props.index].toPay}
+					onChangeText={(e) => {
+						let ix = props.index;
+						let fieldName = 'toPay'
+						let newValue = e
+						let paid = parseInt(props.data[props.index].alreadyPaid)
+						let owe = (!isNaN(paid/parseInt(e)) && paid/parseInt(e) >= 1) ? 0 : 1
+						
+						let newData = [...props.data];
+						newData[ix] = {
+							...newData[ix],
+							[fieldName]: newValue,
+							owe: owe,
+							settleSharing: owe==0 ? paid - (isNaN(parseInt(e))? 0 : parseInt(e)) : 
+															(isNaN(parseInt(e))? 0: parseInt(e)) - paid
+						};
+						props.setData(newData);
+					}}
+				></TextInput>
+			</View>
+		
+			<View  style={[styles.itemContainer]}>
+				<Text style={[styles.paymentConcepts]}>Already paid</Text>
+				<TextInput 
+					style={
+						props.checkPaid ? 
+						styles.otherTextInput :
+						[styles.otherTextInput, {borderColor: ColorPalette.primaryOrange, borderWidth:3}]
+					}
+					name='alreadyPaid'
+					keyboardType='number-pad'
+					defaultValue={props.data[props.index].alreadyPaid}
+					onChangeText={(e) => {
+						let ix = props.index;
+						let fieldName = 'alreadyPaid'
+						let newValue = e
+						let toPay = parseInt(props.data[props.index].toPay)
+						let owe = (!isNaN(parseInt(e)/toPay) && parseInt(e)/toPay >= 1) ? 0 : 1
+						
+						let newData = [...props.data];
+						newData[ix] = {
+							...newData[ix],
+							[fieldName]: newValue,
+							owe: owe,
+							settleSharing: owe==0 ? (isNaN(parseInt(e))? 0: parseInt(e)) - toPay : 
+													toPay - (isNaN(parseInt(e))? 0 : parseInt(e))
+						};
+						props.setData(newData);
+					}}
+				></TextInput>
+			</View>
+		
+		
+			<View style={ 
+				[styles.itemContainer]}>
+				<Text style={[styles.paymentConcepts]}>
+					{ props.data[props.index].owe == 0 ? `Settled receiving`: `Settled paying` }
+					</Text>
+				<Text name='settleSharing' style={[styles.plainTextInput, props.data[props.index].owe == 0 ? styles.excess : styles.owe]}>
+						{ props.data[props.index].settleSharing ? props.data[props.index].settleSharing : 0 }
+				</Text>
+			</View>
+				<Text style={{backgroundColor:ColorPalette.primaryGray, 
+					height:1, marginBottom: 15, marginTop: 10}}></Text>	
+		</View>
+	);
+}
+
+
+// the component ...
 const ExprensesScreen = () => {
-  const TEXT_REGEX = /^[a-zA-Z0-9_ ]*$/;
-  const NUMBER_REGEX = /^[+-]?([0-9]+\,?[0-9]*|\,[0-9]+)$/;
-  const [collapsCategory, setcollapsCategory] = useState(true);
-  const [collapsTitle, setcollapsTitle] = useState(true);
-  const [collapsShareMethod, setcollapsShareMethod] = useState(true);
+	const TEXT_REGEX = /^[a-zA-Z0-9_ ]*$/;
+	const NUMBER_REGEX = /^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/;
+	const [collapsCategory, setCollapsCategory] = useState(true);
+	const [collapsTitle, setCollapsTitle] = useState(true);
+	const [collapsNotes, setCollapsNotes] = useState(true);
 
-  const toggleCategory = () => {
-    setcollapsCategory(!collapsCategory);
-  };
-  const toggleTitle = () => {
-    setcollapsTitle(!collapsTitle);
-  };
-  const toggleShareMethod = () => {
-    setcollapsShareMethod(!collapsShareMethod);
-  };
-  const navigation = useNavigation();
-  const onPressAdd = () => {
-    navigation.navigate("ExpensesAdd");
-  };
-  const [expensesList, setExpensesList] = useState(null);
-  const onPressList = () => {
-    axios
-      .get(`${Global.server}/users/62b5e88ba6e78636d6488645/expenses`, {})
-      .then(function (response) {
-        const expensesList = response.data.results;
-        setExpensesList(expensesList);
-      })
-      .catch(function (error) {
-        alert(error.message);
-      });
-    navigation.navigate("Expenses");
-  };
+	const [expTotal, setExpTotal] = useState(null);
+	const [CategoryList, setCategoryList] = useState(null);
+	const [expenseCategory, setExpenseCategory] = useState(null);
+	const [expenseNotes, setExpenseNotes] = useState(null);
+	const [groupMembres, setGroupMembres] = useState(null);
+	const [userShareArray, setUserShareArray] = useState([]);
 
-  const toggleExpanded = () => {
-    //Toggling the state of single Collapsible
-    setCollapsed(!collapsed);
-  };
+	const [sumsCheck, setSumsCheck] = useState(false);
+	const [readyToPost, setReadyToPost] = useState(false);
+	const [proceed, setProceed] = useState(null);
+	const [checkPaid, setCheckPaid] = useState(false);
+	const [checkShares, setCheckShares] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    trigger,
-    getValues,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      title: "",
-      categories: "",
-      division: "",
-      expenseTotal: 0,
-    },
-  });
+	const [modalVisible, setModalVisible] = useState(false)
 
-  const [expTotal, setExpTotal] = useState(null);
-  useEffect(() => {
-    distributePayments();
-  }, [expTotal]);
 
-  console.log("\n\nTotal spending: ", expTotal);
-  //const expTotal = watch("expenseTotal");
+	// toggle sections
+	const toggleCategory = () => {
+		setCollapsCategory(!collapsCategory);
+	};
+	const toggleTitle = () => {
+		setCollapsTitle(!collapsTitle);
+	};
+	const toggleNotes = () => {
+		setCollapsNotes(!collapsNotes);
+	};
 
-  const [arrayDesiredPay, setarrayDesiredPay] = useState([]); //Pago deseado
-  console.log("shares: ", arrayDesiredPay);
+	// navigation 
+	const navigation = useNavigation();
+	const onPressAdd = () => {
+		navigation.navigate("ExpensesAdd");
+	};
+	const onPressList = () => {
+		navigation.navigate("Expenses");
+	};
 
-  const distributePayments = () => {
-    let shareArray = [];
-    let userShareArray = [];
-    let userShare = 0;
+	//Viene recargado desde el groupId 
+	// hay que implementarlo
+	const groupId = "62b737d75163f4de8bc0c006";
+	
 
-    if (expTotal === null) {
-      console.log("Introduce the amount spended in the field 'How Much' ");
-      setmodalVisible(true);
-      trigger();
-    }
-    if (userByGroupId && expTotal) {
-      setmodalVisible(false);
-      let numberOfUser = userByGroupId.length;
-      if (userByGroupId) {
-        userShare = expTotal / numberOfUser;
-      }
+	// gets the members of the group by calling the API
+	const loadUserByGroupId = async () => {
+		const response = await fetch(`${Global.server}/groups/${groupId}`);
+		const json = await response.json();
+		setGroupMembres(json.results[0]?.users);
+	};
 
-      for (let i = 0; i < numberOfUser; i++) {
-        let roundedShare = Math.round((userShare + Number.EPSILON) * 100) / 100;
-        shareArray.push(roundedShare.toString());
-      }
-      userShareArray = userByGroupId.map(function (item, index) {
-        return { id: item._id, userName: item.name, toPay: shareArray[index] };
-      });
-      setarrayDesiredPay(userShareArray);
-    }
-  };
+	// calls the API with every new group id
+	useEffect(() => {
+		loadUserByGroupId();
+	}, [groupId]);
+	
+	//Loading categories
+	const loadCategories = async () => {
+		const response = await fetch(`${Global.server}/categories/`);
+		const json = await response.json();
+		setCategoryList(json);
+	};
 
-  //console.log('user Share array: ', userShareArray)
+	useEffect(() => {
+		loadCategories();
+	}, []);
 
-  const onSubmit = (data) => {
-    data.categories = selectCategories.category;
-    data.division = selectDivision.division;
-    console.log("aqui", data);
-    //navigation.navigate("Debts");
-    const dataSend = {
-      categoryId: "62b9d9eb355700006d004aa2", // lo traerá la otra pantalla c
-    };
+	// updates the category in response to user interaction
+	useEffect(() => {
+		setCollapsCategory(!collapsCategory)
+	}, [expenseCategory])	
+	
+	// date and hour to build a title
+	let date = new Date();
+	let formatedDay = date.getDate() + "-" + (date.getMonth() + 1) + 
+		"-" + date.getFullYear() + " " + date.getHours() + ':' + date.getMinutes() + 'h';
+	
+	
+	// distribute payments
+	const distributePayments = (groupMembres, expTotal) => {
+		let sharesArray = [];
+		let idUserShareArray = [];
+		let userShare = 0;
 
-    //LO QUE MANDARE
-    /**
-		 {
-			"categoryId": "62b9d9eb355700006d004aa2",
-			"date": "2001-02-01T08:00:00.000+00:00",
-			"note": "Prueba de creacion de expense",
-			"title": "Expense de prueba",
-			"expenseTotal": 50,
-			"users": [
-				{
-				"userId": "62b5e88ba6e78636d6488645",
-				"debt": 15,
-				"paid": 30
-				},
-				{
-				"userId": "62b5e88ba6e78636d6488646",
-				"debt": 5,
-				"paid": 20
+		// building the array of objects with the shares to pay by each member
+		if (groupMembres && expTotal) {
+			let numberOfMembers = groupMembres.length;
+			if(numberOfMembers > 0) {
+				userShare = expTotal / numberOfMembers;
+				let roundedShare = Math.round((userShare + Number.EPSILON) * 100) / 100;
+
+				for (let i = 0; i < numberOfMembers; i++) {
+					sharesArray.push({
+						toPay: roundedShare.toString() ? roundedShare.toString() : 0, 
+						alreadyPaid: '', 
+						settleSharing: roundedShare.toString() ? roundedShare.toString() : 0
+					});
 				}
-			],
-				"groupId": "62b7383f5163f4de8bc0c007" 
+				idUserShareArray = groupMembres.map(function (item, index) {
+					return (
+						{ id: item._id, userName: item.name, ...sharesArray[index]}
+						);
+				});
+				
+				setUserShareArray(idUserShareArray);
+			} else {
+				// Users could take a shortcut and enter the number of people
+				// with which she or he wants to share a spending
+				// feature not so hard to implement 
+				
+					aler("You need to invite friends and create groups first")
+					
 			}
-		 */
-  };
+		}
+	};
+    //console.log("user payment share: ", userShareArray);
 
-  //0.
-  /*Viene recargado desde el groupId*/
-  const groupId = "62b737d75163f4de8bc0c006";
-  const [userByGroupId, setuserByGroupId] = useState(null);
+	// updates the calculation (shares) with every change in the total expense
+	useEffect(() => {
+		distributePayments(groupMembres, expTotal)
+    }, [expTotal])
 
-  const loadUserByGroupId = async () => {
-    const response = await fetch(`${Global.server}/groups/${groupId}`);
-    const json = await response.json();
-    setuserByGroupId(json.results[0]?.users);
-  };
+	// updates the component so the changes in the styles take effect
+	useEffect(() => {
+		RenderComponent 
+    }, [checkPaid, checkShares])
 
-  useEffect(() => {
-    loadUserByGroupId();
-  }, [groupId]);
+	
 
-  //1.Categorias
-  //1.1-Loading data
-  const [CategoryList, setCategoryList] = useState(null);
+	// makes sure that the shares and the already paid amounts equals the total expense
+	// provides the state to change styles of the component
+	const checkSums = (userShareArray, expTotal) => {
+		let total = parseInt(expTotal)
+		let sumShares = 0;
+		let sumPaid = 0;
+		userShareArray ? userShareArray.forEach((obj) => {
+			sumShares += parseInt(obj.toPay)? parseInt(obj.toPay) : 0
+			sumPaid += parseInt(obj.alreadyPaid)? parseInt(obj.alreadyPaid) : 0
+		}) : null
+		console.log('sum paid: ', sumPaid, 'sum of shares: ', sumShares, ' total: ', total)
+		
+		if(total == sumPaid) { setCheckPaid(true) } else { setCheckPaid(false) }
+		
+		if(total == sumShares) { setCheckShares(true) } else { setCheckShares(false)}
 
-  const loadCategories = async () => {
-    const response = await fetch(`${Global.server}/categories/`);
-    const json = await response.json();
-    setCategoryList(json);
-  };
-  //console.log(CategoryList)
-  useEffect(() => {
-    loadCategories();
-  }, []);
+		if(sumPaid == total && sumShares == total) { setSumsCheck(true) } else { setSumsCheck(false)}
+	}
 
-  //1.2-Select
-  const [selectCategories, setselectCategories] = useState(null);
-  const selectedCategories = (dataSelected) => {
-    setselectCategories(dataSelected);
-  };
-  console.log("category: ", selectCategories);
-  //Método de división
-  const arraySharingMethod = {
-    results: [
-      {
-        _id: "62e6f9f2d4bb142140b63c91",
-        category: "Even (equal parts)",
-      },
-      {
-        _id: "62e6f9fc1375baa55c88354b",
-        category: "Not even",
-      },
-    ],
-  };
+	// make sure that all pieces of data are available to make the post 
+	const checkDataComplete = (expenseCategory, userShareArray, expTotal, groupId) => {
+		if(expenseCategory) {
+			if(expenseCategory.property != "Unknown" && userShareArray && expTotal && groupId) {
+				setReadyToPost(true)
+			} else { setReadyToPost(false) }
+		} 
+	}
+	//console.log('category: ', expenseCategory)
+		
+	console.log('sumsCheck: ', sumsCheck, 'readyToPost: ', readyToPost)
 
-  const [selectDivision, setSelectDivision] = useState(undefined);
+	// runs the check with every new category
+	useEffect(() => {
+	  checkDataComplete(expenseCategory, userShareArray, expTotal, groupId)
+	}, [expenseCategory])
 
-  //Modal
-  const [modalVisible, setmodalVisible] = useState(false);
+	// runs the check of sums in response to user interaction
+	useEffect(() => {
+	  checkSums(userShareArray, expTotal)
+	}, [userShareArray])
 
-  //1.4 Set Debe (con input de paid)
-  const [debt, setdebt] = useState("");
-  if (debt) {
-    console.log("debt es", debt);
-  }
+	
+	// show modal to confirm creation of the expense
+	// not implemented in the end...
+	const confirmPost = (readyToPost, sumsCheck) => {
+		if(readyToPost && sumsCheck  === true) {
+			console.log("\n\nI'm inside true in confirm post")
+			setModalVisible(true);
+			setProceed(true);
+		} else { 
+			setProceed(false);
+			setModalVisible(false)
+		}
+	}
 
-  //PRUEBA
-  const [paidArrayValues, setpaidArrayValues] = useState([]);
-  const [debtArrayValues, setdebtArrayValues] = useState([]);
+	// post to the endpoint, the moment of truth 
+	const postExpense = async (expenseObject) => {
+		try {
+			const response = await axios.post(`${Global.server}/expenses/`, expenseObject);
+			if(response.status == 201) {
+				console.log('successfully created')
+				setUserShareArray([]);
+				setProceed(false);
+			}
+		} catch (error) {
+			console.log('\n\n', error);
+		}
+	};
 
-  const handleChangePaid = (index, name, value) => {
-    setpaidArrayValues([...paidArrayValues, { [name]: +value }]);
-    let debtValue = arrayDesiredPay[index] / value;
-    setdebtArrayValues([...debtArrayValues, { [name]: +debtValue }]);
-  };
+	// creates the array of objects that will be sent in the post call 
+	const handlePost = (expenseCategory, expenseNotes, formatedDay, userShareArray, expTotal, groupId) => {
+		
+		// builds the object, convert to json and send it with a fetch to the API
+		if(expenseCategory) {
+			if(expenseCategory.property != "Unknown" && userShareArray && expTotal && groupId) {
+	
+				let usersArray = [];
+				usersArray = userShareArray.map(obj => {
+					return {
+						userId : obj.id,
+						amountShouldPay : parseInt(obj.toPay) ? parseInt(obj.toPay) : 0,
+						paid : parseInt(obj.alreadyPaid) ? parseInt(obj.alreadyPaid) : 0,
+						debt: (parseInt(obj.toPay) ? parseInt(obj.toPay) : 0) > (parseInt(obj.alreadyPaid) ? parseInt(obj.alreadyPaid) : 0)?
+						Math.abs((parseInt(obj.alreadyPaid) ? parseInt(obj.alreadyPaid) : 0) - (parseInt(obj.toPay) ? parseInt(obj.toPay) : 0)) : 0 
+					}
+				})
+	
+				const expenseObject = {
+					categoryId: expenseCategory._id,
+					date: date,
+					note: expenseNotes ? expenseNotes : '',
+					title: `Spending on ${expenseCategory.property} ${formatedDay}`,
+					expenseTotal: parseInt(expTotal),
+					users: usersArray,
+					groupId: groupId,
+					payments: []
+				}
+	
+				console.log('\n\n\nsend to the endpoint', expenseObject);
+				
+				postExpense(expenseObject);
+				
+				
+				
+			} else {
+				//console.log('missing data de handleSubmit', proceed)
+			}
+		}
+	};
+	
+	// needed by the FlatList
+	const renderItem = ({item, index}) => (
+        <View style={{padding: 10, marginTop: 5}}>
+            {/*<Text>user id:  {item.id}</Text>*/}
+            <RenderComponent 
+				checkPaid={checkPaid}
+				checkShares={checkShares}
+				item={item} 
+				index={index} 
+				data={userShareArray} 
+				setData={setUserShareArray} 
+			/>
+        </View>
+    );
+	
 
-  //console.log("todos los valores de PAID son ", paidArrayValues);
-  //console.log("todos los valores de DEBT son ", debtArrayValues);
+	return (
+		<FlatList 
+			// the header of the FlatList
+			ListHeaderComponent={
+				<>
+					<StatusBar />
+					<CustomTopbar
+						screenTitle={screenTitle}
+						onPressAdd={onPressAdd}
+						onPressList={onPressList}
+						addDisabled={false}
+						listDisabled={false}
+						sectionIcon="euro-sign"
+						leftIcon="plus"
+						rightIcon="list"
+					/>
+			
+					<View style={styles.totalCostContainer}> 
+						<Text style={styles.categoryTitle}>How much?</Text>
+						<TextInput
+							name="expenseTotal"
+							placeholder="total cost"
+							defaultValue=""
+							onChangeText={(text) => { setExpTotal(text) }}
+							keyboardType="number-pad"
+							rules={{
+								required: "Total cost must be a valid number",
+								pattern: { value: NUMBER_REGEX, message: "Total cost is invalid" },
+							}}
+							style={[styles.totalTextInput, { paddingVertical: 0 }]}
+						/>
+					</View>
 
-  let timestamp = Date.now();
-  let date = new Date(timestamp * 1000);
-  let formatedDay =
-    "Date: " +
-    date.getDate() +
-    "/" +
-    (date.getMonth() + 1) +
-    "/" +
-    date.getFullYear() +
-    " " +
-    date.getHours() +
-    ":" +
-    date.getMinutes() +
-    ":" +
-    date.getSeconds();
+					<TouchableOpacity onPress={toggleCategory}> 
+							<View style={{ flexDirection: "row" }}>
+								<Text style={styles.categoryTitle}>Select a Category</Text>
+								<FontAwesome5
+									name={!expenseCategory || expenseCategory._id == "Unknown" ? "question" : "check"}
+									size={Size.ls}
+									color={ColorPalette.primarySeance}
+									style={{ marginTop: 13, marginLeft: 0 }}
+								/>
+							</View>
+					</TouchableOpacity>
+					<Collapsible collapsed={collapsCategory} align="center"> 
+						<CustomDropdown
+							title="Categories"
+							listdrop={CategoryList}
+							selected={(obj) => setExpenseCategory(obj)}
+							onValueChange={(obj) => setExpenseCategory(obj)}
+						></CustomDropdown>
+					</Collapsible>
 
-  return (
-    <View style={{ flex: 1 }}>
-      <CustomTopbar
-        screenTitle={screenTitle}
-        onPressAdd={onPressAdd}
-        onPressList={onPressList}
-        addDisabled={false}
-        listDisabled={false}
-        sectionIcon="wallet"
-        leftIcon="plus"
-        rightIcon="list"
-      />
-
-      <View style={styles.totalCostContainer}>
-        <Text style={styles.categoryTitle}>How much?</Text>
-        <TextInput
-          name="expenseTotal"
-          placeholder="total cost"
-          control={control}
-          onChangeText={(text) => {
-            setExpTotal(text);
-          }}
-          onEndEditing={(text) => {
-            distributePayments(text);
-          }}
-          //onChange={console.log("expenseTotal es : ", expTotal)}
-          // onChange={console.log(
-          // 	"expenseTotal es : ",
-          // 	getValues("expenseTotal")
-          // )}
-          keyboardType="number-pad"
-          rules={{
-            required: "Total cost must be a valid number",
-            pattern: { value: NUMBER_REGEX, message: "Total cost is invalid" },
-          }}
-          style={[styles.totalTextInput, { paddingVertical: 0 }]}
-        />
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
-        <TouchableOpacity onPress={toggleCategory}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.categoryTitle}>Select a Category</Text>
-            <FontAwesome5
-              name={selectCategories === undefined ? "question" : "check"}
-              size={Size.ls}
-              color={ColorPalette.primarySeance}
-              style={{ marginTop: 13, marginLeft: 0 }}
-            />
-          </View>
-        </TouchableOpacity>
-        <Collapsible collapsed={collapsCategory} align="center">
-          <CustomDropdown
-            title="Categorias"
-            listdrop={CategoryList}
-            selected={(obj) => selectedCategories(obj.category)}
-            onValueChange={(_id, category) => setselectCategories(category)}
-          ></CustomDropdown>
-        </Collapsible>
-
-        <TouchableOpacity onPress={toggleTitle}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.categoryTitle}>A name for this expense</Text>
-            <FontAwesome5
-              name="question"
-              size={Size.ls}
-              color={ColorPalette.primarySeance}
-              style={{ marginTop: 13, marginLeft: 0 }}
-            />
-          </View>
-        </TouchableOpacity>
-        <Collapsible collapsed={collapsTitle} align="center">
-          <TextInput
-            name="title"
-            value={`We spend on ${selectedCategories} the ${formatedDay}`}
-            control={control}
-            //style={styles.inputControll}
-            rules={{
-              required: "Title is required",
-              pattern: { value: TEXT_REGEX, message: "Title is invalid" },
-            }}
-            style={styles.totalTextInput}
-          />
-        </Collapsible>
-
-        <PaymentDistributionSection dataArray={arrayDesiredPay} />
-
-        {/*Probando */}
-        <Grid>
-          <Col size={20}>
-            <Row style={styles.cellHeader}>
-              <Text key="user">USER</Text>
-            </Row>
-            {userByGroupId?.map((data, index) => {
-              let key = `user_${index}`;
-              return (
-                <Row key={key} style={styles.cellHeader}>
-                  <Text>{data.name}</Text>
-                </Row>
-              );
-            })}
-          </Col>
-          <Col size={20}>
-            <Row key="paid" style={styles.cellHeader}>
-              <Text>PAGO DESEADO</Text>
-            </Row>
-            {/* <h1>TODO</h1> */}
-            {arrayDesiredPay?.map((item, index) => {
-              let key = `paid_deseado_${index}`;
-              return (
-                <Row key={key} style={styles.cellHeader}>
-                  <Text>{item.toPay}</Text>
-                </Row>
-              );
-            })}
-          </Col>
-          <Col size={30}>
-            <Row key="paid" style={styles.cellHeader}>
-              <Text>PAID</Text>
-            </Row>
-            {userByGroupId?.map((data, index) => {
-              let nameKey = `paid_${data._id}`;
-              return (
-                <Row key={nameKey} style={styles.cellInput}>
-                  <TextInput
-                    onChangeText={(text) =>
-                      handleChangePaid(index, data._id, text)
-                    }
-                    control={control}
-                    name={nameKey}
-                    label={nameKey}
-                  />
-                </Row>
-              );
-            })}
-
-            {/* {userByGroupId?.map((data, index) => {
-							let nameKey = `paid_${data._id}`;
-							//console.log("name es: ", nameKey);
-							return (
-								<Row key={nameKey} style={styles.cellInput}>
-									<CustomInput
-										name={nameKey}
-										placeholder="0"
-										control={control}
-										// onChange={alert("soy paid")}
-										rules={{
-											required: "paid is required",
-											pattern: {
-												value: NUMBER_REGEX,
-												message: "paid is invalid",
-											},
-										}}
-									/>
-								</Row>
-							);
-						})} */}
-          </Col>
-          <Col size={30}>
-            <Row key="debt" style={styles.cellHeader}>
-              <Text>DEBT</Text>
-            </Row>
-            {debtArrayValues?.map((data, index) => {
-              let key = Object.keys(data)[0];
-              let keyTotal = `user_${key}`;
-              return (
-                <Row key={keyTotal} style={styles.cellHeader}>
-                  <Text>{data[key]}</Text>
-                </Row>
-              );
-            })}
-            {/* {userByGroupId?.map((data) => {
-							let nameKey = `debt_${data._id}`;
-							return (
-								<Row key={nameKey} style={styles.cellInput}>
-									<CustomInput
-										name={nameKey}
-										placeholder="0"
-										control={control}
-										rules={{
-											required: "debt is required",
-											pattern: {
-												value: NUMBER_REGEX,
-												message: "debt is invalid",
-											},
-										}}
-									/>
-								</Row>
-							);
-						})} */}
-          </Col>
-        </Grid>
-
-        <CustomButton text="Add" onPress={handleSubmit(onSubmit)} />
-        {modalVisible ? (
-          <CustomModal
-            title="Data needed"
-            message="Please introduce a total in the field   'How much'"
-            isShown={true}
-          ></CustomModal>
-        ) : null}
-      </ScrollView>
-    </View>
-  );
+					<TouchableOpacity onPress={toggleTitle}> 
+						<View style={{ flexDirection: "row" }}>
+							<Text style={styles.categoryTitle}>A name for this expense</Text>
+							<FontAwesome5
+								name={!expenseCategory || expenseCategory._id == "Unknown" ? "question" : "check"}
+								size={Size.ls}
+								color={ColorPalette.primarySeance}
+								style={{ marginTop: 13, marginLeft: 0 }}
+							/>
+						</View>
+					</TouchableOpacity>
+					<Collapsible collapsed={collapsTitle} align="center"> 
+						<TextInput
+							name="title"
+							defaultValue={!expenseCategory ||expenseCategory._id == "Unknown" ? 
+							'Select a category to fill this automatically' : 
+							`Spending on ${expenseCategory.property} ${formatedDay}`}
+							rules={{
+								required: "Title is required",
+								pattern: { value: TEXT_REGEX, message: "Title is invalid" },
+							}}
+							style={styles.totalTextInput}
+						/>
+					</Collapsible>
+					<TouchableOpacity onPress={toggleNotes}> 
+						<View style={{ flexDirection: "row" }}>
+							<Text style={styles.categoryTitle}>Any remarks</Text>
+							<FontAwesome5
+								name={!expenseNotes ? "question" : "check"}
+								size={Size.ls}
+								color={ColorPalette.primarySeance}
+								style={{ marginTop: 13, marginLeft: 0 }}
+							/>
+						</View>
+					</TouchableOpacity>
+					<Collapsible collapsed={collapsNotes} align="center"> 
+						<TextInput
+							name="notes"
+							defaultValue={'Super!'}
+							onChangeText={(text) => setExpenseNotes(text)}
+							style={styles.totalTextInput}
+						/>
+					</Collapsible>
+				</>
+			}
+			
+			// the body of the FlatList
+			data={userShareArray}
+			keyExtractor={(item, index) => index.toString()}
+			renderItem={renderItem}
+					
+			// the footer of the FlatList					
+			ListFooterComponent = {
+				<View style={styles.container}>
+					
+					<CustomButton text="Add" type={ readyToPost && sumsCheck === true ? 'PRIMARY' : 'TERTIARY' } 
+						onPress={() => handlePost(expenseCategory, expenseNotes,formatedDay,
+								 userShareArray, expTotal, groupId)} 
+					/> 
+					
+					{/*
+						readyToPost && sumsCheck  === true ? (
+						<CustomModal
+							title="All set!"
+							message="Let's create this expense"
+							logoOrIcon={logoOrIcon}
+							onPressfn={confirmPost(readyToPost, sumsCheck)}
+							showMe={modalVisible}
+						></CustomModal>) : null
+					*/}
+				</View>
+			}
+		/>
+				
+	
+	);
 };
 
 const styles = StyleSheet.create({
-  cellHeader: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    height: 100,
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  cell: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    height: 100,
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  cellInput: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
-    height: 100,
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-  },
+	container: {
+        margin: 10,
+    },
+	itemContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+		alignItems: 'center',
+		height: 42,
+		marginTop: 5,
+		marginBottom: 0,
+	},
+	userName: {
+		width:'70%',
+		fontSize: Size.mm,
+		textAlign: 'right',
+		marginLeft: 5,
+		marginBottom:0
+	},
+	categoryTitle: {
+		fontSize: Size.mm,
+		marginVertical: 10,
+		marginLeft: 10,
+		marginRight: 5,
+		color: ColorPalette.primaryBlack,
+	},
+	totalCostContainer: {
+		flexDirection: "row",
+		marginTop: 10,
+		minWidth: "40%",
+	},
+	totalTextInput: {
+		fontSize: 20,
+		borderColor: ColorPalette.primaryGray,
+		borderWidth: 1,
+		borderRadius: 5,
+		marginHorizontal: 5,
+		marginVertical: 0,
+		paddingHorizontal: 10,
+		paddingVertical: 15,
+		backgroundColor: ColorPalette.primaryWhite,
+	},
+	otherTextInput: {
+		minWidth: '20%',
+        height: 40,
+		fontSize: 18, 
+		borderColor: ColorPalette.primaryGray, 
+		borderWidth: 1, 
+		borderRadius: 5, 
+		marginLeft: 5,
+		marginVertical: 0,
+		paddingHorizontal: 10,
+		paddingVertical: 6,
+		backgroundColor: ColorPalette.primaryWhite
+	},
+	plainTextInput: {
+		minWidth: '20%',
+        height: 40,
+		fontSize: 18, 
+        fontWeight:'bold',
+		borderColor: ColorPalette.primaryGray, 
+		borderWidth: 1, 
+		borderRadius: 5, 
+		marginLeft: 5,
+		marginVertical: 0,
+		paddingHorizontal: 10,
+		paddingVertical: 12,
 
-  inputControll: {
-    width: "40%",
-  },
-  categoryTitle: {
-    fontSize: Size.mm,
-    marginVertical: 10,
-    marginLeft: 10,
-    marginRight: 5,
-    color: ColorPalette.primaryBlack,
-  },
-  item: {
-    width: 280,
-    opacity: 1,
-    height: 40,
-    marginTop: 5,
-    marginLeft: 10,
-    marginBottom: 15,
-  },
-  itemContainer: {
-    flexDirection: "row",
-    justifyContent: "end",
-    alignItems: "center",
-    height: 40,
-    marginTop: 5,
-    marginBottom: 0,
-  },
-  totalCostContainer: {
-    flexDirection: "row",
-    marginBottom: 10,
-    minWidth: "40%",
-  },
-  totalTextInput: {
-    fontSize: 20,
-    borderColor: ColorPalette.primaryGray,
-    borderWidth: 1,
-    borderRadius: 5,
-    marginHorizontal: 5,
-    marginVertical: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    backgroundColor: ColorPalette.primaryWhite,
-  },
-  otherTextInput: {
-    minWidth: "20%",
-    fontSize: 18,
-    borderColor: ColorPalette.primaryGray,
-    borderWidth: 1,
-    borderRadius: 5,
-    marginLeft: 5,
-    marginVertical: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    backgroundColor: ColorPalette.primaryWhite,
-  },
-  plainTextInput: {
-    minWidth: "20%",
-    fontSize: 18,
-    borderColor: ColorPalette.primaryGray,
-    borderWidth: 1,
-    borderRadius: 5,
-    marginLeft: 5,
-    marginVertical: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-  },
-  userName: {
-    width: "70%",
-    fontSize: Size.mm,
-    textAlign: "right",
-    marginLeft: 5,
-    marginBottom: 0,
-  },
-  paymentConcepts: {
-    width: "70%",
-    fontSize: Size.xm,
-    textAlign: "right",
-    marginBottom: 0,
-    marginLeft: 5,
-  },
-  debValue: {
-    fontSize: Size.lm,
-    fontWeight: "bold",
-    marginBottom: 0,
-    color: ColorPalette.primaryBlue,
-  },
+	},
+	paymentConcepts: {
+		maxWidth:'70%',
+		fontSize: Size.xm,
+		textAlign: 'right',
+		marginBottom:0,
+		marginLeft: 5,
+	},
+	owe: {
+		minWidth: '20%',
+        height: 40,
+		color: 'white',
+		fontSize: 22, 
+        //fontWeight:'bold',
+		textAlign: 'center',
+		borderColor: ColorPalette.primaryRouge, 
+		borderWidth: 1, 
+		borderRadius: 5, 
+		marginLeft: 5,
+		paddingVertical: 5,
+		backgroundColor: ColorPalette.primaryRouge,
+		overflow: 'hidden'
+	},
+	excess: {
+		minWidth: '20%',
+        height: 40,
+		color: 'white',
+		fontSize: 24, 
+        fontWeight:'bold',
+		textAlign: 'center',
+		borderColor: ColorPalette.primaryGreen, 
+		borderWidth: 1, 
+		borderRadius: 5, 
+		marginLeft: 5,
+		paddingVertical: 5,
+		backgroundColor: ColorPalette.primaryGreen,
+		overflow: 'hidden'
+	}
+		
+	
+	
 });
 
 export default ExprensesScreen;
