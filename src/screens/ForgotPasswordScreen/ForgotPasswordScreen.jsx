@@ -14,15 +14,16 @@ const EMAIL_REGEX =
 
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
-
   const route = useRoute();
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit,watch } = useForm({
     defaultValues: { email: route?.params?.email },
   });
+  const email = watch("email");
+
 
   const onSendPressed = async (data) => {
-
+    
     const { success, result, error } = await api.resetpassword(data);
 
     if (success && (result.status == "good")) 
@@ -30,8 +31,10 @@ const ForgotPasswordScreen = () => {
       Global.resetPasswordCode = result.code;
       Global.authUserEmail = result.user;
       console.log(result.code);
+      console.log(email);
       
-      navigation.navigate("NewPassword");
+      //navigation.navigate("NewPassword");
+      navigation.navigate("NewPassword", {email});
       
     } else if (result.status == "bad") 
     {

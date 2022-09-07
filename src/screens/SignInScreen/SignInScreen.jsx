@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import * as api from "../../api/api";
 import Global from "../../../global";
+import * as token from "../../token";
+
+
 import {
   View,
   Image,
@@ -38,10 +41,10 @@ const SignInScreen = () => {
     {
       Global.authUserId = result.userId;
       Global.authUserGroups = result.userGroups;
-      console.log(result.userId);
-      console.log(result.userToken.accessToken);
-      console.log(result.userGroups);
-      //onLogin(token);
+      //console.log(result.userId);
+      //console.log(result.userToken.accessToken);
+      //console.log(result.userGroups);
+      token.saveToken(result.userToken.accessToken);
       navigation.navigate("Home");
     } else if (result.loginResult == "bad") 
     {
