@@ -98,12 +98,12 @@ const ExpensesListScreenOwe = ({ userId, amount }) => {
 			{userOwe !== null ? (
 				<>
 					<Text style={styles.boldSmallLight}>
-						<Image
+						{/* <Image
 							source={require("../../../assets/icons/check.png")}
 							fadeDuration={0}
 							style={{ width: 20, height: 20 }}
-						/>
-						{userOwe.name} : {amount}€
+						/> */}
+						- {userOwe.name} : {amount}€
 					</Text>
 				</>
 			) : (
@@ -113,11 +113,25 @@ const ExpensesListScreenOwe = ({ userId, amount }) => {
 	);
 };
 
+const PaymentSettled = ({ paymentTotal, owe }) => {
+	const isSettled = paymentTotal - owe;
+	return (
+		<>
+			{isSettled == 0 ? (
+				<>
+					<Text style={[styles.boldSmall, styles.center, styles.green]}>
+						YOU HAVE SETTLED YOUR ACCOUNT
+					</Text>
+				</>
+			) : null}
+		</>
+	);
+};
+
 const ExpensesListScreen = () => {
 	const navigation = useNavigation();
 	const [expensesList, setExpensesList] = useState(null);
-	//const [userPayment, setLoadUserPayment] = useState(null);
-	// const [userOwe, setUserOwe] = useState(null);
+	let [payTotal, setpayTotal] = useState(2000);
 
 	useEffect(() => {
 		onPressList();
@@ -241,14 +255,30 @@ const ExpensesListScreen = () => {
 										);
 									})
 								) : handlerLent(users) > 0 ? (
-									<Text style={[styles.alert, styles.center]}>
-										Payment completed
+									<Text style={[styles.boldSmall, styles.center, styles.green]}>
+										YOU HAVE SETTLED YOUR ACCOUNT{" "}
+										{handlerLent(users) > 0 ? (
+											<Text>BUT THERE ARE PEOPLE WHO OWE YOU</Text>
+										) : null}
 									</Text>
 								) : (
-									<Text style={styles.center}>
-										You have not made any payment so far
+									<Text style={[styles.boldSmall, styles.center, styles.alert]}>
+										YOU HAVE NOT MADE ANY PAYMENT
 									</Text>
 								)}
+
+								{/* Your payments is completed? */}
+								{handlerPayments(payments).length > 0 ? (
+									<PaymentSettled
+										paymentTotal={handlerPayments(payments)
+											.map(
+												(objPayment, index) =>
+													objPayment.quantity.$numberDecimal
+											)
+											.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0)}
+										owe={Math.abs(handlerLent(users))}
+									></PaymentSettled>
+								) : null}
 
 								{handlerLent(users) > 0 ? (
 									<Text style={styles.boldSmall}>People who owe you:</Text>
@@ -353,6 +383,9 @@ const styles = StyleSheet.create({
 	},
 	alert: {
 		color: ColorPalette.primaryRed,
+	},
+	green: {
+		color: ColorPalette.secondaryGreen,
 	},
 });
 
