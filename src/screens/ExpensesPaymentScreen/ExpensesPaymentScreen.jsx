@@ -45,12 +45,12 @@ const ExpensesPaymentScreen = () => {
     onPressList();
   }, []);
 
-  const onPressAdd = async () => {
-    // onPressAdd
+  const onPressAdd = () => {
+    navigation.navigate("ExpensesAdd");
   };
 
   const onPressList = () => {
-    // onPressList
+    navigation.navigate("Expenses");
   };
 
   const onPayPressed = () => {
