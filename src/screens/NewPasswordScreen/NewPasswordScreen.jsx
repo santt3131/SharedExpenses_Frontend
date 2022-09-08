@@ -9,33 +9,30 @@ import { useRoute } from "@react-navigation/native";
 import * as api from "../../api/api";
 import Global from "../../../global";
 
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-  const NewPasswordScreen = (props) => {
+const NewPasswordScreen = (props) => {
   const { control, handleSubmit, watch } = useForm();
- ({defaultValues:{email:route?.params?.email}});
-      const pwd = watch("password");
+  ({ defaultValues: { email: route?.params?.email } });
+  const pwd = watch("password");
 
   //console.log(props.route?.params?.email);
   const navigation = useNavigation();
   const route = useRoute();
-  
-  
-  const onSubmitPressed = async (data) => {
-    console.log("in");  
-    const { success, result, error } = await api.updatepassword(data);  
 
-    if (success && (result.status == "success")) 
-    {
+  const onSubmitPressed = async (data) => {
+    console.log("in");
+    const { success, result, error } = await api.updatepassword(data);
+
+    if (success && result.status == "success") {
       console.log(result.status);
-      
+
       navigation.navigate("HomeScreen");
-      alert ("Passord reset successefully");
-      
-    } else if (result.status == "failed") 
-    {
-    alert ("Passord reset failed");
-    console.log(error);
+      alert("Passord reset successefully");
+    } else if (result.status == "failed") {
+      alert("Passord reset failed");
+      console.log(error);
     }
   };
 
@@ -48,19 +45,19 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
       <View style={styles.root}>
         <Text style={styles.title}>Reset your password</Text>
 
-
-        <View style={{display:"none"}}><CustomInput
-          name="email"
-          placeholder="Email"
-          keyboardType="email-address"
-          control={control}
-          rules={{
-            required: "Email is required",
-            pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
-          }}
-          //defaultValue={props.route?.params?.email}
-        />
-</View>
+        <View style={{ display: "none" }}>
+          <CustomInput
+            name="email"
+            placeholder="Email"
+            keyboardType="email-address"
+            control={control}
+            rules={{
+              required: "Email is required",
+              pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
+            }}
+            //defaultValue={props.route?.params?.email}
+          />
+        </View>
 
         <CustomInput
           name="code"
