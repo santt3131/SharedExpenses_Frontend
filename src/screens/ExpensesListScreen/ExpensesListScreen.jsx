@@ -1,13 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import {
-	View,
-	Text,
-	Image,
-	StyleSheet,
-	ScrollView,
-	Button,
-} from "react-native";
+import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
 import axios from "axios";
@@ -187,14 +180,13 @@ const ExpensesListScreen = () => {
 	};
 
 	const handlerPayments = (payments) => {
-		if(payments) {
+		if (payments) {
 			let objFoundPaymentByUser = payments.filter(
 				(obj) => obj.userFromId === Global.authUserId
 			);
 			return objFoundPaymentByUser;
 		}
 	};
-	
 
 	const handlerPeopleOweMe = (users) => {
 		const peopleOweMe = users.filter(
@@ -204,8 +196,19 @@ const ExpensesListScreen = () => {
 		return peopleOweMe;
 	};
 
+	const onPayPressed = (expenseId, expenseTitle, owe) => {
+		//Falta: Gente a la que le debo y cuanto le debo
+		console.log("========SEND ExpensePayment==============");
+		console.log("expenseId ", expenseId);
+		console.log("expenseTitle ", expenseTitle);
+		console.log("owe ", owe);
+
+		alert("Info", "The code was resent. Please, check your email");
+		navigation.navigate("ExpensesPayment");
+	};
+
 	return (
-		<ScrollView showsVerticalScrollIndicator={false}>
+		<>
 			<CustomTopbar
 				screenTitle="Expenses"
 				onPressAdd={onPressAdd}
@@ -216,96 +219,118 @@ const ExpensesListScreen = () => {
 				leftIcon="plus"
 				rightIcon="list"
 			/>
-			<View style={styles.container}>
-				{expensesList.map(
-					({ title, date, expenseTotal, users, payments }, index) => (
-						<View key={index} style={styles.expenseContainer}>
-							<View style={styles.expenseData}>
-								<Text style={styles.bold}>{title}</Text>
+			<ScrollView showsVerticalScrollIndicator={false}>
+				<View style={styles.container}>
+					{expensesList.map(
+						({ _id, title, date, expenseTotal, users, payments }, index) => (
+							<View key={index} style={styles.expenseContainer}>
+								<View style={styles.expenseData}>
+									<Text style={styles.bold}>{title}</Text>
 
-								<View style={styles.expenseRow}>
-									<Text style={styles.subtitle}>
-										Total Payment: {expenseTotal.$numberDecimal}€
-									</Text>
-									<Text style={styles.subtitle}>
-										{Moment(date).format("DD/MM/YYYY")}
-									</Text>
-								</View>
+									<View style={styles.expenseRow}>
+										<Text style={styles.subtitle}>
+											Total Payment: {expenseTotal.$numberDecimal}€
+										</Text>
+										<Text style={styles.subtitle}>
+											{Moment(date).format("DD/MM/YYYY")}
+										</Text>
+									</View>
 
-								<Text style={styles.boldSmall}>Initial account:</Text>
-								<View style={styles.expenseRow}>
-									<Text>You paid: {handlerPaid(users)}€</Text>
+									<Text style={styles.boldSmall}>Initial account:</Text>
+									<View style={styles.expenseRow}>
+										<Text>You paid: {handlerPaid(users)}€</Text>
 
-									{handlerLent(users) > 0 ? (
-										<Text style={styles.lent}>
-											You lent: {handlerLent(users)}€
+										{handlerLent(users) > 0 ? (
+											<Text style={styles.lent}>
+												You lent: {handlerLent(users)}€
+											</Text>
+										) : (
+											<>
+												<Text style={styles.owe}>
+													You Owe: {Math.abs(handlerLent(users))}€
+												</Text>
+												<Pressable
+													style={styles.paymentButton}
+													onPress={() =>
+														onPayPressed(
+															_id,
+															title,
+															Math.abs(handlerLent(users))
+														)
+													}
+												>
+													<Text style={styles.paymentButtonText}>Pay</Text>
+												</Pressable>
+											</>
+										)}
+									</View>
+
+									<Text style={styles.boldSmall}>Payment Detail:</Text>
+									{handlerPayments(payments).length > 0 ? (
+										handlerPayments(payments).map((objPayment, index) => {
+											return (
+												<View key={index}>
+													<DetailPayment
+														objPayment={objPayment}
+													></DetailPayment>
+												</View>
+											);
+										})
+									) : handlerLent(users) > 0 ? (
+										<Text
+											style={[styles.boldSmall, styles.center, styles.green]}
+										>
+											YOU HAVE SETTLED YOUR ACCOUNT{" "}
+											{handlerLent(users) > 0 ? (
+												<Text>BUT THERE ARE PEOPLE WHO OWE YOU</Text>
+											) : null}
 										</Text>
 									) : (
-										<Text style={styles.owe}>
-											You Owe: {Math.abs(handlerLent(users))}€
+										<Text
+											style={[styles.boldSmall, styles.center, styles.alert]}
+										>
+											YOU HAVE NOT MADE ANY PAYMENT
 										</Text>
 									)}
+
+									{/* Your payments is completed? */}
+									{handlerPayments(payments).length > 0 ? (
+										<PaymentSettled
+											paymentTotal={handlerPayments(payments)
+												.map(
+													(objPayment, index) =>
+														objPayment.quantity.$numberDecimal
+												)
+												.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0)}
+											owe={Math.abs(handlerLent(users))}
+										></PaymentSettled>
+									) : null}
+
+									{handlerLent(users) > 0 ? (
+										<Text style={styles.boldSmall}>People who owe you:</Text>
+									) : null}
+
+									{handlerLent(users) > 0
+										? handlerPeopleOweMe(users).length > 0
+											? handlerPeopleOweMe(users).map((objUser, index) => {
+													return (
+														<View key={index}>
+															<ExpensesListScreenOwe
+																userId={objUser?.userId}
+																amount={objUser?.debt.$numberDecimal}
+															></ExpensesListScreenOwe>
+														</View>
+													);
+											  })
+											: null
+										: null}
 								</View>
-
-								<Text style={styles.boldSmall}>Payment Detail:</Text>
-								{handlerPayments(payments).length > 0 ? (
-									handlerPayments(payments).map((objPayment, index) => {
-										return (
-											<View key={index}>
-												<DetailPayment objPayment={objPayment}></DetailPayment>
-											</View>
-										);
-									})
-								) : handlerLent(users) > 0 ? (
-									<Text style={[styles.boldSmall, styles.center, styles.green]}>
-										YOU HAVE SETTLED YOUR ACCOUNT{" "}
-										{handlerLent(users) > 0 ? (
-											<Text>BUT THERE ARE PEOPLE WHO OWE YOU</Text>
-										) : null}
-									</Text>
-								) : (
-									<Text style={[styles.boldSmall, styles.center, styles.alert]}>
-										YOU HAVE NOT MADE ANY PAYMENT
-									</Text>
-								)}
-
-								{/* Your payments is completed? */}
-								{handlerPayments(payments).length > 0 ? (
-									<PaymentSettled
-										paymentTotal={handlerPayments(payments)
-											.map(
-												(objPayment, index) =>
-													objPayment.quantity.$numberDecimal
-											)
-											.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0)}
-										owe={Math.abs(handlerLent(users))}
-									></PaymentSettled>
-								) : null}
-
-								{handlerLent(users) > 0 ? (
-									<Text style={styles.boldSmall}>People who owe you:</Text>
-								) : null}
-
-								{handlerLent(users) > 0
-									? handlerPeopleOweMe(users).length > 0
-										? handlerPeopleOweMe(users).map((objUser, index) => {
-												return (
-													<View key={index}>
-														<ExpensesListScreenOwe
-															userId={objUser?.userId}
-															amount={objUser?.debt.$numberDecimal}
-														></ExpensesListScreenOwe>
-													</View>
-												);
-										  })
-										: null
-									: null}
 							</View>
-						</View>
-					)
-				)}
-			</View>
-		</ScrollView>
+						)
+					)}
+				</View>
+			</ScrollView>
+		</>
 	);
 };
 
@@ -388,6 +413,19 @@ const styles = StyleSheet.create({
 	},
 	green: {
 		color: ColorPalette.secondaryGreen,
+	},
+	paymentButton: {
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: ColorPalette.primaryRed,
+		borderRadius: 4,
+		marginBottom: 2,
+	},
+	paymentButtonText: {
+		color: ColorPalette.primaryWhite,
+		padding: 5,
+		textTransform: "uppercase",
+		fontWeight: "bold",
 	},
 });
 
