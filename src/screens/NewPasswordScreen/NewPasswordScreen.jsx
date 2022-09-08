@@ -13,12 +13,14 @@ const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const NewPasswordScreen = (props) => {
-  const { control, handleSubmit, watch } = useForm();
-  ({ defaultValues: { email: route?.params?.email } });
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: { email: route?.params?.email },
+  });
+
   const pwd = watch("password");
 
-  //console.log(props.route?.params?.email);
   const navigation = useNavigation();
+
   const route = useRoute();
 
   const onSubmitPressed = async (data) => {
@@ -27,11 +29,10 @@ const NewPasswordScreen = (props) => {
 
     if (success && result.status == "success") {
       console.log(result.status);
-
       navigation.navigate("HomeScreen");
-      alert("Passord reset successefully");
+      alert("Password reset successefully");
     } else if (result.status == "failed") {
-      alert("Passord reset failed");
+      alert("Password reset failed");
       console.log(error);
     }
   };
@@ -55,14 +56,12 @@ const NewPasswordScreen = (props) => {
               required: "Email is required",
               pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
             }}
-            //defaultValue={props.route?.params?.email}
           />
         </View>
 
         <CustomInput
           name="code"
           placeholder="Code"
-          keyboardType="number-pad"
           control={control}
           rules={{
             required: "Code is required",

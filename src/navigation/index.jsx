@@ -202,6 +202,27 @@ const Navigation = () => {
             tabBarShowLabel: false,
           }}
         />
+        <Tab.Screen
+          name="Exit"
+          component={ExpensesListScreen}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={
+                  focused
+                    ? require("../../assets/icons/exit.png")
+                    : require("../../assets/icons/exit.png")
+                }
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 0,
+                }}
+              />
+            ),
+            tabBarShowLabel: false,
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
