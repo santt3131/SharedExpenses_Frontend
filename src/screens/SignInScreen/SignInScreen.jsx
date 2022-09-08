@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import * as api from "../../api/api";
 import Global from "../../../global";
 import * as token from "../../token";
-
-
 import {
   View,
   Image,
@@ -32,28 +30,22 @@ const SignInScreen = () => {
   const { control, handleSubmit, watch } = useForm();
 
   const email = watch("email");
-  const [message, setMessage] =   useState(null); 
 
-  const onSignInPressed = async (data) => 
-  {
+  const [message, setMessage] = useState(null);
+
+  const onSignInPressed = async (data) => {
     const { success, result, error } = await api.login(data);
-    if (success && (result.loginResult == "good")) 
-    {
+    if (success && result.loginResult == "good") {
       Global.authUserId = result.userId;
       Global.authUserGroups = result.userGroups;
-      //console.log(result.userId);
-      //console.log(result.userToken.accessToken);
-      //console.log(result.userGroups);
       token.saveToken(result.userToken.accessToken);
       navigation.navigate("Home");
-    } else if (result.loginResult == "bad") 
-    {
-    alert ("login failed");
-    console.log(error);
-    console.log(result.error);
+    } else if (result.loginResult == "bad") {
+      alert("login failed");
+      console.log(error);
+      console.log(result.error);
     }
   };
-
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });
