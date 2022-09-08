@@ -17,6 +17,7 @@ const SignUpScreen = () => {
   const { control, handleSubmit, watch } = useForm();
 
   const pwd = watch("password");
+  const mail = watch("email");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,29 +26,28 @@ const SignUpScreen = () => {
   const exist = (httpCode) => httpCode === 200 || httpCode === 201;
 
   const onRegisterPressed = async (data) => {
-    const registerResponse = await api.register(data);
+    const { success, result, error }  = await api.register(data);
     
-    console.log(registerResponse.success);
-    
-    if (registerResponse.success) {
-        
-      if(registerResponse.result.message == 'user_exist')
-      {
-      console.log("user exist"); 
-      alert("User exist");
-      }
-      else if(registerResponse.result.message == 'user_created')
-      {
-      console.log("user created");      
-      alert("User created");
-      navigation.navigate("ConfirmEmail");
-      }
-      else 
-      {
-      console.log(registerResponse.error);
-      alert("Creation failed");
-      }
+    console.log(result.status);
+
+    if(result.status == 'user_already_exist')
+    {
+    console.log("user exist"); 
+    alert("User exist");
     }
+
+    else if (result.status == 'success') {   
+    console.log("user created");      
+    alert("User created");
+    navigation.navigate("ConfirmEmail", {mail});
+    }
+
+    else 
+    {
+    console.log(result.status);
+    alert("Creation failed");
+    }
+    
     
   };
 

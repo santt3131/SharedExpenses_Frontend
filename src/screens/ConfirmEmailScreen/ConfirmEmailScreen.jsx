@@ -5,14 +5,36 @@ import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import * as api from "../../api/api";
 
-const ConfirmEmailScreen = () => {
+const ConfirmEmailScreen = (props) => {
   const navigation = useNavigation();
 
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, setValue } = useForm();
 
-  const onConfirmPressed = () => {
+  console.log(props.route?.params?.mail);
+
+  setValue("email", props.route?.params?.mail);
+
+  const onConfirmPressed = async (data) => {
+    
+    
+    
+    const { success, result, error }  = await api.confirm(data);
+
+    if(result.status == 'success')
+    {
+    console.log("account created successfully"); 
+    alert("account created successfully");
     navigation.navigate("Home");
+    }
+
+    else {   
+    console.log("failed");      
+    alert("confirmation faileed");
+    }
+    
+    //navigation.navigate("Home");
   };
 
   const onResendPressed = () => {
@@ -27,6 +49,16 @@ const ConfirmEmailScreen = () => {
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.root}>
         <Text style={styles.title}>Confirm your email</Text>
+
+
+        <View style={{display:"none"}}><CustomInput
+          name="email"
+          control={control}
+        
+        />
+        </View>
+
+
 
         <CustomInput
           name="code"

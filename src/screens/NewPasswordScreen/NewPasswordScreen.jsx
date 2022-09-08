@@ -60,7 +60,7 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
           }}
           //defaultValue={props.route?.params?.email}
         />
-</View>
+        </View>
 
         <CustomInput
           name="code"
