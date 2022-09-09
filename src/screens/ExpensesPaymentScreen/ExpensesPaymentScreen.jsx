@@ -7,15 +7,17 @@ import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import RadioGroup from "react-native-radio-buttons-group";
 import { useForm } from "react-hook-form";
+import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import Global from "../../../global";
 
 const ExpensesPaymentScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
 
-  const expenseId = "62b9ec1e3b031c174dc38fd6";
-  const expenseTitle = "Compra de maleta";
-  const owe = "10";
+  const expenseId = route?.params?.expenseId;
+  const expenseTitle = route?.params?.expenseTitle;
+  const owe = route?.params?.owe;
   const radioButtonsData = [
     {
       id: "62b5e88ba6e78636d6488647", // acts as primary key, should be unique and non-empty string
