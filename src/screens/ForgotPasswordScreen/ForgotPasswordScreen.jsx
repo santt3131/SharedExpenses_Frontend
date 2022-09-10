@@ -12,14 +12,14 @@ import Global from "../../../global";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const ForgotPasswordScreen = () => {
+const ForgotPasswordScreen = (props) => {
   const navigation = useNavigation();
   const route = useRoute();
-
-  const { control, handleSubmit,watch } = useForm({
-    defaultValues: { email: route?.params?.email },
-  });
-  const email = watch("email");
+    const { control, handleSubmit, watch } = useForm();
+ ({defaultValues:{email:route?.params?.email}});
+ const email = watch("email");
+  console.log(props.route?.params?.email);
+  
 
 
   const onSendPressed = async (data) => {
@@ -32,8 +32,6 @@ const ForgotPasswordScreen = () => {
       Global.authUserEmail = result.user;
       console.log(result.code);
       console.log(email);
-      
-      //navigation.navigate("NewPassword");
       navigation.navigate("NewPassword", {email});
       
     } else if (result.status == "bad") 
@@ -42,7 +40,6 @@ const ForgotPasswordScreen = () => {
     console.log(error);
     }
 
-    navigation.navigate("NewPassword");
   };
 
   const onSignInPressed = () => {

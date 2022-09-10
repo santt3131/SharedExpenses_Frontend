@@ -22,7 +22,7 @@ const ConfirmEmailScreen = (props) => {
     
     const { success, result, error }  = await api.confirm(data);
 
-    if(result.status == 'success')
+    if(result.httpcode  == '200')
     {
     console.log("account created successfully"); 
     alert("account created successfully");

@@ -19,11 +19,11 @@ const SignUpScreen = () => {
   const pwd = watch("password");
   const mail = watch("email");
 
-  const [email, setEmail] = useState("");
+  /*const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [message, setMessage] =   useState(null);
-  const exist = (httpCode) => httpCode === 200 || httpCode === 201;
+  const exist = (httpCode) => httpCode === 200 || httpCode === 201;*/
 
   const onRegisterPressed = async (data) => {
     const { success, result, error }  = await api.register(data);

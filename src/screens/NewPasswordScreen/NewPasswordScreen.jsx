@@ -1,43 +1,38 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
-import { useRoute } from "@react-navigation/native";
 import * as api from "../../api/api";
-import Global from "../../../global";
 
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
-  const NewPasswordScreen = (props) => {
-  const { control, handleSubmit, watch } = useForm();
- ({defaultValues:{email:route?.params?.email}});
-      const pwd = watch("password");
-
-  //console.log(props.route?.params?.email);
+const NewPasswordScreen = (props) => {
   const navigation = useNavigation();
-  const route = useRoute();
-  
-  
-  const onSubmitPressed = async (data) => {
-    console.log("in");  
-    const { success, result, error } = await api.updatepassword(data);  
 
-    if (success && (result.status == "success")) 
+  const { control, handleSubmit, setValue } = useForm();
+
+  console.log(props.route?.params?.email);
+
+  setValue("email", props.route?.params?.email);
+
+  const onConfirmPressed = async (data) => {
+    
+    const { success, result ,error}  = await api.updatepassword(data);
+
+    if(result.status == "success")
     {
-      console.log(result.status);
-      
-      navigation.navigate("HomeScreen");
-      alert ("Passord reset successefully");
-      
-    } else if (result.status == "failed") 
-    {
-    alert ("Passord reset failed");
-    console.log(error);
+    console.log("account created successfully"); 
+    alert("account created successfully");
+    navigation.navigate("Home");
+    }
+
+    else {   
+    console.log("failed");      
+    alert("confirmation faileed");
     }
   };
+
 
   const onSignInPressed = () => {
     navigation.navigate("SignIn");
@@ -46,36 +41,32 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.root}>
-        <Text style={styles.title}>Reset your password</Text>
+        <Text style={styles.title}>Confirm your email</Text>
 
 
         <View style={{display:"none"}}><CustomInput
           name="email"
-          placeholder="Email"
-          keyboardType="email-address"
           control={control}
-          rules={{
-            required: "Email is required",
-            pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
-          }}
-          //defaultValue={props.route?.params?.email}
+        
         />
         </View>
 
+
+
         <CustomInput
           name="code"
-          placeholder="Code"
+          placeholder="Confirmation code"
           keyboardType="number-pad"
           control={control}
           rules={{
-            required: "Code is required",
+            required: "Confirmation code is required",
             minLength: {
               value: 4,
-              message: "Code should be of 4 characters long",
+              message: "Confirmation code should be of 4 characters long",
             },
             maxLength: {
               value: 4,
-              message: "Code should be of 4 characters long",
+              message: "Confirmation code should be of 4 characters long",
             },
           }}
         />
@@ -94,19 +85,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
           }}
         />
 
-        <CustomInput
-          name="passwordRepeat"
-          placeholder="New password repeat"
-          control={control}
-          secureTextEntry={true}
-          rules={{
-            required: "New password repeat is required",
-            validate: (value) =>
-              value === pwd || "New password repeat do not match",
-          }}
-        />
 
-        <CustomButton text="Submit" onPress={handleSubmit(onSubmitPressed)} />
+        <CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
 
         <CustomButton
           text="Back to Sign In"
@@ -121,7 +101,7 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA
 const styles = StyleSheet.create({
   root: {
     alignItems: "center",
-    padding: 20,
+    padding: 30,
   },
   title: {
     fontSize: Size.xl,
