@@ -96,7 +96,7 @@ const GroupsUpdateScreen = () => {
 
   const onUpdatePressed = () => {
     axios
-      .post(`${Global.server}/groups`, {
+      .put(`${Global.server}/groups/${groupId}`, {
         groupName: name,
         groupDescription: description,
         ownerId: authUser,
