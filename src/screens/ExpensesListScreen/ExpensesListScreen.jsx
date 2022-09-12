@@ -106,8 +106,8 @@ const ExpensesListScreenOwe = ({ userId, amount }) => {
 	);
 };
 
-const PaymentSettled = ({ paymentTotal, owe }) => {
-	const isSettled = paymentTotal - owe;
+const PaymentSettled = ({ paymentTotal, debt }) => {
+	const isSettled = paymentTotal - debt;
 	return (
 		<>
 			{isSettled == 0 ? (
@@ -116,7 +116,22 @@ const PaymentSettled = ({ paymentTotal, owe }) => {
 						YOU HAVE SETTLED YOUR ACCOUNT
 					</Text>
 				</>
-			) : null}
+			) :
+				<>
+				<Pressable
+					style={styles.paymentButton}
+					onPress={() =>
+						onPayPressed(
+							_id,
+							title,
+							Math.abs(handlerLent(users))
+						)
+					}
+				>
+					<Text style={styles.paymentButtonText}>Pay</Text>
+				</Pressable>
+				</>
+			}
 		</>
 	);
 };
@@ -177,6 +192,15 @@ const ExpensesListScreen = () => {
 		//Si es positivo es que PRESTO
 		//Si es negativo es que DEBE
 		return lent;
+	};
+
+	const handlerDebt = (users) => {
+		let debt = 0;
+		const objFoundByUser = users.find(
+			(obj) => obj.userId === Global.authUserId
+		);
+		debt = objFoundByUser.debt.$numberDecimal;
+		return debt;
 	};
 
 	const handlerPayments = (payments) => {
@@ -249,7 +273,7 @@ const ExpensesListScreen = () => {
 												<Text style={styles.owe}>
 													You Owe: {Math.abs(handlerLent(users))}€
 												</Text>
-												<Pressable
+												{/* <Pressable
 													style={styles.paymentButton}
 													onPress={() =>
 														onPayPressed(
@@ -260,7 +284,7 @@ const ExpensesListScreen = () => {
 													}
 												>
 													<Text style={styles.paymentButtonText}>Pay</Text>
-												</Pressable>
+												</Pressable> */}
 											</>
 										)}
 									</View>
@@ -276,25 +300,10 @@ const ExpensesListScreen = () => {
 												</View>
 											);
 										})
-									) : handlerLent(users) > 0 ? (
-										<Text
-											style={[styles.boldSmall, styles.center, styles.green]}
-										>
-											YOU HAVE SETTLED YOUR ACCOUNT{" "}
-											{handlerLent(users) > 0 ? (
-												<Text>BUT THERE ARE PEOPLE WHO OWE YOU</Text>
-											) : null}
-										</Text>
-									) : (
-										<Text
-											style={[styles.boldSmall, styles.center, styles.alert]}
-										>
-											YOU HAVE NOT MADE ANY PAYMENT
-										</Text>
-									)}
+									) : null }
 
 									{/* Your payments is completed? */}
-									{handlerPayments(payments).length > 0 ? (
+									
 										<PaymentSettled
 											paymentTotal={handlerPayments(payments)
 												.map(
@@ -302,9 +311,8 @@ const ExpensesListScreen = () => {
 														objPayment.quantity.$numberDecimal
 												)
 												.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0)}
-											owe={Math.abs(handlerLent(users))}
+											debt={handlerDebt(users)}
 										></PaymentSettled>
-									) : null}
 
 									{handlerLent(users) > 0 ? (
 										<Text style={styles.boldSmall}>People who owe you:</Text>
