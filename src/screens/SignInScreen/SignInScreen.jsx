@@ -32,7 +32,10 @@ const SignInScreen = () => {
   const { control, handleSubmit, watch } = useForm();
 
   const email = watch("email");
+
   const [message, setMessage] =   useState(null); 
+
+  const [tk, setToken] = useState(token.readToken);
 
   const onSignInPressed = async (data) => 
   {
@@ -41,10 +44,13 @@ const SignInScreen = () => {
     {
       Global.authUserId = result.userId;
       Global.authUserGroups = result.userGroups;
-      //console.log(result.userId);
-      //console.log(result.userToken.accessToken);
-      //console.log(result.userGroups);
-      token.saveToken(result.userToken.accessToken);
+      localStorage.setItem('token',result.userToken.accessToken);
+      //props.history.push('/');
+      //token._storeToken(result.userToken.accessToken);
+      //setToken(result.userToken.accessToken);
+      console.log(result.userToken.accessToken);
+      console.log(token._getToken());
+      
       navigation.navigate("Home");
     } else if (result.loginResult == "bad") 
     {

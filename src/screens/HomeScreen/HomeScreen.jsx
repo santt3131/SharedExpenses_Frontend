@@ -2,6 +2,10 @@ import { View, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { ColorPalette, Size } from "../../../appStyles";
 
+const onSignOutPressed = () => {
+  navigation.navigate("SignIn");
+};
+
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
@@ -12,13 +16,13 @@ const HomeScreen = () => {
         has never been so
         simple...
       </Text>
+    
+     
     </View>
- 
   );
-  <CustomButton
-  text="Sign Out"
-  onPress={handleSubmit(onSignOutPressed)}
-/>
+   
+     
+        
 };
 
 const styles = StyleSheet.create({

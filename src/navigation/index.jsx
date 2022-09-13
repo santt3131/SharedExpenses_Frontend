@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import SignInScreen from "../screens/SignInScreen";
+import SignOutScreen from "../screens/SignOutScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import ConfirmEmailScreen from "../screens/ConfirmEmailScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
@@ -25,6 +26,14 @@ const Exit = () => {
 };
 
 const Navigation = () => {
+
+
+  const onSignOutPressed = () => {
+    navigation.navigate("SignIn");
+  };
+
+
+
   return (
     <NavigationContainer>
       <Tab.Navigator screenOptions={{ headerShown: false }}>
@@ -199,6 +208,28 @@ const Navigation = () => {
           component={ExpensesPaymentScreen}
           options={{
             tabBarButton: () => null,
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
+          name="Exit"
+          component={SignOutScreen}
+          //onPress={onSignOutPressed}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={
+                  focused
+                    ? require("../../assets/icons/exit.png")
+                    : require("../../assets/icons/exit.png")
+                }
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 0,
+                }}
+              />
+            ),
             tabBarShowLabel: false,
           }}
         />
