@@ -11,7 +11,6 @@ const CustomButton = ({
 }) => {
   return (
     <View style={styles.container}>
-
       <Pressable
         onPress={onPress}
         style={[
@@ -37,25 +36,21 @@ const CustomButton = ({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-
     padding: 1,
     marginVertical: 5,
-
     alignItems: "center",
-    //borderColor: 'red',
-    //borderWidth: 2
   },
-  
+
   button: {
     borderRadius: 5,
     width: "100%",
     padding: 13,
     marginVertical: 5,
-    alignItems: 'center'
+    alignItems: "center",
   },
 
   container_PRIMARY: {
-    backgroundColor: ColorPalette.primaryGreen,
+    backgroundColor: ColorPalette.primaryBlue,
   },
 
   container_SECONDARY: {

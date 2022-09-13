@@ -5,16 +5,36 @@ import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { useRoute } from "@react-navigation/native";
+import * as api from "../../api/api";
+import Global from "../../../global";
 
-const NewPasswordScreen = () => {
-  const navigation = useNavigation();
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-  const { control, handleSubmit, watch } = useForm();
+const NewPasswordScreen = (props) => {
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: { email: route?.params?.email },
+  });
 
   const pwd = watch("password");
 
-  const onSubmitPressed = () => {
-    navigation.navigate("Home");
+  const navigation = useNavigation();
+
+  const route = useRoute();
+
+  const onSubmitPressed = async (data) => {
+    console.log("in");
+    const { success, result, error } = await api.updatepassword(data);
+
+    if (success && result.status == "success") {
+      console.log(result.status);
+      navigation.navigate("HomeScreen");
+      alert("Password reset successefully");
+    } else if (result.status == "failed") {
+      alert("Password reset failed");
+      console.log(error);
+    }
   };
 
   const onSignInPressed = () => {
@@ -26,10 +46,22 @@ const NewPasswordScreen = () => {
       <View style={styles.root}>
         <Text style={styles.title}>Reset your password</Text>
 
+        <View style={{ display: "none" }}>
+          <CustomInput
+            name="email"
+            placeholder="Email"
+            keyboardType="email-address"
+            control={control}
+            rules={{
+              required: "Email is required",
+              pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
+            }}
+          />
+        </View>
+
         <CustomInput
           name="code"
           placeholder="Code"
-          keyboardType="number-pad"
           control={control}
           rules={{
             required: "Code is required",

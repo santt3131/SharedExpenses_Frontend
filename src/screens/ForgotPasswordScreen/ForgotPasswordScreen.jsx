@@ -6,20 +6,36 @@ import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import { useRoute } from "@react-navigation/native";
+import * as api from "../../api/api";
+import Global from "../../../global";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
-
   const route = useRoute();
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, watch } = useForm({
     defaultValues: { email: route?.params?.email },
   });
+  const email = watch("email");
 
-  const onSendPressed = () => {
+  const onSendPressed = async (data) => {
+    const { success, result, error } = await api.resetpassword(data);
+
+    if (success && result.status == "good") {
+      Global.resetPasswordCode = result.code;
+      Global.authUserEmail = result.user;
+      console.log(result.code);
+      console.log(email);
+
+      navigation.navigate("NewPassword", { email });
+    } else if (result.status == "bad") {
+      alert("Passord reset failed");
+      console.log(error);
+    }
+
     navigation.navigate("NewPassword");
   };
 
