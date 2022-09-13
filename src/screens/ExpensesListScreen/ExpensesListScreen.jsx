@@ -106,8 +106,35 @@ const ExpensesListScreenOwe = ({ userId, amount }) => {
 	);
 };
 
-const PaymentSettled = ({ paymentTotal, debt }) => {
+const PaymentSettled = ({ paymentTotal, debt, expenseId , expenseTitle , owe , users}) => {
 	const isSettled = paymentTotal - debt;
+  const navigation = useNavigation();
+  const onPayPressed = (expenseId, expenseTitle, owe) => {
+    
+    let arrayUserOwe = [];
+
+    users.forEach((objUser) => {
+      //Si + deben
+      let debtReal =  objUser.paid.$numberDecimal - objUser.amountShouldPay.$numberDecimal;
+      if(debtReal > 0 && objUser.userId !== Global.authUserId){
+        arrayUserOwe.push(objUser);
+      }
+    });
+
+    console.log("========SEND ExpensePayment==============");
+		console.log("expenseId ", expenseId);
+		console.log("expenseTitle ", expenseTitle);
+		console.log("owe ", owe);
+    console.log('user es', JSON.stringify(arrayUserOwe));
+    navigation.navigate("ExpensesPayment");
+		/*navigation.navigate("ExpensesPayment", {
+      expenseId,
+      expenseTitle,
+      owe,
+      arrayUserOwes
+    });*/
+	};
+  
 	return (
 		<>
 			{isSettled == 0 ? (
@@ -122,9 +149,9 @@ const PaymentSettled = ({ paymentTotal, debt }) => {
 					style={styles.paymentButton}
 					onPress={() =>
 						onPayPressed(
-							_id,
-							title,
-							Math.abs(handlerLent(users))
+							expenseId,
+							expenseTitle,
+							owe
 						)
 					}
 				>
@@ -220,17 +247,6 @@ const ExpensesListScreen = () => {
 		return peopleOweMe;
 	};
 
-	const onPayPressed = (expenseId, expenseTitle, owe) => {
-		//Falta: Gente a la que le debo y cuanto le debo
-		console.log("========SEND ExpensePayment==============");
-		console.log("expenseId ", expenseId);
-		console.log("expenseTitle ", expenseTitle);
-		console.log("owe ", owe);
-
-		alert("Info", "The code was resent. Please, check your email");
-		navigation.navigate("ExpensesPayment");
-	};
-
 	return (
 		<>
 			<CustomTopbar
@@ -312,6 +328,10 @@ const ExpensesListScreen = () => {
 												)
 												.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0)}
 											debt={handlerDebt(users)}
+                      expenseId= {_id}
+                      expenseTitle= {title}
+                      owe= {Math.abs(handlerLent(users))}
+                      users={users}
 										></PaymentSettled>
 
 									{handlerLent(users) > 0 ? (
