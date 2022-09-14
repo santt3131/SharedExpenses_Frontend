@@ -41,6 +41,7 @@ const SignInScreen = () => {
   const onSignInPressed = async (data) => 
   {
     const { success, result, error } = await api.login(data);
+
     if (success && (result.loginResult == "good")) 
     {
       Global.authUserId = result.userId;
@@ -51,7 +52,8 @@ const SignInScreen = () => {
       navigation.navigate("Home");
     } 
     else {
-    alert ("login failed: Wrong email or password")
+     console.log(result.error);
+    alert ("login failed: Wrong email or password");
   
     }
   };
