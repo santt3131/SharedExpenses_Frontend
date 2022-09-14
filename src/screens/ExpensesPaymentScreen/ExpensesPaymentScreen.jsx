@@ -18,6 +18,10 @@ const ExpensesPaymentScreen = () => {
   const expenseId = route?.params?.expenseId;
   const expenseTitle = route?.params?.expenseTitle;
   const owe = route?.params?.owe;
+  const users = route?.params?.arrayUserOwe;
+
+  console.log(users);
+
   const radioButtonsData = [
     {
       id: "62b5e88ba6e78636d6488647", // acts as primary key, should be unique and non-empty string
