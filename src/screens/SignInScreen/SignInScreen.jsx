@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as api from "../../api/api";
 import Global from "../../../global";
 import * as token from "../../token";
+import { Alert } from "react-native";
 
 
 import {
@@ -33,10 +34,10 @@ const SignInScreen = () => {
 
   const email = watch("email");
 
-  const [message, setMessage] =   useState(null); 
+  //const [message, setMessage] =   useState(null); 
 
-  const [tk, setToken] = useState(token.readToken);
 
+  
   const onSignInPressed = async (data) => 
   {
     const { success, result, error } = await api.login(data);
@@ -44,19 +45,14 @@ const SignInScreen = () => {
     {
       Global.authUserId = result.userId;
       Global.authUserGroups = result.userGroups;
-      localStorage.setItem('token',result.userToken.accessToken);
-      //props.history.push('/');
-      //token._storeToken(result.userToken.accessToken);
-      //setToken(result.userToken.accessToken);
+      token.saveToken(result.userToken.accessToken);
       console.log(result.userToken.accessToken);
-      console.log(token._getToken());
-      
+      console.log(token.readToken);
       navigation.navigate("Home");
-    } else if (result.loginResult == "bad") 
-    {
-    alert ("login failed");
-    console.log(error);
-    console.log(result.error);
+    } 
+    else {
+    alert ("login failed: Wrong email or password")
+  
     }
   };
 
@@ -64,7 +60,6 @@ const SignInScreen = () => {
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });
   };
-
   const onSignUpPressed = () => {
     navigation.navigate("SignUp");
   };

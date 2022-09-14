@@ -29,8 +29,6 @@ const apiPost = (path, body) => apiCall("POST", path, body);
 
 export const login = (userData) => apiPost("/login", userData);
 
-// export const register = (userData) => apiPost("/users", userData);
-
 export const resetpassword = (userData) => apiPost("/pwdreset/request", userData);
 export const updatepassword = (userData) => apiPost("/pwdreset/update", userData);
 

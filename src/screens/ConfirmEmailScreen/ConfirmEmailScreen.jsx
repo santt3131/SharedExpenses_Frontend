@@ -15,30 +15,30 @@ const ConfirmEmailScreen = (props) => {
   console.log(props.route?.params?.mail);
 
   setValue("email", props.route?.params?.mail);
+  const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
+
 
   const onConfirmPressed = async (data) => {
-    
-    
-    
+     
     const { success, result, error }  = await api.confirm(data);
 
-    if(result.httpcode  == '200')
+    if (success && (result.status=="success"))
     {
     console.log("account created successfully"); 
     alert("account created successfully");
     navigation.navigate("Home");
     }
 
-    else {   
-    console.log("failed");      
-    alert("confirmation faileed");
+    else {
+      
+    console.log("Incorrect code",error);      
+    alert("Incorrect code");
     }
-    
-    //navigation.navigate("Home");
   };
 
   const onResendPressed = () => {
-    Alert.alert("Info", "The code was resent. Please, check your email");
+
+    alert("Info", "The code was resent. Please, check your email");
   };
 
   const onSignInPressed = () => {

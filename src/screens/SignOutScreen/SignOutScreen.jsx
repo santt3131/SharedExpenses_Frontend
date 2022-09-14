@@ -35,14 +35,9 @@ const SignOutScreen = () => {
 
   const onSignOutPressed = async (data) => 
   {
-    const temptoken = token.readToken;
-  console.log(temptoken);
-
+    //const temptoken = token.readToken;
     token.deleteToken();  
     setToken(null);
-
-    console.log(token.readToken());
-
     navigation.navigate("SignIn");
   };
 

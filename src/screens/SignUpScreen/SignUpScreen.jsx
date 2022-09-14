@@ -1,5 +1,5 @@
 import React , { useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
@@ -33,7 +33,7 @@ const SignUpScreen = () => {
     if(result.status == 'user_already_exist')
     {
     console.log("user exist"); 
-    alert("User exist");
+    Alert("User exist");
     }
 
     else if (result.status == 'success') {   

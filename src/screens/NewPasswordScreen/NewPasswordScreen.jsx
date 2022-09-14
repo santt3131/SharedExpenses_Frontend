@@ -20,16 +20,16 @@ const NewPasswordScreen = (props) => {
     
     const { success, result ,error}  = await api.updatepassword(data);
 
-    if(result.status == "success")
+    if (success && (result.status=="success"))
     {
-    console.log("account created successfully"); 
-    alert("account created successfully");
-    navigation.navigate("Home");
+    console.log("Password updated successfully"); 
+    alert("Password updated successfully");
+    navigation.navigate("SignIn");
     }
 
     else {   
-    console.log("failed");      
-    alert("confirmation faileed");
+    console.log("failed updating pwd",error);      
+    alert("failed to update your password");
     }
   };
 
