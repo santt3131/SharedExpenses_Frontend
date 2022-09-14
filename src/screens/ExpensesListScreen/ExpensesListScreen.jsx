@@ -128,11 +128,11 @@ const PaymentSettled = ({
       }
     });
 
-    console.log("========SEND ExpensePayment==============");
+    /*console.log("========SEND ExpensePayment==============");
     console.log("expenseId ", expenseId);
     console.log("expenseTitle ", expenseTitle);
     console.log("owe ", owe);
-    console.log("user es", JSON.stringify(arrayUserOwe));
+    console.log("user es", JSON.stringify(arrayUserOwe));*/
     //navigation.navigate("ExpensesPayment");
     navigation.navigate("ExpensesPayment", {
       expenseId,

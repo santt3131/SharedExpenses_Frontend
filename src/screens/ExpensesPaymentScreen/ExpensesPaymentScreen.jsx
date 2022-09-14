@@ -19,21 +19,17 @@ const ExpensesPaymentScreen = () => {
   const expenseTitle = route?.params?.expenseTitle;
   const owe = route?.params?.owe;
   const users = route?.params?.arrayUserOwe;
+  let arrayUsers = [];
 
-  console.log(users);
-
-  const radioButtonsData = [
-    {
-      id: "62b5e88ba6e78636d6488647", // acts as primary key, should be unique and non-empty string
-      label: "Maria Perez",
-      value: "62b5e88ba6e78636d6488647",
-    },
-    {
-      id: "62b5e88ba6e78636d6488645",
-      label: "Santiago Bruno",
-      value: "62b5e88ba6e78636d6488645",
-    },
-  ];
+  users.forEach((usr) => {
+    let toPay = usr.paid.$numberDecimal - usr.amountShouldPay.$numberDecimal;
+    const objusr = {
+      id: usr.userId,
+      label: `userID ${usr.userId} (€ ${toPay}.00)`,
+      value: toPay,
+    };
+    arrayUsers.push(objusr);
+  });
 
   const { control, handleSubmit, watch } = useForm();
 
@@ -41,7 +37,7 @@ const ExpensesPaymentScreen = () => {
   const note = watch("note");
   const authUser = Global.authUserId;
 
-  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const [radioButtons, setRadioButtons] = useState(arrayUsers);
 
   function onPressRadioButton(radioButtonsArray) {
     setRadioButtons(radioButtonsArray);
@@ -60,12 +56,18 @@ const ExpensesPaymentScreen = () => {
   };
 
   const onPayPressed = () => {
+    radioButtons.forEach((rb) => {
+      if (rb.selected) {
+        global.selectedUser = rb.id;
+      }
+    });
+
     axios
       .put(`${Global.server}/expenses/${expenseId}/payments`, {
         date: new Date(),
         note: note,
         userFromId: authUser,
-        userToId: "62b5e88ba6e78636d6488645",
+        userToId: selectedUser,
         quantity: topay,
       })
       .then(function (response) {
@@ -125,18 +127,6 @@ const ExpensesPaymentScreen = () => {
               keyboardType="default"
               autoCapitalize="sentences"
               control={control}
-              rules={{
-                required: "Quantity to Pay is required",
-                minLength: {
-                  value: 1,
-                  message:
-                    "Quantity to Pay should be at least 1 characters long",
-                },
-                maxLength: {
-                  value: 25,
-                  message: "Quantity to Pay should be max 25 characters long",
-                },
-              }}
             />
             <RadioGroup
               radioButtons={radioButtons}
