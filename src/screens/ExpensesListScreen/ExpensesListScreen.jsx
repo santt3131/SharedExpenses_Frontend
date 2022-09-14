@@ -116,7 +116,7 @@ const PaymentSettled = ({ paymentTotal, debt, expenseId , expenseTitle , owe , u
     users.forEach((objUser) => {
       //Si + deben
       let debtReal =  objUser.paid.$numberDecimal - objUser.amountShouldPay.$numberDecimal;
-      if(debtReal > 0 && objUser.userId !== Global.authUserId){
+      if(debtReal > 0 && objUser.userId._id !== Global.authUserId){
         arrayUserOwe.push(objUser);
       }
     });
@@ -203,7 +203,7 @@ const ExpensesListScreen = () => {
 
 	const handlerPaid = (users) => {
 		const objFoundByUser = users.find(
-			(obj) => obj.userId === Global.authUserId
+			(obj) => obj.userId._id === Global.authUserId
 		);
 		return objFoundByUser.paid.$numberDecimal;
 	};
@@ -211,7 +211,7 @@ const ExpensesListScreen = () => {
 	const handlerLent = (users) => {
 		let lent = 0;
 		const objFoundByUser = users.find(
-			(obj) => obj.userId === Global.authUserId
+			(obj) => obj.userId._id === Global.authUserId
 		);
 		lent =
 			objFoundByUser.paid.$numberDecimal -
@@ -224,7 +224,7 @@ const ExpensesListScreen = () => {
 	const handlerDebt = (users) => {
 		let debt = 0;
 		const objFoundByUser = users.find(
-			(obj) => obj.userId === Global.authUserId
+			(obj) => obj.userId._id === Global.authUserId
 		);
 		debt = objFoundByUser.debt.$numberDecimal;
 		return debt;
@@ -241,7 +241,7 @@ const ExpensesListScreen = () => {
 
 	const handlerPeopleOweMe = (users) => {
 		const peopleOweMe = users.filter(
-			(obj) => obj.userId !== Global.authUserId && obj.debt.$numberDecimal > 0
+			(obj) => obj.userId._id !== Global.authUserId && obj.debt.$numberDecimal > 0
 		);
 
 		return peopleOweMe;
@@ -344,7 +344,7 @@ const ExpensesListScreen = () => {
 													return (
 														<View key={index}>
 															<ExpensesListScreenOwe
-																userId={objUser?.userId}
+																userId={objUser?.userId._id}
 																amount={objUser?.debt.$numberDecimal}
 															></ExpensesListScreenOwe>
 														</View>
