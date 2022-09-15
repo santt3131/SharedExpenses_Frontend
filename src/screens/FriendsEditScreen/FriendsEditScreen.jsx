@@ -13,15 +13,13 @@ import { useRoute } from "@react-navigation/native";
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-
 const FriendsEditScreen = () => {
   const navigation = useNavigation();
 
   const route = useRoute();
   let userName = route?.params?.name;
   let userEmail = route?.params?.email;
-  console.log('from route => user: ', userName, ' email: ', userEmail)  
-  
+  console.log("from route => user: ", userName, " email: ", userEmail);
 
   const { control, handleSubmit, watch } = useForm({
     defaultValues: { name: userName, email: userEmail },
@@ -30,7 +28,6 @@ const FriendsEditScreen = () => {
   const name = watch("name");
   const email = watch("email");
   //const authUser = Global.authUserId;
-
 
   const onPressAdd = () => {
     navigation.navigate("FriendsAdd");
@@ -41,25 +38,25 @@ const FriendsEditScreen = () => {
   };
 
   const onSendPressed = (name, email) => {
-    let userId = ''
+    let userId = "";
     axios
       .get(`${Global.server}/email/${email}`)
       .then((response) => {
-        userId = response.data.results[0]._id
+        userId = response.data.results[0]._id;
       })
       .catch((error) => {
-          // handle error
-          alert(error.response.data.error);
-        });
-    
+        // handle error
+        alert(error.response.data.error);
+      });
+
     axios
       .patch(`${Global.server}/users/${userId}`, {
         name: name,
         email: email,
       })
-      .then( (response) => {
+      .then((response) => {
         // handle success
-        console.log('it went ok: ', response)
+        console.log("it went ok: ", response);
         alert("successfully edited");
       })
       .catch(function (error) {
@@ -114,10 +111,7 @@ const FriendsEditScreen = () => {
             }}
           />
 
-          <CustomButton
-            text="Update"
-            onPress={handleSubmit(onSendPressed)}
-          />
+          <CustomButton text="Update" onPress={handleSubmit(onSendPressed)} />
         </View>
       </ScrollView>
     </>
