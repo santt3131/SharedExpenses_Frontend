@@ -11,6 +11,7 @@ import NewPasswordScreen from "../screens/NewPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FriendsListScreen from "../screens/FriendsListScreen";
 import FriendsAddScreen from "../screens/FriendsAddScreen";
+import FriendsEditScreen from "../screens/FriendsEditScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
 import ExpensesListScreen from "../screens/ExpensesListScreen";
 import ExpensesPaymentScreen from "../screens/ExpensesPaymentScreen";
@@ -123,6 +124,14 @@ const Navigation = () => {
         <Tab.Screen
           name="FriendsAdd"
           component={FriendsAddScreen}
+          options={{
+            tabBarButton: () => null,
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
+          name="FriendsEdit"
+          component={FriendsEditScreen}
           options={{
             tabBarButton: () => null,
             tabBarShowLabel: false,
