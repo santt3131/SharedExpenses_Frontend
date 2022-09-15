@@ -24,8 +24,8 @@ const ExpensesPaymentScreen = () => {
   users.forEach((usr) => {
     let toPay = usr.paid.$numberDecimal - usr.amountShouldPay.$numberDecimal;
     const objusr = {
-      id: usr.userId,
-      label: `userID ${usr.userId} (€ ${toPay}.00)`,
+      id: usr.userId._id,
+      label: `${usr.userId.name} (€ ${toPay}.00)`,
       value: toPay,
     };
     arrayUsers.push(objusr);
