@@ -28,23 +28,23 @@ const SignUpScreen = () => {
   const onRegisterPressed = async (data) => {
     const { success, result, error }  = await api.register(data);
     
-    console.log(result.status);
+    //console.log(result.status);
 
-    if(result.status == 'user_already_exist')
+    if(success && (result.status == 'user_already_exist'))
     {
     console.log("user exist"); 
     Alert("User exist");
     }
 
-    else if (result.status == 'success') {   
-    console.log("user created");      
-    alert("User created");
+    else if  (success && (result.status=="success")) {   
+    console.log("Temporary user created");      
+    Alert("A temporary account created please validate your email with the code sent to you");
     navigation.navigate("ConfirmEmail", {mail});
     }
 
     else 
     {
-    console.log(result.status);
+    console.log(result.status,error);
     alert("Creation failed");
     }
     

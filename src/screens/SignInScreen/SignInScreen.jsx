@@ -47,12 +47,14 @@ const SignInScreen = () => {
       Global.authUserId = result.userId;
       Global.authUserGroups = result.userGroups;
       token.saveToken(result.userToken.accessToken);
+      //token.setToken(result.userToken.accessToken);
+
       console.log(result.userToken.accessToken);
-      console.log(token.readToken);
+      //console.log(token.getToken);
       navigation.navigate("Home");
     } 
     else {
-     console.log(result.error);
+     console.log(error);
     alert ("login failed: Wrong email or password");
   
     }
