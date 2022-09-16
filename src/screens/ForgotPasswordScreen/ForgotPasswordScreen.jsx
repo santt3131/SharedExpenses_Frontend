@@ -18,7 +18,6 @@ const ForgotPasswordScreen = (props) => {
     const { control, handleSubmit, watch } = useForm();
  ({defaultValues:{email:route?.params?.email}});
  const email = watch("email");
-  console.log(props.route?.params?.email);
   
 
 

@@ -33,12 +33,12 @@ const SignUpScreen = () => {
     if(success && (result.status == 'user_already_exist'))
     {
     console.log("user exist"); 
-    Alert("User exist");
+    alert("User exist");
     }
 
     else if  (success && (result.status=="success")) {   
     console.log("Temporary user created");      
-    Alert("A temporary account created please validate your email with the code sent to you");
+    alert("A temporary account created please validate your email with the code sent to you");
     navigation.navigate("ConfirmEmail", {mail});
     }
 
