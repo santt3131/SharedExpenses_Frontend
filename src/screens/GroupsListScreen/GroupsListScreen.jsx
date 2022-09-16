@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Button } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Platform } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
 import CustomGroupsItem from "../../components/CustomGroupsItem";
@@ -48,10 +48,15 @@ const GroupsListScreen = () => {
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.container}>
-          <Text style={styles.text}>My Groups</Text>
-          <CustomGroupsItem groups={groups} />
-        </View>
+        {Platform.OS == "ios" ? (
+          <View style={styles.container}>
+            <CustomGroupsItem groups={groups} />
+          </View>
+        ) : (
+          <View style={styles.container}>
+            <CustomGroupsItem groups={groups} />
+          </View>
+        )}
       </ScrollView>
     </>
   );
