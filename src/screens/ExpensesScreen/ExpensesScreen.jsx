@@ -612,9 +612,9 @@ const ExprensesScreen = () => {
             screenTitle={screenTitle}
             onPressAdd={onPressAdd}
             onPressList={onPressList}
-            addDisabled={false}
+            addDisabled={true}
             listDisabled={false}
-            sectionIcon="euro-sign"
+            sectionIcon="money-bill"
             leftIcon="plus"
             rightIcon="list"
           />

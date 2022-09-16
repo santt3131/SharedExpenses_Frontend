@@ -174,7 +174,8 @@ const ExpensesListScreen = () => {
   }, []);
 
   const onPressAdd = () => {
-    navigation.navigate("ExpensesAdd");
+    alert("Select a group first, please...");
+    navigation.navigate("Groups");
   };
 
   const onPressList = () => {

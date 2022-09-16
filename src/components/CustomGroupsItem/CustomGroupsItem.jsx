@@ -64,7 +64,7 @@ const CustomGroupsItem = ({ groups }) => {
     <View style={styles.container}>
       {groups?.map(({ _id, groupName, groupDescription, ownerId }) => (
         <View
-          key={_id}
+          key={Math.random()}
           style={
             Platform.OS == "ios"
               ? [styles.groupContainer, { backgroundColor: "transparent" }]
