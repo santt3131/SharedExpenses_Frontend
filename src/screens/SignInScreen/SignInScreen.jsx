@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import * as api from "../../api/api";
 import Global from "../../../global";
 import * as token from "../../token";
+import { Alert } from "react-native";
+
+
 import {
   View,
   Image,
@@ -31,26 +34,36 @@ const SignInScreen = () => {
 
   const email = watch("email");
 
-  const [message, setMessage] = useState(null);
+  //const [message, setMessage] =   useState(null); 
 
-  const onSignInPressed = async (data) => {
+
+  
+  const onSignInPressed = async (data) => 
+  {
     const { success, result, error } = await api.login(data);
-    if (success && result.loginResult == "good") {
+
+    if (success && (result.loginResult == "good")) 
+    {
       Global.authUserId = result.userId;
       Global.authUserGroups = result.userGroups;
       token.saveToken(result.userToken.accessToken);
+      //token.setToken(result.userToken.accessToken);
+
+      console.log(result.userToken.accessToken);
+      //console.log(token.getToken);
       navigation.navigate("Home");
-    } else if (result.loginResult == "bad") {
-      alert("login failed");
-      console.log(error);
-      console.log(result.error);
+    } 
+    else {
+     console.log(error);
+    alert ("login failed: Wrong email or password");
+  
     }
   };
+
 
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword", { email });
   };
-
   const onSignUpPressed = () => {
     navigation.navigate("SignUp");
   };
