@@ -5,80 +5,97 @@ import CustomButton from "../../components/CustomButton";
 import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import * as api from "../../api/api";
 
-const ConfirmEmailScreen = () => {
-  const navigation = useNavigation();
+const ConfirmEmailScreen = (props) => {
+	const navigation = useNavigation();
 
-  const { control, handleSubmit } = useForm();
+	const { control, handleSubmit, setValue } = useForm();
 
-  const onConfirmPressed = () => {
-    navigation.navigate("Home");
-  };
+	console.log(props.route?.params?.mail);
 
-  const onResendPressed = () => {
-    Alert.alert("Info", "The code was resent. Please, check your email");
-  };
+	setValue("email", props.route?.params?.mail);
+	const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
 
-  const onSignInPressed = () => {
-    navigation.navigate("SignIn");
-  };
+	const onConfirmPressed = async (data) => {
+		const { success, result, error } = await api.confirm(data);
 
-  return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.root}>
-        <Text style={styles.title}>Confirm your email</Text>
+		if (success && result.status == "success") {
+			alert("account created successfully");
+			navigation.navigate("Home");
+		} else {
+			alert("Incorrect code");
+		}
+	};
 
-        <CustomInput
-          name="code"
-          placeholder="Confirmation code"
-          keyboardType="number-pad"
-          control={control}
-          rules={{
-            required: "Confirmation code is required",
-            minLength: {
-              value: 4,
-              message: "Confirmation code should be of 4 characters long",
-            },
-            maxLength: {
-              value: 4,
-              message: "Confirmation code should be of 4 characters long",
-            },
-          }}
-        />
+	const onResendPressed = () => {
+		alert("Info", "The code was resent. Please, check your email");
+	};
 
-        <CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
+	const onSignInPressed = () => {
+		navigation.navigate("SignIn");
+	};
 
-        <CustomButton
-          text="Resend code"
-          onPress={onResendPressed}
-          type="SECONDARY"
-        />
+	return (
+		<ScrollView showsVerticalScrollIndicator={false}>
+			<View style={styles.root}>
+				<Text style={styles.title}>Confirm your email</Text>
 
-        <CustomButton
-          text="Back to Sign In"
-          onPress={onSignInPressed}
-          type="TERTIARY"
-        />
-      </View>
-    </ScrollView>
-  );
+				<View style={{ display: "none" }}>
+					<CustomInput name="email" control={control} />
+				</View>
+
+				<CustomInput
+					name="code"
+					placeholder="Confirmation code"
+					keyboardType="number-pad"
+					control={control}
+					rules={{
+						required: "Confirmation code is required",
+						minLength: {
+							value: 4,
+							message: "Confirmation code should be of 4 characters long",
+						},
+						maxLength: {
+							value: 4,
+							message: "Confirmation code should be of 4 characters long",
+						},
+					}}
+				/>
+
+				<CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
+
+				<CustomButton
+					text="Resend code"
+					onPress={onResendPressed}
+					type="SECONDARY"
+				/>
+
+				<CustomButton
+					text="Back to Sign In"
+					onPress={onSignInPressed}
+					type="TERTIARY"
+				/>
+			</View>
+		</ScrollView>
+	);
 };
 
 const styles = StyleSheet.create({
-  root: {
-    alignItems: "center",
-    padding: 30,
-  },
-  title: {
-    fontSize: Size.xl,
-    fontWeight: "bold",
-    color: ColorPalette.primaryBlue,
-    margin: 10,
-  },
-  text: {
-    color: ColorPalette.primaryGray,
-    marginVertical: 10,
-  },
+	root: {
+		alignItems: "center",
+		padding: 30,
+	},
+	title: {
+		fontSize: Size.xl,
+		fontWeight: "bold",
+		color: ColorPalette.primaryBlue,
+		margin: 10,
+	},
+	text: {
+		color: ColorPalette.primaryGray,
+		marginVertical: 10,
+	},
 });
 
 export default ConfirmEmailScreen;

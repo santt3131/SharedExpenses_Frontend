@@ -1,13 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Global from "../../global";
-const BASE_URL = "http://localhost:8080";
-//Global.server;
 
 const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
 
 const apiCall = async (method, path, body, headers) => {
   try {
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const response = await fetch(`${Global.server}${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",
