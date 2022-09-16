@@ -191,18 +191,6 @@ const ExpensesListScreen = () => {
     navigation.navigate("Expenses");
   };
 
-  if (expensesList === null || expensesList === undefined) {
-    return <CustomSpinner />;
-  }
-
-  if (expensesList.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.initialText}>Don't you have any expenses yet?</Text>
-      </View>
-    );
-  }
-
   const handlerPaid = (users) => {
     const objFoundByUser = users.find(
       (obj) => obj.userId._id === Global.authUserId
@@ -262,37 +250,39 @@ const ExpensesListScreen = () => {
         leftIcon="plus"
         rightIcon="list"
       />
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          {expensesList.map(
-            ({ _id, title, date, expenseTotal, users, payments }, index) => (
-              <View key={index} style={styles.expenseContainer}>
-                <View style={styles.expenseData}>
-                  <Text style={styles.bold}>{title}</Text>
+          {expensesList ? (
+            expensesList.map(
+              ({ _id, title, date, expenseTotal, users, payments }, index) => (
+                <View key={index} style={styles.expenseContainer}>
+                  <View style={styles.expenseData}>
+                    <Text style={styles.bold}>{title}</Text>
 
-                  <View style={styles.expenseRow}>
-                    <Text style={styles.subtitle}>
-                      Total Payment: {expenseTotal.$numberDecimal}€
-                    </Text>
-                    <Text style={styles.subtitle}>
-                      {Moment(date).format("DD/MM/YYYY")}
-                    </Text>
-                  </View>
-
-                  <Text style={styles.boldSmall}>Initial account:</Text>
-                  <View style={styles.expenseRow}>
-                    <Text>You paid: {handlerPaid(users)}€</Text>
-
-                    {handlerLent(users) > 0 ? (
-                      <Text style={styles.lent}>
-                        You lent: {handlerLent(users)}€
+                    <View style={styles.expenseRow}>
+                      <Text style={styles.subtitle}>
+                        Total Payment: {expenseTotal.$numberDecimal}€
                       </Text>
-                    ) : (
-                      <>
-                        <Text style={styles.owe}>
-                          You Owe: {Math.abs(handlerLent(users))}€
+                      <Text style={styles.subtitle}>
+                        {Moment(date).format("DD/MM/YYYY")}
+                      </Text>
+                    </View>
+
+                    <Text style={styles.boldSmall}>Initial account:</Text>
+                    <View style={styles.expenseRow}>
+                      <Text>You paid: {handlerPaid(users)}€</Text>
+
+                      {handlerLent(users) > 0 ? (
+                        <Text style={styles.lent}>
+                          You lent: {handlerLent(users)}€
                         </Text>
-                        {/* <Pressable
+                      ) : (
+                        <>
+                          <Text style={styles.owe}>
+                            You Owe: {Math.abs(handlerLent(users))}€
+                          </Text>
+                          {/* <Pressable
 													style={styles.paymentButton}
 													onPress={() =>
 														onPayPressed(
@@ -304,60 +294,65 @@ const ExpensesListScreen = () => {
 												>
 													<Text style={styles.paymentButtonText}>Pay</Text>
 												</Pressable> */}
-                      </>
-                    )}
-                  </View>
+                        </>
+                      )}
+                    </View>
 
-                  <Text style={styles.boldSmall}>Payment Detail:</Text>
-                  {handlerPayments(payments).length > 0
-                    ? handlerPayments(payments).map((objPayment, index) => {
-                        return (
-                          <View key={index}>
-                            <DetailPayment
-                              objPayment={objPayment}
-                            ></DetailPayment>
-                          </View>
-                        );
-                      })
-                    : null}
-
-                  {/* Your payments is completed? */}
-
-                  <PaymentSettled
-                    paymentTotal={handlerPayments(payments)
-                      .map(
-                        (objPayment, index) =>
-                          objPayment.quantity.$numberDecimal
-                      )
-                      .reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0)}
-                    debt={handlerDebt(users)}
-                    expenseId={_id}
-                    expenseTitle={title}
-                    owe={Math.abs(handlerLent(users))}
-                    users={users}
-                  ></PaymentSettled>
-
-                  {handlerLent(users) > 0 ? (
-                    <Text style={styles.boldSmall}>People who owe you:</Text>
-                  ) : null}
-
-                  {handlerLent(users) > 0
-                    ? handlerPeopleOweMe(users).length > 0
-                      ? handlerPeopleOweMe(users).map((objUser, index) => {
+                    <Text style={styles.boldSmall}>Payment Detail:</Text>
+                    {handlerPayments(payments).length > 0
+                      ? handlerPayments(payments).map((objPayment, index) => {
                           return (
                             <View key={index}>
-                              <ExpensesListScreenOwe
-                                userId={objUser?.userId._id}
-                                amount={objUser?.debt.$numberDecimal}
-                              ></ExpensesListScreenOwe>
+                              <DetailPayment
+                                objPayment={objPayment}
+                              ></DetailPayment>
                             </View>
                           );
                         })
-                      : null
-                    : null}
+                      : null}
+
+                    {/* Your payments is completed? */}
+
+                    <PaymentSettled
+                      paymentTotal={handlerPayments(payments)
+                        .map(
+                          (objPayment, index) =>
+                            objPayment.quantity.$numberDecimal
+                        )
+                        .reduce((a, b) => parseInt(a, 10) + parseInt(b, 10), 0)}
+                      debt={handlerDebt(users)}
+                      expenseId={_id}
+                      expenseTitle={title}
+                      owe={Math.abs(handlerLent(users))}
+                      users={users}
+                    ></PaymentSettled>
+
+                    {handlerLent(users) > 0 ? (
+                      <Text style={styles.boldSmall}>People who owe you:</Text>
+                    ) : null}
+
+                    {handlerLent(users) > 0
+                      ? handlerPeopleOweMe(users).length > 0
+                        ? handlerPeopleOweMe(users).map((objUser, index) => {
+                            return (
+                              <View key={index}>
+                                <ExpensesListScreenOwe
+                                  userId={objUser?.userId._id}
+                                  amount={objUser?.debt.$numberDecimal}
+                                ></ExpensesListScreenOwe>
+                              </View>
+                            );
+                          })
+                        : null
+                      : null}
+                  </View>
                 </View>
-              </View>
+              )
             )
+          ) : (
+            <Text style={styles.initialText}>
+              Don't you have any expenses yet?
+            </Text>
           )}
         </View>
       </ScrollView>

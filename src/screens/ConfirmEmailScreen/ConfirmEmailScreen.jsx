@@ -8,94 +8,94 @@ import { useForm } from "react-hook-form";
 import * as api from "../../api/api";
 
 const ConfirmEmailScreen = (props) => {
-	const navigation = useNavigation();
+  const navigation = useNavigation();
 
-	const { control, handleSubmit, setValue } = useForm();
+  const { control, handleSubmit, setValue } = useForm();
 
-	console.log(props.route?.params?.mail);
+  console.log(props.route?.params?.mail);
 
-	setValue("email", props.route?.params?.mail);
-	const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
+  setValue("email", props.route?.params?.mail);
+  const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
 
-	const onConfirmPressed = async (data) => {
-		const { success, result, error } = await api.confirm(data);
+  const onConfirmPressed = async (data) => {
+    const { success, result, error } = await api.confirm(data);
 
-		if (success && result.status == "success") {
-			alert("account created successfully");
-			navigation.navigate("Home");
-		} else {
-			alert("Incorrect code");
-		}
-	};
+    if (success && result.status == "success") {
+      alert("account created successfully");
+      navigation.navigate("SignIn");
+    } else {
+      alert("Incorrect code");
+    }
+  };
 
-	const onResendPressed = () => {
-		alert("Info", "The code was resent. Please, check your email");
-	};
+  const onResendPressed = () => {
+    alert("Info", "The code was resent. Please, check your email");
+  };
 
-	const onSignInPressed = () => {
-		navigation.navigate("SignIn");
-	};
+  const onSignInPressed = () => {
+    navigation.navigate("SignIn");
+  };
 
-	return (
-		<ScrollView showsVerticalScrollIndicator={false}>
-			<View style={styles.root}>
-				<Text style={styles.title}>Confirm your email</Text>
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.root}>
+        <Text style={styles.title}>Confirm your email</Text>
 
-				<View style={{ display: "none" }}>
-					<CustomInput name="email" control={control} />
-				</View>
+        <View style={{ display: "none" }}>
+          <CustomInput name="email" control={control} />
+        </View>
 
-				<CustomInput
-					name="code"
-					placeholder="Confirmation code"
-					keyboardType="number-pad"
-					control={control}
-					rules={{
-						required: "Confirmation code is required",
-						minLength: {
-							value: 4,
-							message: "Confirmation code should be of 4 characters long",
-						},
-						maxLength: {
-							value: 4,
-							message: "Confirmation code should be of 4 characters long",
-						},
-					}}
-				/>
+        <CustomInput
+          name="code"
+          placeholder="Confirmation code"
+          keyboardType="number-pad"
+          control={control}
+          rules={{
+            required: "Confirmation code is required",
+            minLength: {
+              value: 4,
+              message: "Confirmation code should be of 4 characters long",
+            },
+            maxLength: {
+              value: 4,
+              message: "Confirmation code should be of 4 characters long",
+            },
+          }}
+        />
 
-				<CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
+        <CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
 
-				<CustomButton
-					text="Resend code"
-					onPress={onResendPressed}
-					type="SECONDARY"
-				/>
+        <CustomButton
+          text="Resend code"
+          onPress={onResendPressed}
+          type="SECONDARY"
+        />
 
-				<CustomButton
-					text="Back to Sign In"
-					onPress={onSignInPressed}
-					type="TERTIARY"
-				/>
-			</View>
-		</ScrollView>
-	);
+        <CustomButton
+          text="Back to Sign In"
+          onPress={onSignInPressed}
+          type="TERTIARY"
+        />
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-	root: {
-		alignItems: "center",
-		padding: 30,
-	},
-	title: {
-		fontSize: Size.xl,
-		fontWeight: "bold",
-		color: ColorPalette.primaryBlue,
-		margin: 10,
-	},
-	text: {
-		color: ColorPalette.primaryGray,
-		marginVertical: 10,
-	},
+  root: {
+    alignItems: "center",
+    padding: 30,
+  },
+  title: {
+    fontSize: Size.xl,
+    fontWeight: "bold",
+    color: ColorPalette.primaryBlue,
+    margin: 10,
+  },
+  text: {
+    color: ColorPalette.primaryGray,
+    marginVertical: 10,
+  },
 });
 
 export default ConfirmEmailScreen;

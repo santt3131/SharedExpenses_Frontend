@@ -1,4 +1,4 @@
-import React , { useState } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
@@ -6,7 +6,6 @@ import { ColorPalette, Size } from "../../../appStyles";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import * as api from "../../api/api";
-
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -26,29 +25,22 @@ const SignUpScreen = () => {
   const exist = (httpCode) => httpCode === 200 || httpCode === 201;*/
 
   const onRegisterPressed = async (data) => {
-    const { success, result, error }  = await api.register(data);
-    
+    const { success, result, error } = await api.register(data);
+
     //console.log(result.status);
 
-    if(success && (result.status == 'user_already_exist'))
-    {
-    console.log("user exist"); 
-    Alert("User exist");
+    if (success && result.status == "user_already_exist") {
+      console.log("user exist");
+      Alert("User exist");
+    } else if (success && result.status == "success") {
+      console.log("Temporary user created");
+      alert(
+        "A temporary account created please validate your email with the code sent to you"
+      );
+      navigation.navigate("ConfirmEmail", { mail });
+    } else {
+      alert("Creation failed");
     }
-
-    else if  (success && (result.status=="success")) {   
-    console.log("Temporary user created");      
-    alert("A temporary account created please validate your email with the code sent to you");
-    navigation.navigate("ConfirmEmail", {mail});
-    }
-
-    else 
-    {
-    console.log(result.status,error);
-    alert("Creation failed");
-    }
-    
-    
   };
 
   const onPrivacyPolicyPressed = () => {
