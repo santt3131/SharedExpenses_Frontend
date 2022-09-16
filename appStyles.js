@@ -19,7 +19,7 @@ const ColorPalette = {
   irisBlue: "#00AED5",
   primaryGreen: "#00C8C0",
 
-  secondaryGreen: "#008000"
+  secondaryGreen: "#008000",
 };
 
 const Size = {
@@ -35,88 +35,5 @@ const Size = {
   ll: 28,
   xxl: 30,
 };
-
-/*
-const appStyles = StyleSheet.create({
-  // canvas de la app
-  container: {
-    flex: 1,
-    marginTop: 20,
-    backgroundColor: "#fff",
-  },
-  baseText: {
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  appTitle: {
-    // Ramiro
-  },
-  title1: {
-    // Ramiro
-  },
-  title2: {
-    // Ramiro
-  },
-  title3: {
-    // Ramiro
-  },
-  title4: {
-    // Ramiro
-  },
-  mainLogo: {
-    // Ramiro
-  },
-  logo: {
-    // Ramiro
-  },
-  baseButton: {
-    // Santi
-    borderTopLeftRadius: 100,
-    borderTopRightRadius: 100,
-    borderBottomRightRadius: 100,
-    borderBottomLeftRadius: 100,
-    color: "#fff",
-    fontWeight: "bold",
-    lineHeight: 20,
-    paddingTop: 6,
-    paddingRight: 16,
-    paddingBottom: 6,
-    paddingLeft: 16,
-  },
-  baseInput: {
-    // Raul
-    backgroundColor: "#fff",
-  },
-  baseDropdown: {
-    // Santi
-  },
-  icons: {
-    // Raul
-  },
-  imagen: {
-    // Raul
-  },
-  searchBox: {
-    // Raul
-  },
-  navbar: {
-    // Ramiro
-  },
-  table: {
-    // Raul
-  },
-  checkbox: {
-    // Raul
-  },
-  radiobutton: {
-    // Raul
-  },
-  popup: {
-    // Abdelwahed
-  },
-  label: {
-    // Abdelwahed
-  },
-});*/
 
 export { ColorPalette, Size };

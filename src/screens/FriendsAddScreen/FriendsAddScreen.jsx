@@ -35,7 +35,7 @@ const FriendsAddScreen = () => {
 
   const message = `<h2>Shared Expenses Invitation</h2>
   <p>Hello, ${name}</p>
-  <p>Your friend USUARIO AUTENTICADO has invited you to share expenses in an easy way through Shared Expenses, 
+  <p>Your friend ${Global.authUserName} has invited you to share expenses in an easy way through Shared Expenses, 
   for this you can:</p>
   <ol>
   <li>Download the application<br />

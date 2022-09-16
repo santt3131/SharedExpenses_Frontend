@@ -2,7 +2,7 @@ import React from "react";
 import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
+import SignOutScreen from "../screens/SignOutScreen";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import ConfirmEmailScreen from "../screens/ConfirmEmailScreen";
@@ -211,9 +211,10 @@ const Navigation = () => {
             tabBarShowLabel: false,
           }}
         />
-        <Tab.Screen
+         <Tab.Screen
           name="Exit"
-          component={ExpensesListScreen}
+          component={SignOutScreen}
+          //onPress={onSignOutPressed}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
