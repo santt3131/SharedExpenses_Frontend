@@ -38,7 +38,9 @@ const FriendsEditScreen = () => {
   };
 
   const onSendPressed = (name, email) => {
-    let userId = "";
+    navigation.navigate("Friends");
+
+    /*let userId = "";
     axios
       .get(`${Global.server}/email/${email}`)
       .then((response) => {
@@ -50,7 +52,7 @@ const FriendsEditScreen = () => {
       });
 
     axios
-      .patch(`${Global.server}/users/${userId}`, {
+      .put(`${Global.server}/users/${userId}`, {
         name: name,
         email: email,
       })
@@ -62,7 +64,7 @@ const FriendsEditScreen = () => {
       .catch(function (error) {
         // handle error
         alert(error.response.data.error);
-      });
+      });*/
   };
 
   return (
@@ -71,7 +73,7 @@ const FriendsEditScreen = () => {
         screenTitle="Friends"
         onPressAdd={onPressAdd}
         onPressList={onPressList}
-        addDisabled={true}
+        addDisabled={false}
         listDisabled={false}
         sectionIcon="user-alt"
         leftIcon="plus"
