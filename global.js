@@ -14,6 +14,7 @@ const authUserId = null;
 const authUserGroups = null;
 const resetPasswordCode = null;
 const authUserEmail = null;
+const authUserName = null;
 
 const Global = {
   server: serverEndpoint,
@@ -21,6 +22,7 @@ const Global = {
   authUserGroups: authUserGroups,
   authUserEmail: authUserEmail,
   resetPasswordCode: resetPasswordCode,
+  authUserName: authUserName,
 };
 
 export default Global;

@@ -1,12 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Global from "../../global";
-const BASE_URL = Global.server;
 
 const isSuccess = (httpCode) => httpCode === 200 || httpCode === 201;
 
 const apiCall = async (method, path, body, headers) => {
   try {
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const response = await fetch(`${Global.server}${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -29,12 +28,11 @@ const apiPost = (path, body) => apiCall("POST", path, body);
 
 export const login = (userData) => apiPost("/login", userData);
 
-export const register = (userData) => apiPost("/users", userData);
+export const resetpassword = (userData) => apiPost("/pwdreset/request", userData);
+export const updatepassword = (userData) => apiPost("/pwdreset/update", userData);
 
-export const resetpassword = (userData) =>
-  apiPost("/pwdreset/request", userData);
-export const updatepassword = (userData) =>
-  apiPost("/pwdreset/update", userData);
+export const register = (userData) => apiPost("/register/register", userData);
+export const confirm = (userData) => apiPost("/register/confirm", userData);
 
 const authApiCall = (method, path, body) => {
   const { accessToken } = JSON.parse(AsyncStorage.getItem("token"));
@@ -43,7 +41,3 @@ const authApiCall = (method, path, body) => {
   });
 };
 
-/*export const getTodoList = () => authApiCall("GET", "/users/me/todos");
-export const addTodo = (todo) => authApiCall("POST", "/users/me/todos", todo);
-export const updateTodo = (todo) => authApiCall("PUT", `/users/me/todos/${todo._id}`, todo);
-export const deleteTodo = (todo) => authApiCall("DELETE", `/users/me/todos/${todo._id}`);*/

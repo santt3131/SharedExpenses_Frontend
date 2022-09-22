@@ -2,7 +2,7 @@ import React from "react";
 import { Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
+import SignOutScreen from "../screens/SignOutScreen";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import ConfirmEmailScreen from "../screens/ConfirmEmailScreen";
@@ -11,6 +11,7 @@ import NewPasswordScreen from "../screens/NewPasswordScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FriendsListScreen from "../screens/FriendsListScreen";
 import FriendsAddScreen from "../screens/FriendsAddScreen";
+import FriendsEditScreen from "../screens/FriendsEditScreen";
 import ExpensesScreen from "../screens/ExpensesScreen";
 import ExpensesListScreen from "../screens/ExpensesListScreen";
 import ExpensesPaymentScreen from "../screens/ExpensesPaymentScreen";
@@ -129,6 +130,14 @@ const Navigation = () => {
           }}
         />
         <Tab.Screen
+          name="FriendsEdit"
+          component={FriendsEditScreen}
+          options={{
+            tabBarButton: () => null,
+            tabBarShowLabel: false,
+          }}
+        />
+        <Tab.Screen
           name="Groups"
           component={GroupsListScreen}
           options={{
@@ -202,9 +211,10 @@ const Navigation = () => {
             tabBarShowLabel: false,
           }}
         />
-        <Tab.Screen
+         <Tab.Screen
           name="Exit"
-          component={ExpensesListScreen}
+          component={SignOutScreen}
+          //onPress={onSignOutPressed}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
