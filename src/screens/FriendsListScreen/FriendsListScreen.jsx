@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { RefreshControl, View, StyleSheet, ScrollView } from "react-native";
+import {
+  RefreshControl,
+  View,
+  StyleSheet,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
 import CustomFriendsItem from "../../components/CustomFriendsItem";
@@ -14,6 +20,14 @@ const FriendsListScreen = () => {
   const [refreshing, setRefreshing] = useState(true);
 
   const [friends, setFriends] = useState([]);
+
+  React.useEffect(() => {
+    const focusHandler = navigation.addListener("focus", () => {
+      onPressList();
+    });
+
+    return focusHandler;
+  }, [navigation]);
 
   useEffect(() => {
     onPressList();

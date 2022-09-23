@@ -63,6 +63,7 @@ const FriendsAddScreen = () => {
       })
       .then(function (response) {
         alert("Invitation sent successfully");
+        navigation.navigate("Friends");
       })
       .catch(function (error) {
         alert(error.response.data.error);
