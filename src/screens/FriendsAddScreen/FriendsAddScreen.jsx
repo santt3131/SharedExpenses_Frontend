@@ -62,11 +62,9 @@ const FriendsAddScreen = () => {
         invitationId: invitationId,
       })
       .then(function (response) {
-        // handle success
         alert("Invitation sent successfully");
       })
       .catch(function (error) {
-        // handle error
         alert(error.response.data.error);
       });
   };

@@ -8,7 +8,6 @@ import { useNavigation } from "@react-navigation/native";
 
 const CustomFriendsItem = ({ friends }) => {
   const navigation = useNavigation();
-  console.log("the friend object: ", friends);
 
   if (friends === null || friends === undefined) {
     return <CustomSpinner />;
@@ -31,11 +30,9 @@ const CustomFriendsItem = ({ friends }) => {
         authUser: Global.authUserId,
       })
       .then(function (response) {
-        // handle success
         alert("Invitation resent successfully");
       })
       .catch(function (error) {
-        // handle error
         alert(error.response.data.error);
       });
   };
@@ -49,17 +46,14 @@ const CustomFriendsItem = ({ friends }) => {
         data: { email: email },
       })
       .then(function (response) {
-        // handle success
         alert("Friend deleted successfully");
       })
       .catch(function (error) {
-        // handle error
         alert(error.response.data.error);
       });
   };
 
   const onEditPress = (userName, userEmail) => {
-    console.log("recieving this name: ", userName, " and email: ", userEmail);
     navigation.navigate("FriendsEdit", { name: userName, email: userEmail });
   };
 

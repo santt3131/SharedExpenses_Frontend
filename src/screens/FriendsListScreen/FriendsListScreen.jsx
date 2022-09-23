@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { RefreshControl, View, StyleSheet, ScrollView } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
 import CustomFriendsItem from "../../components/CustomFriendsItem";
+import CustomSpinner from "../../components/CustomSpinner";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import Global from "../../../global";
 
 const FriendsListScreen = () => {
   const navigation = useNavigation();
+
+  const [refreshing, setRefreshing] = useState(true);
 
   const [friends, setFriends] = useState([]);
 
@@ -24,7 +27,9 @@ const FriendsListScreen = () => {
     axios
       .get(`${Global.server}/users/${Global.authUserId}/friends`, {})
       .then(function (response) {
-        setFriends(response.data.results[0].friends);
+        setRefreshing(false);
+        let newFriends = response.data.results[0].friends;
+        setFriends(newFriends);
       })
       .catch(function (error) {
         alert(error.message);
@@ -46,7 +51,14 @@ const FriendsListScreen = () => {
         rightIcon="list"
       />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      {refreshing ? <CustomSpinner /> : null}
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onPressList} />
+        }
+      >
         <View style={styles.container}>
           <CustomFriendsItem friends={friends} />
         </View>

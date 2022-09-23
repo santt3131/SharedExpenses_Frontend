@@ -8,7 +8,7 @@
 //const serverEndpoint = "http://localhost:8080";
 
 // Ramiro //
-const serverEndpoint = "http://192.168.124.69:8080";
+const serverEndpoint = "http://192.168.52.69:8080";
 
 const authUserId = null;
 const authUserGroups = null;

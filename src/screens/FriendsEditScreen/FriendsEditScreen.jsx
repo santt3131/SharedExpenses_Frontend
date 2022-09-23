@@ -19,7 +19,6 @@ const FriendsEditScreen = () => {
   const route = useRoute();
   let userName = route?.params?.name;
   let userEmail = route?.params?.email;
-  console.log("from route => user: ", userName, " email: ", userEmail);
 
   const { control, handleSubmit, watch } = useForm({
     defaultValues: { name: userName, email: userEmail },
@@ -27,7 +26,6 @@ const FriendsEditScreen = () => {
 
   const name = watch("name");
   const email = watch("email");
-  //const authUser = Global.authUserId;
 
   const onPressAdd = () => {
     navigation.navigate("FriendsAdd");
