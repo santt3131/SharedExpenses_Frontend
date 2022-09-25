@@ -12,7 +12,7 @@ const CustomInput = ({
   keyboardType,
   autoCapitalize,
   defaultValue,
-  editable,
+  editable = true,
 }) => {
   return (
     <Controller
@@ -32,6 +32,11 @@ const CustomInput = ({
               {
                 borderColor: error
                   ? ColorPalette.primaryRed
+                  : ColorPalette.veryLightGrey,
+              },
+              {
+                backgroundColor: editable
+                  ? ColorPalette.primaryWhite
                   : ColorPalette.veryLightGrey,
               },
             ]}
@@ -64,13 +69,10 @@ const CustomInput = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: ColorPalette.primaryWhite,
     width: "100%",
-
     borderColor: ColorPalette.veryLightGrey,
     borderWidth: 1,
     borderRadius: 5,
-
     paddingHorizontal: 10,
     marginVertical: 5,
   },
