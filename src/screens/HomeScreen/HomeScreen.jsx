@@ -1,20 +1,18 @@
+import React from "react";
 import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
-import React, { useState } from "react";
 import { ColorPalette, Size } from "../../../appStyles";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
+import Global from "../../../global";
 
 const HomeScreen = () => {
-  // navigation
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       {Platform.OS == "ios" ? <StatusBar /> : null}
-      <Text style={[styles.welcomeText, { color: ColorPalette.primaryGreen }]}>
-        Welcome to
-      </Text>
-      <Text style={styles.welcomeText}>Shared Expenses!</Text>
+      <Text style={styles.welcomeText}>Welcome to Shared Expenses!</Text>
+      <Text style={styles.authuserText}>{Global.authUserName}</Text>
       <Text style={[styles.explainText, { color: "black" }]}>
         Sharing expenses {"\n"}
         has never been so simple...
@@ -76,15 +74,19 @@ const styles = StyleSheet.create({
     height: 95,
     justifyContent: "center",
     alignItems: "center",
-    //borderTopRightRadius: 40,
-    //borderBottomLeftRadius: 40,
     borderRadius: 10,
     borderColor: ColorPalette.veryLightGrey,
     borderWidth: 3,
   },
   welcomeText: {
-    fontSize: Size.xxl,
+    fontSize: Size.ml,
     color: ColorPalette.primaryBlue,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  authuserText: {
+    fontSize: Size.ml,
+    color: ColorPalette.primaryGreen,
     fontWeight: "bold",
     marginBottom: 10,
   },
@@ -93,10 +95,6 @@ const styles = StyleSheet.create({
     fontSize: Size.xm,
     textAlign: "center",
     padding: 5,
-  },
-  toEvalutate: {
-    //borderTopLeftRadius: 40, borderTopRightRadius: 0, borderBottomRightRadius: 40, borderBottomLeftRadius: 0, share expenses
-    //borderTopLeftRadius: 40, borderTopRightRadius: 0, borderBottomRightRadius: 40, borderBottomLeftRadius: 0, manage payments
   },
 });
 
