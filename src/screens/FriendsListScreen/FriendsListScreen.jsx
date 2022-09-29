@@ -21,17 +21,13 @@ const FriendsListScreen = () => {
 
   const [friends, setFriends] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const focusHandler = navigation.addListener("focus", () => {
       onPressList();
     });
 
     return focusHandler;
   }, [navigation]);
-
-  useEffect(() => {
-    onPressList();
-  }, []);
 
   const onPressAdd = async () => {
     navigation.navigate("FriendsAdd");
@@ -46,7 +42,12 @@ const FriendsListScreen = () => {
         setFriends(newFriends);
       })
       .catch(function (error) {
-        alert(error.message);
+        Alert.alert("Error!", error.message, [
+          {
+            text: "OK",
+            onPress: () => null,
+          },
+        ]);
       });
 
     navigation.navigate("Friends");

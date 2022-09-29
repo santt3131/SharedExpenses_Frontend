@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
 import CustomInput from "../../components/CustomInput";
@@ -26,7 +26,7 @@ function invitationIdGenerator() {
 const FriendsAddScreen = () => {
   const navigation = useNavigation();
 
-  const { control, handleSubmit, watch } = useForm();
+  const { control, handleSubmit, watch, reset } = useForm();
 
   const name = watch("name");
   const email = watch("email");
@@ -62,11 +62,23 @@ const FriendsAddScreen = () => {
         invitationId: invitationId,
       })
       .then(function (response) {
-        alert("Invitation sent successfully");
-        navigation.navigate("Friends");
+        Alert.alert("Great!", "Invitation sent successfully", [
+          {
+            text: "OK",
+            onPress: () => {
+              reset({ name: "", email: "" });
+              navigation.navigate("Friends");
+            },
+          },
+        ]);
       })
       .catch(function (error) {
-        alert(error.response.data.error);
+        Alert.alert("Error!", error.response.data.error, [
+          {
+            text: "OK",
+            onPress: () => null,
+          },
+        ]);
       });
   };
 
@@ -85,7 +97,7 @@ const FriendsAddScreen = () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Text style={styles.text}>Adding New Friends</Text>
+          <Text style={styles.text}>Adding New Friend</Text>
 
           <CustomInput
             name="name"

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable, Platform } from "react-native";
+import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomSpinner from "../CustomSpinner/CustomSpinner";
 import axios from "axios";
@@ -16,7 +16,7 @@ const CustomFriendsItem = ({ friends }) => {
   if (friends.length === 0) {
     return (
       <View style={styles.container}>
-        <Text style={styles.initialText}>Don't you have any friends yet?</Text>
+        <Text style={styles.initialText}>You don't have any friends yet</Text>
       </View>
     );
   }
@@ -30,10 +30,22 @@ const CustomFriendsItem = ({ friends }) => {
         authUser: Global.authUserId,
       })
       .then(function (response) {
-        alert("Invitation resent successfully");
+        Alert.alert("Great!", "Invitation resent successfully", [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate("Friends");
+            },
+          },
+        ]);
       })
       .catch(function (error) {
-        alert(error.response.data.error);
+        Alert.alert("Error!", error.response.data.error, [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Friends"),
+          },
+        ]);
       });
   };
 
@@ -41,20 +53,48 @@ const CustomFriendsItem = ({ friends }) => {
     const email = fm;
     const authUser = Global.authUserId;
 
-    axios
-      .delete(`${Global.server}/users/${authUser}/friends`, {
-        data: { email: email },
-      })
-      .then(function (response) {
-        alert("Friend deleted successfully");
-      })
-      .catch(function (error) {
-        alert(error.response.data.error);
-      });
+    Alert.alert(
+      "Delete Friend",
+      "Are you sure you want to delete this friend?",
+      [
+        { text: "CANCEL", onPress: () => null },
+        {
+          text: "OK",
+          onPress: () => {
+            axios
+              .delete(`${Global.server}/users/${authUser}/friends`, {
+                data: { email: email },
+              })
+              .then(function (response) {
+                Alert.alert("Great!", "Friend deleted successfully", [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      navigation.navigate("Friends");
+                    },
+                  },
+                ]);
+              })
+              .catch(function (error) {
+                Alert.alert("Error!", error.response.data.error, [
+                  {
+                    text: "OK",
+                    onPress: () => null,
+                  },
+                ]);
+              });
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
-  const onEditPress = (userName, userEmail) => {
-    navigation.navigate("FriendsEdit", { name: userName, email: userEmail });
+  const onEditPress = (friendName, friendEmail) => {
+    navigation.navigate("FriendsEdit", {
+      name: friendName,
+      email: friendEmail,
+    });
   };
 
   return (
@@ -75,16 +115,16 @@ const CustomFriendsItem = ({ friends }) => {
             }}
           >
             <Pressable
+              style={styles.editButton}
+              onPress={() => onEditPress(friendName, friendEmail)}
+            >
+              <Text style={styles.friendButtonText}>Edit</Text>
+            </Pressable>
+            <Pressable
               style={styles.deleteButton}
               onPress={() => onDeletePress(friendEmail)}
             >
               <Text style={styles.friendButtonText}>Delete</Text>
-            </Pressable>
-            <Pressable
-              style={styles.reinviteButton}
-              onPress={() => onEditPress(friendName, friendEmail)}
-            >
-              <Text style={styles.friendButtonText}>Edit</Text>
             </Pressable>
             {invitationId === "" ? (
               <Pressable
@@ -135,7 +175,6 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
     borderLeftColor: ColorPalette.primaryBlue,
     borderLeftWidth: 3,
-
     borderTopEndRadius: 5,
     borderBottomEndRadius: 5,
     backgroundColor: ColorPalette.background,
@@ -147,7 +186,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 3,
     paddingBottom: 3,
-
     borderTopEndRadius: 4,
     borderBottomEndRadius: 4,
     marginRight: 0,
@@ -164,10 +202,7 @@ const styles = StyleSheet.create({
     fontSize: Size.ls,
     marginBottom: 5,
   },
-  buttonContainer: {
-    flex: 2,
-  },
-  reinviteButton: {
+  editButton: {
     flex: 1 / 3,
     height: 40,
     alignItems: "center",
@@ -179,13 +214,25 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     flex: 1 / 3,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: ColorPalette.primaryRouge,
     borderRadius: 5,
-    marginHorizontal: 3,
+    marginHorizontal: 5,
     marginBottom: 2,
   },
+  reinviteButton: {
+    flex: 1 / 3,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: ColorPalette.primaryGreen,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    marginBottom: 2,
+  },
+
   friendButtonText: {
     color: ColorPalette.primaryWhite,
     padding: 5,
