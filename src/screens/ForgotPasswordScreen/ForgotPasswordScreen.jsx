@@ -15,31 +15,25 @@ const EMAIL_REGEX =
 const ForgotPasswordScreen = (props) => {
   const navigation = useNavigation();
   const route = useRoute();
-    const { control, handleSubmit, watch } = useForm();
- ({defaultValues:{email:route?.params?.email}});
- const email = watch("email");
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: { email: route?.params?.email },
+  });
+  const email = watch("email");
   console.log(props.route?.params?.email);
-  
-
 
   const onSendPressed = async (data) => {
-    
     const { success, result, error } = await api.resetpassword(data);
 
-    if (success && (result.status == "good")) 
-    {
+    if (success && result.status == "good") {
       Global.resetPasswordCode = result.code;
       Global.authUserEmail = result.user;
       console.log(result.code);
       console.log(email);
-      navigation.navigate("NewPassword", {email});
-      
-    } else if (result.status == "bad") 
-    {
-    alert ("Passord reset failed");
-    console.log(error);
+      navigation.navigate("NewPassword", { email });
+    } else if (result.status == "bad") {
+      alert("Passord reset failed");
+      console.log(error);
     }
-
   };
 
   const onSignInPressed = () => {

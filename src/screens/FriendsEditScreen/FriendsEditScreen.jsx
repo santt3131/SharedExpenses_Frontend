@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { ColorPalette, Size } from "../../../appStyles";
 import CustomTopbar from "../../components/CustomTopbar";
 import CustomInput from "../../components/CustomInput";
@@ -17,17 +17,16 @@ const FriendsEditScreen = () => {
   const navigation = useNavigation();
 
   const route = useRoute();
-  let userName = route?.params?.name;
-  let userEmail = route?.params?.email;
-  console.log("from route => user: ", userName, " email: ", userEmail);
 
-  const { control, handleSubmit, watch } = useForm({
-    defaultValues: { name: userName, email: userEmail },
+  const { control, handleSubmit, watch, reset } = useForm({
+    defaultValues: {
+      name: route?.params?.name,
+      email: route?.params?.email,
+    },
   });
 
-  const name = watch("name");
-  const email = watch("email");
-  //const authUser = Global.authUserId;
+  const nameInput = watch("name");
+  const emailInput = watch("email");
 
   const onPressAdd = () => {
     navigation.navigate("FriendsAdd");
@@ -38,33 +37,30 @@ const FriendsEditScreen = () => {
   };
 
   const onSendPressed = (name, email) => {
-    navigation.navigate("Friends");
-
-    /*let userId = "";
     axios
-      .get(`${Global.server}/email/${email}`)
-      .then((response) => {
-        userId = response.data.results[0]._id;
-      })
-      .catch((error) => {
-        // handle error
-        alert(error.response.data.error);
-      });
-
-    axios
-      .put(`${Global.server}/users/${userId}`, {
-        name: name,
-        email: email,
+      .put(`${Global.server}/users/${Global.authUserId}/friends`, {
+        name: nameInput,
+        email: emailInput,
       })
       .then((response) => {
-        // handle success
-        console.log("it went ok: ", response);
-        alert("successfully edited");
+        Alert.alert("Great!", "Your friend data was successfully edited", [
+          {
+            text: "OK",
+            onPress: () => {
+              //reset({ name: "", email: "" });
+              navigation.navigate("Friends");
+            },
+          },
+        ]);
       })
       .catch(function (error) {
-        // handle error
-        alert(error.response.data.error);
-      });*/
+        Alert.alert("Error!", error.response.data.error, [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Friends"),
+          },
+        ]);
+      });
   };
 
   return (
@@ -82,7 +78,7 @@ const FriendsEditScreen = () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
-          <Text style={styles.text}>Edit Friend data</Text>
+          <Text style={styles.text}>Edit Friend Data</Text>
 
           <CustomInput
             name="name"
@@ -111,6 +107,7 @@ const FriendsEditScreen = () => {
               required: "Email is required",
               pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
             }}
+            editable={false}
           />
 
           <CustomButton text="Update" onPress={handleSubmit(onSendPressed)} />
